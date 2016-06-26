@@ -15,14 +15,15 @@ namespace StreamHandler.Tests
     public class PiperTests
     {
         static MemoryStream fifo = new MemoryStream(1000);
-        Piper pipe = new Piper(fifo);
+        static MemoryPipe dataPipe = new MemoryPipe(fifo);
+        Piper pipe = new Piper(dataPipe, dataPipe);
        
 
         [TestMethod()]
         [ExpectedException(typeof(NullReferenceException))]
         public void Piper_PiperNullCreation()
         {
-            Piper victim = new Piper(null);
+            Piper victim = new Piper(null, null);
         }
 
         [TestMethod()]
@@ -30,7 +31,7 @@ namespace StreamHandler.Tests
         {
             Boolean dataGet = false;
             byte[] received_data = new byte[0];
-            Piper pip = new Piper(new MemoryStream());
+            Piper pip = new Piper(new MemoryPipe(new MemoryStream()), new MemoryPipe(new MemoryStream()));
 
             pip.OnData += delegate(object obj, PiperEventArgs e)
             {
@@ -50,13 +51,15 @@ namespace StreamHandler.Tests
         {
             Boolean received = false;
             Byte[] received_array = null;
-            StreamData streamData = new StreamData(8);
+
+            //StreamData streamData = new StreamData(8);
+            StreamData streamData = new StreamData(Crc16TestData.LongCleanArray);
+
             pipe.SendData(streamData);
 
-            var can_read = fifo.CanRead;
+            Assert.AreEqual(Crc16TestData.LongCleanArray.Length + 4, dataPipe.DataAvailable());
 
-            Assert.AreEqual(true, can_read);
-            Assert.AreEqual(12, fifo.Length);
+            fifo.Position = 0;
 
             pipe.OnData += delegate(object obj, PiperEventArgs e)
             {
@@ -70,8 +73,38 @@ namespace StreamHandler.Tests
                 Thread.Sleep(10);
 
             Assert.AreEqual(true, received);
-            Assert.AreEqual(8, received_array.Length);
+            Assert.AreEqual(Crc16TestData.LongCleanArray.Length, received_array.Length);
             //SimpleHandlerTests.PrintArray(fifo.ToArray());
+        }
+
+
+        [TestMethod()]
+        public void Piper_SendData_MultiPacket()
+        {
+            Int32 count_packet = 0;
+
+            StreamData streamData = new StreamData(Crc16TestData.ShortCleanArray);
+
+            pipe.SendData(streamData);
+            pipe.SendData(streamData);
+            pipe.SendData(streamData);
+            pipe.SendData(streamData);
+            pipe.SendData(streamData);
+            pipe.SendData(streamData);
+
+            fifo.Position = 0;
+
+            pipe.OnData += delegate (object obj, PiperEventArgs e)
+            {
+                count_packet++;
+            };
+
+            var count = 100;
+            /// wait some time for handling
+            while ((count-- != 0) && (count_packet != 6))
+                Thread.Sleep(10);
+
+            Assert.AreEqual(6, count_packet);
         }
     }
 }

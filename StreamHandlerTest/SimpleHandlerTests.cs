@@ -25,10 +25,6 @@ namespace StreamHandler.Tests
                 unpack_result = victim.UnpackPacket(ontbt);
 
             Assert.AreEqual(true, unpack_result);
-
-            var unstuffed_arr = victim.GetUnpacked();
-
-            Assert.AreEqual(Crc16TestData.ShortCleanArray.Length, unstuffed_arr.Length);
         }
 
         
@@ -54,6 +50,22 @@ namespace StreamHandler.Tests
             Assert.AreEqual(true, retval);
 
 
+        }
+
+        [TestMethod()]
+        public void SimpleHandler_UnPackPacket_MixedStuff()
+        {
+            Boolean retval = false;
+            Int32 good_packet_count = 0;
+            foreach (var item in Crc16TestData.MixStuffed)
+            {
+                retval = victim.UnpackPacket(item);
+                if (retval)
+                    good_packet_count++;
+
+            }
+
+            Assert.AreEqual(2, good_packet_count);
         }
 
 

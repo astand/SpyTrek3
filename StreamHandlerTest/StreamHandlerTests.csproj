@@ -55,8 +55,10 @@
     <Compile Include="Crc16\Crc16TestData.cs" />
     <Compile Include="Crc16\Crc16Tests.cs" />
     <Compile Include="PiperTests.cs" />
+    <Compile Include="Piping\MemoryPipeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleHandlerTests.cs" />
+    <Compile Include="StreamData\ReadRequestTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BinaryUtility\BinaryUtility.csproj">
