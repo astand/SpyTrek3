@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StreamHandler.Abstract;
-using System.Net.Sockets;
 using System.Diagnostics;
+using System.IO;
 
 namespace StreamHandler
 {
@@ -14,14 +14,14 @@ namespace StreamHandler
      * */
     public class NetworkPipe : IPipeReader, IPipeWriter
     {
-        private readonly NetworkStream m_stream;
+        private readonly Stream m_stream;
 
         private Byte[] m_inner_buff;
 
         private Int32 local_buffer_size;
 
         private Int32 m_index_of_output;
-        public NetworkPipe(NetworkStream stream)
+        public NetworkPipe(Stream stream)
         {
             if (stream == null)
                 throw new NullReferenceException($"Stream cannot be Null");
@@ -35,7 +35,7 @@ namespace StreamHandler
         //public Int32 ReadByte() => m_stream.ReadByte();
         public Int32 ReadByte()
         {
-            if (m_stream.DataAvailable && local_buffer_size == 0)
+            if (local_buffer_size == 0)
             {
                 /* Data presence in income pipe and local buffer empty */
                 var retval = m_stream.Read(m_inner_buff, 0, 1000);
