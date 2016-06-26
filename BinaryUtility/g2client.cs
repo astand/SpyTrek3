@@ -285,7 +285,7 @@ namespace ProtSys
         /// 
         /// </summary>
         /// <returns></returns>
-        public bool isDead() { return netstate == ENetState.DISPOSED; }
+        public bool isDead() => netstate == ENetState.DISPOSED;
 
 
 
