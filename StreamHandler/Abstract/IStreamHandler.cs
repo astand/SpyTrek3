@@ -12,20 +12,19 @@ namespace StreamHandler
 {
     interface IStreamHandler
     {
+        /// <summary>
+        /// wraps clean buff to proper for stream packet and return it
+        /// </summary>
+        /// <param name="cleanbuf"></param>
+        /// <returns></returns>
         byte[] PackPacket(byte[] cleanbuf);
 
         /// <summary>
-        /// pass new chunk of data
+        /// Read available data form reader and try strip valid packet form it
         /// </summary>
-        /// <param name="packedbuf"></param>
-        /// <returns>return true if good packet recived</returns>
-        //bool UnpackPacket(byte[] packedbuf);
-
-        //bool UnpackPacket(Stream stream);
-
+        /// <param name="reader"></param>
+        /// <returns></returns>
         bool ExtractPacket(IPipeReader reader);
-
-        //bool UnpackPacket(Byte bt);
 
         byte[] Data();
     }

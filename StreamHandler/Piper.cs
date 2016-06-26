@@ -21,7 +21,7 @@ namespace StreamHandler
 
         private System.Timers.Timer readtime;
 
-        private IStreamHandler packer = new SimpleHandler();
+        private IStreamHandler packman = new SimpleHandler();
 
         public event EventHandler<PiperEventArgs> OnData;
 
@@ -43,12 +43,12 @@ namespace StreamHandler
 
         public Int32 SendData(IStreamData streamdata)
         {
-            var array_to_send = packer.PackPacket(streamdata.SerializeToByteArray());
+            var array_to_send = packman.PackPacket(streamdata.SerializeToByteArray());
             writer.Write(array_to_send, array_to_send.Length);
             return 0;
         }
 
-        public Byte[] ReadUnpackedData() => packer.Data();
+        public Byte[] ReadUnpackedData() => packman.Data();
 
         public void Dispose()
         {
@@ -65,10 +65,10 @@ namespace StreamHandler
 
         private void Readtime_Elapsed(Object sender, ElapsedEventArgs e)
         {
-            if (packer.ExtractPacket(reader))
+            if (packman.ExtractPacket(reader))
             //if (packer.UnpackPacket(reader))
             {
-                OnDataCaller(packer.Data(), "Packer received one packet");
+                OnDataCaller(packman.Data(), "Packer received one packet");
             }
         }
 

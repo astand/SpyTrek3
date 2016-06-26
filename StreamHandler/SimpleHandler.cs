@@ -12,7 +12,7 @@ namespace StreamHandler
 {
     public class SimpleHandler : IStreamHandler
     {
-        Byte[] m_out_packet;
+        private Byte[] m_out_packet;
 
         private Crc16 crc = new Crc16();
 
