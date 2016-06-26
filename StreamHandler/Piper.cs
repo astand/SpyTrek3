@@ -13,7 +13,11 @@ namespace StreamHandler
 {
     public class Piper : IDisposable
     {
-        private MemoryStream stream;
+        //private Stream stream;
+
+        private IPipeReadable reader;
+
+        private IPipeWritable writer;
 
         private System.Timers.Timer readtime;
 
@@ -23,31 +27,28 @@ namespace StreamHandler
 
         public event EventHandler<PiperEventArgs> OnFail;
         
-        public Piper(MemoryStream stream)
+        public Piper(/*Stream stream, */IPipeReadable reader, IPipeWritable writer)
         {
             /* need check for null ??? */
-            if (stream == null)
+            if (reader == null || writer == null)
                 throw new NullReferenceException($"Cannot assign null stream");
 
-            this.stream = stream;
-            TimerForPollingStreamInit(5);
+            this.reader = reader;
+
+            this.writer = writer;
+
+            TimerForPollingStreamInit(10);
 
         }
 
         public Int32 SendData(IStreamData streamdata)
         {
-            if (!stream.CanWrite)
-            {
-                OnFailCaller("Data cannot be write");
-                return -1;
-            }
-
             var array_to_send = packer.PackPacket(streamdata.SerializeToByteArray());
-            stream.Write(array_to_send, 0, array_to_send.Length);
+            writer.Write(array_to_send, array_to_send.Length);
             return 0;
         }
 
-        public Byte[] ReadUnpackedData() => packer.GetUnpacked();
+        public Byte[] ReadUnpackedData() => packer.Data();
 
         public void Dispose()
         {
@@ -64,19 +65,10 @@ namespace StreamHandler
 
         private void Readtime_Elapsed(Object sender, ElapsedEventArgs e)
         {
-            var output_buff = stream.ToArray();
-            
-            if(output_buff.Length != 0)
+            if (packer.ExtractPacket(reader))
+            //if (packer.UnpackPacket(reader))
             {
-                foreach (var item in output_buff)
-                {
-                    var unpack_res = packer.UnpackPacket(item);
-                    if (unpack_res)
-                    {
-                        OnDataCaller(packer.GetUnpacked(), "Packer received one packet");
-                        return;
-                    }
-                }
+                OnDataCaller(packer.Data(), "Packer received one packet");
             }
         }
 

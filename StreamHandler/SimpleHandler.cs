@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using StreamHandler.Abstract;
 
 namespace StreamHandler
 {
@@ -16,43 +18,45 @@ namespace StreamHandler
 
         private ByteStuffer stuffer = new ByteStuffer();
 
-        public SimpleHandler()
-        {
+        public SimpleHandler() { }
 
-        }
-
-        public Byte[] GetUnpacked() => m_out_packet;
+        public Byte[] Data() => m_out_packet;
 
         public Byte[] PackPacket(Byte[] cleanbuf)
         {
             var ret_arr = crc.GetCheckedArray(cleanbuf);
-            return stuffer.GetStuffed(ret_arr);
-        }
-
-        public Boolean UnpackPacket(Byte[] packedbuf)
-        {
-            var ret_arr = stuffer.GetUnstuffed(packedbuf);
-            return crc.GetUncheckedArray(ret_arr, out m_out_packet);
-        }
-        
-        public Boolean UnpackPacket(Stream bt)
-        {
-            throw new NotImplementedException();
+            return stuffer.ArrayToStuff(ret_arr);
         }
 
         public Boolean UnpackPacket(Byte bt)
         {
-            if (stuffer.GetUnstuffed(bt) > 0)
+            if (stuffer.TryStripDataFlow(bt) > 0)
             {
-                var crcArray = stuffer.GetInnerUnstuffed();
-                Boolean retval = crc.GetUncheckedArray(crcArray, out m_out_packet);
+                var stripped_array = stuffer.UnstuffedToArray();
+                Boolean retval = crc.CheckValidCRCInArray(stripped_array, stripped_array.Length);
+                Debug.WriteLine($"Parsed array CRC valid ? = {retval}. Output array length = {stripped_array.Length}");
 
-                Debug.WriteLine($"Parsed array CRC valid ? = {retval}. Output array length = {m_out_packet.Length}");
+                if (retval)
+                {
+                    m_out_packet = new byte[stripped_array.Length - 2];
+                }
                 return retval;
             }
             return false;
         }
 
+        public Boolean ExtractPacket(IPipeReadable reader)
+        {
+            Int32 byteFromStream;
+            reader.DataAvailable();
+
+            while ((byteFromStream = reader.ReadByte()) >= 0)
+            {
+                if (UnpackPacket(Convert.ToByte(byteFromStream)))
+                    return true;
+            }
+            return false;
+        }
     }
 }
 
