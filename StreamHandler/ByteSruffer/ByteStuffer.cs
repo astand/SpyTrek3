@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace StreamHandler
 {
-
+    /// <summary>
+    /// Byte value 0xC0 split to pair of 0xDB and 0xDC bytes
+    /// Byte value 0xDB split to pair of 0xDB and 0xDD bytes 
+    /// </summary>
     public class ByteStuffer
     {
         private enum StuffState { stuff_NEED, stuff_NONE };
 
         private enum ReceiveState { wait_START, wait_END };
-        /// <summary>
-        /// Byte value 0xC0 split to pair of 0xDB and 0xDC bytes
-        /// Byte value 0xDB split to pair of 0xDB and 0xDD bytes 
-        /// </summary>
+
         private const Byte ESC = 0xC0;
 
         private const Byte MARKB = 0xDB;
@@ -31,8 +31,6 @@ namespace StreamHandler
         Int32 output_buff_length = 0;
 
         private StuffState stuffState = StuffState.stuff_NONE;
-
-        //private ReceiveState recState = ReceiveState.wait_START;
 
         private ResizeableArray resizeArray = new ResizeableArray();
 
@@ -57,7 +55,7 @@ namespace StreamHandler
 
             foreach (var onebyte in buf)
             {
-                Int32 ret_byte = WhitenStuffedByte(onebyte);
+                Int32 ret_byte = RestoreByte(onebyte);
 
                 if (ret_byte < 0)
                     continue;
@@ -71,8 +69,6 @@ namespace StreamHandler
         }
 
 
-
-
         public Int32 TryStripDataFlow(Byte bt)
         {
             if (bt == ESC)
@@ -82,7 +78,7 @@ namespace StreamHandler
                 return (ret_length < 3) ? (0) : (output_buff_length = ret_length);
             }
 
-            Int32 out_byte = WhitenStuffedByte(bt);
+            Int32 out_byte = RestoreByte(bt);
 
             if (out_byte >= 0)
                 output_buff[input_index++] = (byte)out_byte;
@@ -91,22 +87,12 @@ namespace StreamHandler
         }
         public Byte[] UnstuffedToArray()
         {
-
-            //output_buff = GetUnstuffed(output_buff);
-
-            //var retbuff = new Byte[output_buff.Length];
-
-            //Array.Copy(output_buff, retbuff, output_buff.Length);
-
-            //return retbuff;
-
-
             Byte[] retbuff = new Byte[output_buff_length];
             Array.Copy(output_buff, retbuff, output_buff_length);
 
             return retbuff;
         }
-        private Int32 WhitenStuffedByte(Byte bt)
+        private Int32 RestoreByte(Byte bt)
         {
             Byte retbyte = bt;
 
