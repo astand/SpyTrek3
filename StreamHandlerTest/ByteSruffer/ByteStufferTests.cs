@@ -24,11 +24,17 @@ namespace StreamHandler.Tests
             Byte[] stuffed_array = new Byte[retArray.Length - 2];
             Array.Copy(retArray, 1, stuffed_array, 0, stuffed_array.Length);
 
-            var unstuffed_successful = victim.GetUnstuffed(stuffed_array);
+            var unstuffed_successfully = 0;
 
-            SimpleHandlerTests.PrintArray(stuffed_array);
+            foreach (var item in retArray)
+            {
+                if (victim.TryStripDataFlow(item) > 0)
+                {
+                    unstuffed_successfully++;
+                }
+            }
 
-            Assert.AreEqual(4, unstuffed_successful.Length);
+            Assert.AreEqual(1, unstuffed_successfully);
         }
 
         [TestMethod()]

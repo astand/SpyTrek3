@@ -28,6 +28,7 @@ namespace StreamHandler
         internal Byte[] output_buff = new byte [3000];
 
         Int32 input_index = 0;
+
         Int32 output_buff_length = 0;
 
         private StuffState stuffState = StuffState.stuff_NONE;
@@ -48,27 +49,6 @@ namespace StreamHandler
             return resizeArray.GetByteArray();
         }
 
-        public Byte[] GetUnstuffed(Byte[] buf)
-        {
-            var unstuffed_buf = new Byte[buf.Length];
-            Int32 current_index = 0;
-
-            foreach (var onebyte in buf)
-            {
-                Int32 ret_byte = RestoreByte(onebyte);
-
-                if (ret_byte < 0)
-                    continue;
-
-                unstuffed_buf[current_index++] = (Byte)ret_byte;
-            }
-
-            Array.Resize(ref unstuffed_buf, current_index);
-
-            return unstuffed_buf;
-        }
-
-
         public Int32 TryStripDataFlow(Byte bt)
         {
             if (bt == ESC)
@@ -85,6 +65,7 @@ namespace StreamHandler
 
             return 0;
         }
+
         public Byte[] UnstuffedToArray()
         {
             Byte[] retbuff = new Byte[output_buff_length];
@@ -92,6 +73,7 @@ namespace StreamHandler
 
             return retbuff;
         }
+
         private Int32 RestoreByte(Byte bt)
         {
             Byte retbyte = bt;
@@ -128,6 +110,5 @@ namespace StreamHandler
             else
                 resizeArray.AddByte(bt);
         }
-
     }
 }
