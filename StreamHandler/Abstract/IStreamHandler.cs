@@ -23,7 +23,7 @@ namespace StreamHandler
 
         //bool UnpackPacket(Stream stream);
 
-        bool ExtractPacket(IPipeReadable reader);
+        bool ExtractPacket(IPipeReader reader);
 
         //bool UnpackPacket(Byte bt);
 

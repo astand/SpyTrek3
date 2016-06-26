@@ -15,9 +15,9 @@ namespace StreamHandler
     {
         //private Stream stream;
 
-        private IPipeReadable reader;
+        private IPipeReader reader;
 
-        private IPipeWritable writer;
+        private IPipeWriter writer;
 
         private System.Timers.Timer readtime;
 
@@ -27,7 +27,7 @@ namespace StreamHandler
 
         public event EventHandler<PiperEventArgs> OnFail;
         
-        public Piper(/*Stream stream, */IPipeReadable reader, IPipeWritable writer)
+        public Piper(/*Stream stream, */IPipeReader reader, IPipeWriter writer)
         {
             /* need check for null ??? */
             if (reader == null || writer == null)

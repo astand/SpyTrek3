@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace StreamHandler
 {
-    public class NetworkPipe : IPipeReadable, IPipeWritable
+    public class NetworkPipe : IPipeReader, IPipeWriter
     {
         private readonly NetworkStream m_stream;
 

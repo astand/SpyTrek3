@@ -45,7 +45,7 @@ namespace StreamHandler
             return false;
         }
 
-        public Boolean ExtractPacket(IPipeReadable reader)
+        public Boolean ExtractPacket(IPipeReader reader)
         {
             Int32 byteFromStream;
             reader.DataAvailable();

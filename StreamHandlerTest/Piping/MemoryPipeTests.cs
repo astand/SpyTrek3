@@ -35,16 +35,16 @@ namespace StreamHandler.Tests
         {
             var test_array = new Byte[] { 0, 1, 19, 12, 59, 199 };
 
-            ((IPipeWritable)memPipe).Write(test_array, 4);
+            ((IPipeWriter)memPipe).Write(test_array, 4);
 
             sourceMem.Position = 0;
 
-            Assert.AreEqual(4, ((IPipeReadable)memPipe).DataAvailable());
+            Assert.AreEqual(4, ((IPipeReader)memPipe).DataAvailable());
 
-            Assert.AreEqual(0, ((IPipeReadable)memPipe).ReadByte());
-            Assert.AreEqual(1, ((IPipeReadable)memPipe).ReadByte());
-            Assert.AreEqual(19, ((IPipeReadable)memPipe).ReadByte());
-            Assert.AreEqual(12, ((IPipeReadable)memPipe).ReadByte());
+            Assert.AreEqual(0, ((IPipeReader)memPipe).ReadByte());
+            Assert.AreEqual(1, ((IPipeReader)memPipe).ReadByte());
+            Assert.AreEqual(19, ((IPipeReader)memPipe).ReadByte());
+            Assert.AreEqual(12, ((IPipeReader)memPipe).ReadByte());
 
         }
     }

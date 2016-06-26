@@ -8,7 +8,7 @@ using System.IO;
 
 namespace StreamHandler
 {
-    public class MemoryPipe : IPipeReadable, IPipeWritable
+    public class MemoryPipe : IPipeReader, IPipeWriter
     {
         private readonly MemoryStream m_stream;
         public MemoryPipe(MemoryStream stream)

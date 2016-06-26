@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StreamHandler.Abstract
 {
-    public interface IPipeWritable
+    public interface IPipeWriter
     {
         /// <summary>
         /// Write new chuck of data to Data Pipe
@@ -24,7 +24,7 @@ namespace StreamHandler.Abstract
         Int32 Write(Byte bt);
     }
 
-    public interface IPipeReadable
+    public interface IPipeReader
     {
         long DataAvailable();
 
