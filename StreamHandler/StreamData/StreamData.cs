@@ -16,6 +16,11 @@ namespace StreamHandler
             _data = new Byte[size];
         }
 
+        public StreamData(Byte[] data)
+        {
+            _data = data;
+        }
+
         public Byte[] SerializeToByteArray() => _data;
     }
 }

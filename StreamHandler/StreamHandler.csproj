@@ -40,16 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IFifoPipe.cs" />
     <Compile Include="Abstract\IStreamedData.cs" />
     <Compile Include="Abstract\IStreamHandler.cs" />
     <Compile Include="ByteSruffer\ByteStuffer.cs" />
     <Compile Include="ByteSruffer\ResizeableArray.cs" />
+    <Compile Include="CommandSender.cs" />
     <Compile Include="Crc16\Crc16.cs" />
     <Compile Include="Crc16\Crc16Data.cs" />
     <Compile Include="Piper.cs" />
     <Compile Include="PiperEventHandlers.cs" />
+    <Compile Include="Piping\MemoryPipe.cs" />
+    <Compile Include="Piping\NetworkPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleHandler.cs" />
+    <Compile Include="StreamData\ReadRequest.cs" />
     <Compile Include="StreamData\StreamData.cs" />
   </ItemGroup>
   <ItemGroup />
