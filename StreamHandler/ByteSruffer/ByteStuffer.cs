@@ -36,7 +36,7 @@ namespace StreamHandler
 
         private ResizeableArray resizeArray = new ResizeableArray();
 
-        public Byte[] GetStuffed(Byte[] buf)
+        public Byte[] ArrayToStuff(Byte[] buf)
         {
             resizeArray.Flush();
 
@@ -57,7 +57,7 @@ namespace StreamHandler
 
             foreach (var onebyte in buf)
             {
-                Int32 ret_byte = UnstuffByte(onebyte);
+                Int32 ret_byte = WhitenStuffedByte(onebyte);
 
                 if (ret_byte < 0)
                     continue;
@@ -71,15 +71,9 @@ namespace StreamHandler
         }
 
 
-        public Byte[] GetInnerUnstuffed()
-        {
-            Byte[] retbuff = new Byte[output_buff_length];
-            Array.Copy(output_buff, retbuff, output_buff_length);
 
-            return retbuff;
-        }
 
-        public Int32 GetUnstuffed(Byte bt)
+        public Int32 TryStripDataFlow(Byte bt)
         {
             if (bt == ESC)
             {
@@ -87,11 +81,32 @@ namespace StreamHandler
                 input_index = 0;
                 return (ret_length < 3) ? (0) : (output_buff_length = ret_length);
             }
-            output_buff[input_index++] = bt;
+
+            Int32 out_byte = WhitenStuffedByte(bt);
+
+            if (out_byte >= 0)
+                output_buff[input_index++] = (byte)out_byte;
+
             return 0;
         }
+        public Byte[] UnstuffedToArray()
+        {
 
-        private Int32 UnstuffByte(Byte bt)
+            //output_buff = GetUnstuffed(output_buff);
+
+            //var retbuff = new Byte[output_buff.Length];
+
+            //Array.Copy(output_buff, retbuff, output_buff.Length);
+
+            //return retbuff;
+
+
+            Byte[] retbuff = new Byte[output_buff_length];
+            Array.Copy(output_buff, retbuff, output_buff_length);
+
+            return retbuff;
+        }
+        private Int32 WhitenStuffedByte(Byte bt)
         {
             Byte retbyte = bt;
 
