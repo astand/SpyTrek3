@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 using StreamHandler.Abstract;
 using System.IO;
 
+
 namespace StreamHandler
 {
+
+    /* MemoryPipe uses for testing goals. Since MemoryStream works not 
+     * as NetworkStream it was having to create this type for SimpleHandler
+     * testing
+     * */
     public class MemoryPipe : IPipeReader, IPipeWriter
     {
         private readonly MemoryStream m_stream;

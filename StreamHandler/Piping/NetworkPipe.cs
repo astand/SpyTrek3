@@ -9,6 +9,9 @@ using System.Diagnostics;
 
 namespace StreamHandler
 {
+    /* NetworkPipe uses inner local buffer for caching data from source Stream
+     * may be need more tests and it will possible to change this behaviour
+     * */
     public class NetworkPipe : IPipeReader, IPipeWriter
     {
         private readonly NetworkStream m_stream;
