@@ -15,42 +15,44 @@ namespace StreamHandler
 
         public Byte Low { get; private set; }
 
-        public Byte[] GetCheckedArray(Byte[] arr)
+        public Byte[] GetCheckedArray(Byte[] clean_array)
         {
-            var retarray = new Byte[arr.Length + 2];
+            var crc_array = new Byte[clean_array.Length + 2];
 
-            Array.Copy(arr, retarray, arr.Length);
+            Array.Copy(clean_array, crc_array, clean_array.Length);
 
             InitStartCrc();
-            CalculateForArray(arr, arr.Length);
+            CalculateForArray(clean_array, clean_array.Length);
 
-            retarray[retarray.Length - 2] = Hi;
-            retarray[retarray.Length - 1] = Low;
+            crc_array[crc_array.Length - 2] = Hi;
+            crc_array[crc_array.Length - 1] = Low;
 
-            return retarray;
+            return crc_array;
         }
 
-        public Boolean GetUncheckedArray(Byte[] crcarray, out Byte[] outbuff)
+        /// <summary>
+        /// Check crc16 validity of array for @length
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public Boolean CheckValidCRCInArray(Byte[] array, Int32 length)
         {
-            outbuff = new Byte[0];
-
-            if (PacketCannotBeUnchecked(crcarray))
+            if (PacketCannotBeUnchecked(array) || length < 2)
                 return false;
 
-            outbuff = new Byte[crcarray.Length - 2];
-
-            if (PacketCrcWrong(crcarray))
+            if (PacketCrcWrong(array, length))
                 return false;
-            
-            Array.Copy(crcarray, outbuff, outbuff.Length);
+
             return true;
+
         }
 
-        private Boolean PacketCrcWrong(Byte[] arr)
+        private Boolean PacketCrcWrong(Byte[] arr, int length)
         {
             InitStartCrc();
-            CalculateForArray(arr, arr.Length - 2);
-            return (arr[arr.Length - 2] != Hi || arr[arr.Length - 1] != Low);
+            CalculateForArray(arr, length - 2);
+            return (arr[length - 2] != Hi || arr[length - 1] != Low);
         }
 
         private Boolean PacketCannotBeUnchecked(Byte[] buff) => (buff.Length < 2);
