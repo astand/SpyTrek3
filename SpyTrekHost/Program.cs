@@ -12,7 +12,10 @@ namespace SpyTrekHost
 {
     class Program
     {
+        static Piper channelPipe;
+
         static TcpClient tcpClient;
+
         static void Main(string[] args)
         {
             Console.WriteLine($"Spy Trek Host started @ {DateTime.Now}");
@@ -52,7 +55,7 @@ namespace SpyTrekHost
 
                 var stream_for_pipe = new NetworkPipe(tcpClient.GetStream());
 
-                var channelPipe = new Piper(stream_for_pipe, stream_for_pipe);
+                channelPipe = new Piper(stream_for_pipe, stream_for_pipe);
 
                 channelPipe.OnData += ChannelPipe_OnData;
 
@@ -71,7 +74,18 @@ namespace SpyTrekHost
 
         private static void ChannelPipe_OnData(Object sender, PiperEventArgs e)
         {
-            Console.WriteLine($"Data presence in Pipe. {e.Message}. Data Length = {e.Data.Length}");
+            Console.WriteLine($"Data recieved message - {e.Message}. Data Length = {e.Data.Length}");
+
+            var opc = BitConverter.ToUInt16(e.Data, 0);
+
+            var block_id = BitConverter.ToUInt16(e.Data, 2);
+
+            Console.WriteLine($"Opc:  [{opc:X}] Data id: [{block_id:X}]");
+
+            if (opc == 3)
+            {
+                channelPipe.SendData(new DataAck(block_id));
+            }
         }
     }
 }
