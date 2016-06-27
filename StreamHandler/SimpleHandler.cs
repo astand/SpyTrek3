@@ -12,7 +12,7 @@ namespace StreamHandler
 {
     public class SimpleHandler : IStreamHandler
     {
-        private Byte[] m_out_packet;
+        private Byte[] stream_out_packet;
 
         private Crc16 crc = new Crc16();
 
@@ -20,7 +20,7 @@ namespace StreamHandler
 
         public SimpleHandler() { }
 
-        public Byte[] Data() => m_out_packet;
+        public Byte[] Data() => stream_out_packet;
 
         public Byte[] PackPacket(Byte[] cleanbuf)
         {
@@ -32,13 +32,13 @@ namespace StreamHandler
         {
             if (stuffer.TryStripDataFlow(bt) > 0)
             {
-                var stripped_array = stuffer.UnstuffedToArray();
-                Boolean retval = crc.CheckValidCRCInArray(stripped_array, stripped_array.Length);
-                Debug.WriteLine($"Parsed array CRC valid ? = {retval}. Output array length = {stripped_array.Length}");
+                stream_out_packet = stuffer.UnstuffedToArray();
+                Boolean retval = crc.CheckValidCRCInArray(stream_out_packet, stream_out_packet.Length);
 
+                Debug.WriteLine($"Parsed array CRC valid ? = {retval}. Output array length = {stream_out_packet.Length}");
                 if (retval)
                 {
-                    m_out_packet = new byte[stripped_array.Length - 2];
+                    Array.Resize(ref stream_out_packet, stream_out_packet.Length - 2);
                 }
                 return retval;
             }
