@@ -54,6 +54,7 @@
     <Compile Include="Piping\NetworkPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleHandler.cs" />
+    <Compile Include="StreamData\DataAck.cs" />
     <Compile Include="StreamData\ReadRequest.cs" />
     <Compile Include="StreamData\StreamData.cs" />
   </ItemGroup>
