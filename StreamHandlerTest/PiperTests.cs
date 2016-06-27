@@ -51,13 +51,13 @@ namespace StreamHandler.Tests
         {
             Boolean received = false;
             Byte[] received_array = null;
-
+            Byte[] arrayToPack = Crc16TestData.LongCleanArray;
             //StreamData streamData = new StreamData(8);
-            StreamData streamData = new StreamData(Crc16TestData.LongCleanArray);
+            StreamData streamData = new StreamData(arrayToPack);
 
             pipe.SendData(streamData);
 
-            Assert.AreEqual(Crc16TestData.LongCleanArray.Length + 4, dataPipe.DataAvailable());
+            Assert.AreEqual(arrayToPack.Length + 4, dataPipe.DataAvailable());
 
             fifo.Position = 0;
 
@@ -73,7 +73,12 @@ namespace StreamHandler.Tests
                 Thread.Sleep(10);
 
             Assert.AreEqual(true, received);
-            Assert.AreEqual(Crc16TestData.LongCleanArray.Length, received_array.Length);
+            Assert.AreEqual(arrayToPack.Length, received_array.Length);
+            var id = 0;
+            foreach (var item in received_array)
+            {
+                Assert.AreEqual(item, arrayToPack[id++]);
+            }
             //SimpleHandlerTests.PrintArray(fifo.ToArray());
         }
 
