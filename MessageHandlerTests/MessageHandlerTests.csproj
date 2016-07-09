@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ConcreteHandlers\FileHandlerTests.cs" />
+    <Compile Include="DataFormats\DateTimeUtilTests.cs" />
     <Compile Include="Message\PacketFrameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
