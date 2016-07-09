@@ -46,8 +46,6 @@
   <ItemGroup>
     <Compile Include="Abstact\ITrekNameFormatter.cs" />
     <Compile Include="boardSideHandle.cs" />
-    <Compile Include="Communication\Abstract\ICommunication.cs" />
-    <Compile Include="Communication\Concrete\TcpCommunicator.cs" />
     <Compile Include="concrete\FullFileNameBuilder.cs" />
     <Compile Include="CRC16P.cs" />
     <Compile Include="debugcc.cs" />
