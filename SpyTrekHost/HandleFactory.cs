@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MessageHandler;
 using System.Diagnostics;
+using MessageHandler.DataFormats;
 
 namespace SpyTrekHost
 {
@@ -21,7 +22,7 @@ namespace SpyTrekHost
         static ReadProcessorFactory()
         {
             m_info = new ReadProcessor("Info");
-            m_note = new ReadProcessor("Note");
+            m_note = new TrekDescriptionProcessor();
             m_trek = new ReadProcessor("Trek");
 
             m_error = new ErrorProcessor();
@@ -36,7 +37,30 @@ namespace SpyTrekHost
         public static IFrameProccesor GetErrorProcessor() => m_error;
     }
 
+    internal class TrekDescriptionProcessor : IFrameProccesor
+    {
+        public void Process(FramePacket packet, ref IStreamData answer)
+        {
+            if (packet.Opc == OpCodes.DATA)
+            {
+                ProcessTrekDescriptors(packet.Data, packet.Id);
+                answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+            }
+        }
 
+        private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
+        {
+            TrekDescriptor desc = new TrekDescriptor();
+
+            Int32 current_offset = 0;
+
+            while (desc.TryParse(data, current_offset) == true)
+            {
+                current_offset += TrekDescriptor.Length;
+                Console.WriteLine(desc.ToString());
+            }
+        }
+    }
     internal class ReadProcessor : IFrameProccesor
     {
         public Int32 HeadCount;
