@@ -6,7 +6,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using StreamHandler;
-
+using MessageHandler.Abstract;
+using MessageHandler.ConcreteHandlers;
+using MessageHandler;
 
 namespace SpyTrekHost
 {
@@ -15,6 +17,10 @@ namespace SpyTrekHost
         static Piper channelPipe;
 
         static TcpClient tcpClient;
+
+        static OperationHandler<FramePacket,ReadOperationer> handleRead;
+        
+        static OperationHandler<FramePacket,ErrorOperationer> handleError;
 
         static void Main(string[] args)
         {
@@ -59,6 +65,25 @@ namespace SpyTrekHost
 
                 channelPipe.OnData += ChannelPipe_OnData;
 
+                IHandler<FramePacket> infoHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetInfoProcessor(), channelPipe.SendData);
+                IHandler<FramePacket> noteHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), channelPipe.SendData);
+                IHandler<FramePacket> trekHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), channelPipe.SendData);
+
+                infoHand.SetSuccessor(noteHand);
+                noteHand.SetSuccessor(trekHand);
+
+                infoHand.SetSpecification(fid => fid == FiledID.Info);
+                noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
+                trekHand.SetSpecification(fid => fid == FiledID.Track);
+
+                handleRead = new OperationHandler<FramePacket,ReadOperationer>(infoHand);
+
+                IHandler<FramePacket> errorHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
+                errorHand.SetSpecification(fid => true);
+
+                handleError = new OperationHandler<FramePacket, ErrorOperationer>(errorHand);
+
+                handleRead.SetSuccessor(handleError);
 
                 while (true)
                 {
@@ -76,16 +101,18 @@ namespace SpyTrekHost
         {
             Console.WriteLine($"Data recieved message - {e.Message}. Data Length = {e.Data.Length}");
 
-            var opc = BitConverter.ToUInt16(e.Data, 0);
+            handleRead.HandleRequest(new FramePacket(e.Data));
 
-            var block_id = BitConverter.ToUInt16(e.Data, 2);
+            //var opc = BitConverter.ToUInt16(e.Data, 0);
 
-            Console.WriteLine($"Opc:  [{opc:X}] Data id: [{block_id:X}]");
+            //var block_id = BitConverter.ToUInt16(e.Data, 2);
 
-            if (opc == 3)
-            {
-                channelPipe.SendData(new DataAck(block_id));
-            }
+            //Console.WriteLine($"Opc:  [{opc:X}] Data id: [{block_id:X}]");
+
+            //if (opc == 3)
+            //{
+            //    channelPipe.SendData(new DataAck(block_id));
+            //}
         }
     }
 }
