@@ -573,16 +573,16 @@ namespace ProtSys
     /// <param name="offset">start offset in src buffer</param>
     /// <param name="len">len - must strict == M_i.Lenght</param>
     /// <returns></returns>
-    public int Parse(byte[] b)
-    {
-        id = BitConverter.ToUInt16(b,  0);
-        dat0.Set(b,  2);
-        dat1.Set(b,  2 + 6);
-        size = BitConverter.ToUInt32(b,  2 + 6 + 6);
-        localmileage = BitConverter.ToUInt32(b,  2 + 6 + 6 + 4);
-        mileage = BitConverter.ToUInt32(b,  2 + 6 + 6 + 4 + 4);
-        return 0;
-    }
+    //public int Parse(byte[] b)
+    //{
+    //    id = BitConverter.ToUInt16(b,  0);
+    //    dat0.Set(b,  2);
+    //    dat1.Set(b,  2 + 6);
+    //    size = BitConverter.ToUInt32(b,  2 + 6 + 6);
+    //    localmileage = BitConverter.ToUInt32(b,  2 + 6 + 6 + 4);
+    //    mileage = BitConverter.ToUInt32(b,  2 + 6 + 6 + 4 + 4);
+    //    return 0;
+    //}
 
     /// <summary>
     /// 
@@ -590,10 +590,10 @@ namespace ProtSys
     /// <param name="bsrc"></param>
     /// <param name="offset"></param>
     /// <returns></returns>
-    public static MatrixItem Parse(byte[] bsrc, int offset)
-    {
-      return null;
-    }
+    //public static MatrixItem Parse(byte[] bsrc, int offset)
+    //{
+    //  return null;
+    //}
 
     /// <summary>
     /// Find in source buffer required M_i block and parse it to M_i 
@@ -602,21 +602,21 @@ namespace ProtSys
     /// <param name="startpos">offset position in (M_i)</param>
     /// <param name="len">len of payload in buffer</param>
     /// <returns>return 0</returns>
-    public int SetFromBuff(byte[] buff, int startpos, int len)
-    {
+    //public int SetFromBuff(byte[] buff, int startpos, int len)
+    //{
         
 
-      if (startpos + 1 > (len / MatrixItem.Lenght))
-          return -1;
-      else
-      {
-        byte[] src = new byte[MatrixItem.Lenght];
-        Array.Copy(buff, startpos * MatrixItem.Lenght, 
-                    src, 0, Lenght); 
-        Parse(src);
-      }
-      return 0;
-    }
+    //  if (startpos + 1 > (len / MatrixItem.Lenght))
+    //      return -1;
+    //  else
+    //  {
+    //    byte[] src = new byte[MatrixItem.Lenght];
+    //    Array.Copy(buff, startpos * MatrixItem.Lenght, 
+    //                src, 0, Lenght); 
+    //    Parse(src);
+    //  }
+    //  return 0;
+    //}
 
         
 
