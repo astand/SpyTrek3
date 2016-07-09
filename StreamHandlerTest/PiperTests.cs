@@ -49,6 +49,13 @@ namespace StreamHandler.Tests
         [TestMethod()]
         public void Piper_SendData_Test()
         {
+            //Here threaded code tested, so need create dedicated instances of 
+            //tested objects 
+            
+            MemoryStream fifo = new MemoryStream(1000);
+            MemoryPipe dataPipe = new MemoryPipe(fifo);
+            Piper pipe = new Piper(dataPipe, dataPipe);
+
             Boolean received = false;
             Byte[] received_array = null;
             Byte[] arrayToPack = Crc16TestData.LongCleanArray;
@@ -86,6 +93,12 @@ namespace StreamHandler.Tests
         [TestMethod()]
         public void Piper_SendData_MultiPacket()
         {
+            //Here threaded code tested, so need create dedicated instances of 
+            //tested objects 
+            MemoryStream fifo = new MemoryStream(1000);
+            MemoryPipe dataPipe = new MemoryPipe(fifo);
+            Piper pipe = new Piper(dataPipe, dataPipe);
+
             Int32 count_packet = 0;
 
             StreamData streamData = new StreamData(Crc16TestData.ShortCleanArray);
