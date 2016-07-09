@@ -40,8 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrameHandler\IHandler.cs" />
+    <Compile Include="FrameHandler\FileHandler.cs" />
+    <Compile Include="FrameHandler\OperationHandler.cs" />
+    <Compile Include="Frame\FrameProcessorTemplate.cs" />
+    <Compile Include="Frame\IFrameSpecification.cs" />
+    <Compile Include="Frame\PacketFrame.cs" />
+    <Compile Include="Frame\IFrameProcessor.cs" />
+    <Compile Include="Frame\OpCodes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StreamHandler\StreamHandler.csproj">
+      <Project>{9fd96b42-85b9-4521-bcb5-ed21280658b7}</Project>
+      <Name>StreamHandler</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
