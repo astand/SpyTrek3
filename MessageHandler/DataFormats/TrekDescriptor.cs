@@ -57,7 +57,7 @@ namespace MessageHandler.DataFormats
         }
 
         public override String ToString() => $"{id:D4}: {start.ToJS()}  {stop.ToJS()}. " + 
-            "File size = {TrekSize}\t Dist = {Dist}. Odometr: {Odometr}";
+            $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
     };
 
 }

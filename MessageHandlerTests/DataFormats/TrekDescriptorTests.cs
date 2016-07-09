@@ -17,7 +17,7 @@ namespace MessageHandler.DataFormats.Tests
             12, 1, 21, 11, 11, 12,
             12, 1, 21, 11, 23, 02,
             12, 2, 0, 0,
-            3, 1, 2, 0,
+            3, 1, 0, 0,
             10, 20, 0, 0
         };
 
@@ -26,7 +26,7 @@ namespace MessageHandler.DataFormats.Tests
             12, 1, 21, 11, 11, 12,
             12, 1, 21, 11, 23, 02,
             12, 2, 0, 0,
-            3, 1, 2, 0,
+            3, 1, 0, 0,
             10, 20
         };
 
@@ -43,6 +43,7 @@ namespace MessageHandler.DataFormats.Tests
             var desc = new TrekDescriptor();
             
             var ret = desc.TryParse(array_ok, 0);
+            Debug.WriteLine("Ok TrekDescriptor test " + desc.ToString());
             Assert.AreEqual(true, ret);
         }
 
@@ -52,6 +53,7 @@ namespace MessageHandler.DataFormats.Tests
             var desc = new TrekDescriptor();
 
             var ret = desc.TryParse(array_short, 0);
+            Debug.WriteLine("Bad TrekDescriptor test " + desc.ToString());
             Assert.AreEqual(false, ret);
         }
     }
