@@ -21,13 +21,16 @@ namespace StreamHandler
         private Int32 local_buffer_size;
 
         private Int32 m_index_of_output;
+
+        private Int32 INNER_BUFF_SIZE = 10000;
+
         public NetworkPipe(Stream stream)
         {
             if (stream == null)
                 throw new NullReferenceException($"Stream cannot be Null");
 
             m_stream = stream;
-            m_inner_buff = new Byte[1000];
+            m_inner_buff = new Byte[INNER_BUFF_SIZE];
         }
         public long DataAvailable() => 0;
         public Int32 Read(ref Byte[] array, Int32 count) => m_stream.Read(array, 0, count);
@@ -38,7 +41,7 @@ namespace StreamHandler
             if (local_buffer_size == 0)
             {
                 /* Data presence in income pipe and local buffer empty */
-                var retval = m_stream.Read(m_inner_buff, 0, 1000);
+                var retval = m_stream.Read(m_inner_buff, 0, INNER_BUFF_SIZE);
                 local_buffer_size = retval;
                 m_index_of_output = 0;
             }
