@@ -19,7 +19,7 @@ namespace SpyTrekHost
         static TcpClient tcpClient;
 
         static OperationHandler<FramePacket,ReadOperationer> handleRead;
-        
+
         static OperationHandler<FramePacket,ErrorOperationer> handleError;
 
         static void Main(string[] args)
@@ -76,7 +76,7 @@ namespace SpyTrekHost
                 noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
                 trekHand.SetSpecification(fid => fid == FiledID.Track);
 
-                handleRead = new OperationHandler<FramePacket,ReadOperationer>(infoHand);
+                handleRead = new OperationHandler<FramePacket, ReadOperationer>(infoHand);
 
                 IHandler<FramePacket> errorHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
                 errorHand.SetSpecification(fid => true);
@@ -91,7 +91,6 @@ namespace SpyTrekHost
                     var command = Console.ReadLine();
                     UInt16 CommandNum = Convert.ToUInt16(command);
                     channelPipe.SendData(new ReadRequest(CommandNum));
-
                 }
 
             }
@@ -99,10 +98,10 @@ namespace SpyTrekHost
 
         private static void ChannelPipe_OnData(Object sender, PiperEventArgs e)
         {
-            Console.WriteLine($"Data recieved message - {e.Message}. Data Length = {e.Data.Length}");
+            var frame = new FramePacket(e.Data);
 
+            Console.WriteLine(DateTime.Now.ToString("mm-ss.fff") + "   " + frame);
             handleRead.HandleRequest(new FramePacket(e.Data));
-
             //var opc = BitConverter.ToUInt16(e.Data, 0);
 
             //var block_id = BitConverter.ToUInt16(e.Data, 2);

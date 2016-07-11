@@ -70,6 +70,7 @@ namespace MessageHandler
             Array.Copy(data, Data, data.Length);
         }
 
+
         public override sealed Byte[] SerializeToByteArray()
         {
             var head_array = base.SerializeToByteArray();
@@ -80,5 +81,7 @@ namespace MessageHandler
 
             return ret_array;
         }
+
+        public override String ToString() => $"[{Opc:X4}][{Id:X4}].Data length = {Data.Length}";
     }
 }
