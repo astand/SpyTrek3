@@ -37,6 +37,7 @@ namespace MessageHandler.ConcreteHandlers
         {
             if (CheckFileID(id))
             {
+                m_answer = null;
                 processor?.Process(o, ref m_answer);
                 if (m_answer != null)
                 {

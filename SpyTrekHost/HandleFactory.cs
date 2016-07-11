@@ -23,6 +23,7 @@ namespace SpyTrekHost
         {
             m_info = new ReadProcessor("Info");
             m_note = new TrekDescriptionProcessor();
+            //m_note = new ReadProcessor("note");
             m_trek = new ReadProcessor("Trek");
 
             m_error = new ErrorProcessor();
@@ -83,7 +84,6 @@ namespace SpyTrekHost
 
         public void Process(FramePacket packet, ref IStreamData answer)
         {
-            answer = null;
             if (packet.Opc == OpCodes.RRQ)
             {
                 PrintResult("RRQ");
