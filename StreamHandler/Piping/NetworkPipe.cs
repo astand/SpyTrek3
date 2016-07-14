@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using StreamHandler.Abstract;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
 
 namespace StreamHandler
 {
@@ -14,7 +15,7 @@ namespace StreamHandler
      * */
     public class NetworkPipe : IPipeReader, IPipeWriter
     {
-        private readonly Stream m_stream;
+        private readonly NetworkStream m_stream;
 
         private Byte[] m_inner_buff;
 
@@ -24,7 +25,7 @@ namespace StreamHandler
 
         private Int32 INNER_BUFF_SIZE = 10000;
 
-        public NetworkPipe(Stream stream)
+        public NetworkPipe(NetworkStream stream)
         {
             if (stream == null)
                 throw new NullReferenceException($"Stream cannot be Null");
@@ -38,7 +39,7 @@ namespace StreamHandler
         //public Int32 ReadByte() => m_stream.ReadByte();
         public Int32 ReadByte()
         {
-            if (local_buffer_size == 0)
+            if (local_buffer_size == 0 && m_stream.DataAvailable)
             {
                 /* Data presence in income pipe and local buffer empty */
                 var retval = m_stream.Read(m_inner_buff, 0, INNER_BUFF_SIZE);
