@@ -101,17 +101,13 @@ namespace SpyTrekHost
             var frame = new FramePacket(e.Data);
 
             Console.WriteLine(DateTime.Now.ToString("mm-ss.fff") + "   " + frame);
-            handleRead.HandleRequest(new FramePacket(e.Data));
-            //var opc = BitConverter.ToUInt16(e.Data, 0);
 
-            //var block_id = BitConverter.ToUInt16(e.Data, 2);
-
-            //Console.WriteLine($"Opc:  [{opc:X}] Data id: [{block_id:X}]");
-
-            //if (opc == 3)
-            //{
-            //    channelPipe.SendData(new DataAck(block_id));
-            //}
+            /// When the packets comes very fast and HandleRequest cannot process 
+            /// data in time the packets are lost, so need process with locking
+            lock (handleRead)
+            {
+                handleRead.HandleRequest(new FramePacket(e.Data));
+            }
         }
     }
 }
