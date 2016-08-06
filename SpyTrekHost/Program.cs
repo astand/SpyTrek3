@@ -22,6 +22,7 @@ namespace SpyTrekHost
 
         static OperationHandler<FramePacket,ErrorOperationer> handleError;
 
+
         static void Main(string[] args)
         {
             Console.WriteLine($"Spy Trek Host started @ {DateTime.Now}");
@@ -65,9 +66,9 @@ namespace SpyTrekHost
 
                 channelPipe.OnData += ChannelPipe_OnData;
 
-                IHandler<FramePacket> infoHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetInfoProcessor(), channelPipe.SendData);
-                IHandler<FramePacket> noteHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), channelPipe.SendData);
-                IHandler<FramePacket> trekHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), channelPipe.SendData);
+                IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetInfoProcessor(), channelPipe.SendData);
+                IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), channelPipe.SendData);
+                IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), channelPipe.SendData);
 
                 infoHand.SetSuccessor(noteHand);
                 noteHand.SetSuccessor(trekHand);
@@ -78,7 +79,7 @@ namespace SpyTrekHost
 
                 handleRead = new OperationHandler<FramePacket, ReadOperationer>(infoHand);
 
-                IHandler<FramePacket> errorHand = new FileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
+                IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
                 errorHand.SetSpecification(fid => true);
 
                 handleError = new OperationHandler<FramePacket, ErrorOperationer>(errorHand);
@@ -99,8 +100,6 @@ namespace SpyTrekHost
         private static void ChannelPipe_OnData(Object sender, PiperEventArgs e)
         {
             var frame = new FramePacket(e.Data);
-
-            Console.WriteLine(DateTime.Now.ToString("mm-ss.fff") + "   " + frame);
 
             /// When the packets comes very fast and HandleRequest cannot process 
             /// data in time the packets are lost, so need process with locking

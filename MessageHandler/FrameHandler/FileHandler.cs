@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MessageHandler.ConcreteHandlers
 {
-    public class FileHandler<T> : IHandler<T> where T : FramePacket
+    public class ConcreteFileHandler<T> : IHandler<T> where T : FramePacket
     {
         private IHandler<T> m_successor;
 
@@ -24,7 +24,7 @@ namespace MessageHandler.ConcreteHandlers
 
         private Func<IStreamData, int> sending;
 
-        public FileHandler(string name,
+        public ConcreteFileHandler(string name,
             IFrameProccesor processor,
             Func<IStreamData, int> pipe)
         {

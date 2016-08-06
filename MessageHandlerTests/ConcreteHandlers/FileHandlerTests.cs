@@ -57,9 +57,9 @@ namespace MessageHandler.ConcreteHandlers.Tests
                 return 0;
             };
 
-            test1 = new FileHandler<FramePacket>("notes", notes, testpipe);
-            test2 = new FileHandler<FramePacket>("Info", info, testpipe);
-            test3 = new FileHandler<FramePacket>("Other", track, testpipe);
+            test1 = new ConcreteFileHandler<FramePacket>("notes", notes, testpipe);
+            test2 = new ConcreteFileHandler<FramePacket>("Info", info, testpipe);
+            test3 = new ConcreteFileHandler<FramePacket>("Other", track, testpipe);
 
             test1.SetSuccessor(test2);
             test2.SetSuccessor(test3);
@@ -68,9 +68,9 @@ namespace MessageHandler.ConcreteHandlers.Tests
             test2.SetSpecification(fid => fid == FiledID.Info);
             test3.SetSpecification(fid => fid == FiledID.Track);
 
-            customtest1 = new FileHandler<FramePacket>("Notes", customnotes, testpipe);
-            customtest2 = new FileHandler<FramePacket>("Info", custominfo, testpipe);
-            customtest3 = new FileHandler<FramePacket>("Trek", customtrek, testpipe);
+            customtest1 = new ConcreteFileHandler<FramePacket>("Notes", customnotes, testpipe);
+            customtest2 = new ConcreteFileHandler<FramePacket>("Info", custominfo, testpipe);
+            customtest3 = new ConcreteFileHandler<FramePacket>("Trek", customtrek, testpipe);
 
             customtest1.SetSuccessor(customtest2);
             customtest2.SetSuccessor(customtest3);
