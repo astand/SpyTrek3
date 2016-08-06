@@ -58,16 +58,18 @@ namespace MessageHandler
         }
 
 
-        public FramePacket(UInt16 opc, UInt16 id, Byte[] data) : base(opc, id)
+        public FramePacket(UInt16 opc, UInt16 id, Byte[] data, Int32 length = -1) : base(opc, id)
         {
             if (data == null)
             {
                 Data = new byte[0];
                 return;
             }
+            /* select length of result array */
+            Int32 array_length = (length > 0 && length <= data.Length) ? length : data.Length;
 
-            Data = new Byte[data.Length];
-            Array.Copy(data, Data, data.Length);
+            Data = new Byte[array_length];
+            Array.Copy(data, Data, Data.Length);
         }
 
 
