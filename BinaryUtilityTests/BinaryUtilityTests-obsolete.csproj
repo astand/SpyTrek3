@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BinaryUtility\BinaryUtility.csproj">
+    <ProjectReference Include="..\BinaryUtility\BinaryUtility-obsolete.csproj">
       <Project>{0B06CC3E-139F-4ED4-B8E2-E73EC04CB1E0}</Project>
-      <Name>BinaryUtility</Name>
+      <Name>BinaryUtility-obsolete</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

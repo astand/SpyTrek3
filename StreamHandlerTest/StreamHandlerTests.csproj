@@ -61,10 +61,6 @@
     <Compile Include="SimpleHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BinaryUtility\BinaryUtility.csproj">
-      <Project>{0b06cc3e-139f-4ed4-b8e2-e73ec04cb1e0}</Project>
-      <Name>BinaryUtility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MessageHandler\MessageHandler.csproj">
       <Project>{F15AEE43-59BF-4559-B5D6-C3A58851CE69}</Project>
       <Name>MessageHandler</Name>
