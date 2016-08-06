@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BlockDriverTests.cs" />
     <Compile Include="ByteSruffer\ByteStufferTests.cs" />
     <Compile Include="ByteSruffer\ResizeableArrayTests.cs" />
     <Compile Include="Crc16\Crc16TestData.cs" />
@@ -58,12 +59,15 @@
     <Compile Include="Piping\MemoryPipeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleHandlerTests.cs" />
-    <Compile Include="StreamData\ReadRequestTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BinaryUtility\BinaryUtility.csproj">
       <Project>{0b06cc3e-139f-4ed4-b8e2-e73ec04cb1e0}</Project>
       <Name>BinaryUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MessageHandler\MessageHandler.csproj">
+      <Project>{F15AEE43-59BF-4559-B5D6-C3A58851CE69}</Project>
+      <Name>MessageHandler</Name>
     </ProjectReference>
     <ProjectReference Include="..\StreamHandler\StreamHandler.csproj">
       <Project>{9fd96b42-85b9-4521-bcb5-ed21280658b7}</Project>

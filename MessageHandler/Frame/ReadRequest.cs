@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using StreamHandler.Abstract;
 
-namespace StreamHandler
+namespace MessageHandler
 {
     public class ReadRequest : IStreamData
     {

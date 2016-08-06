@@ -47,11 +47,15 @@
     <Compile Include="FrameHandler\IHandler.cs" />
     <Compile Include="FrameHandler\FileHandler.cs" />
     <Compile Include="FrameHandler\OperationHandler.cs" />
+    <Compile Include="Frame\DataAck.cs" />
     <Compile Include="Frame\FrameProcessorTemplate.cs" />
     <Compile Include="Frame\IFrameSpecification.cs" />
     <Compile Include="Frame\PacketFrame.cs" />
     <Compile Include="Frame\IFrameProcessor.cs" />
     <Compile Include="Frame\OpCodes.cs" />
+    <Compile Include="Frame\ReadRequest.cs" />
+    <Compile Include="Frame\StreamData.cs" />
+    <Compile Include="Frame\WriteRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

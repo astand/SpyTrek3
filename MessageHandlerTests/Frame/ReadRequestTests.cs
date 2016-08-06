@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using MessageHandler;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StreamHandler;
 using System;
 using System.Collections.Generic;
