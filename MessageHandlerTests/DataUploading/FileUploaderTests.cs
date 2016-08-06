@@ -11,22 +11,22 @@ namespace MessageHandler.DataUploading.Tests
     [TestClass()]
     public class FileUploaderTests
     {
-        FileUploader fu;
+        CachedFileUploader fu;
         [TestInitialize()]
         public void Initialize()
         {
-            fu = new FileUploader(@"d:\wideprot.txt");
+            fu = new CachedFileUploader(@"d:\wideprot.txt");
             fu.RefreshData();
         }
 
         [TestMethod()]
         public void FileUploader_FileUploader_Test()
         {
-            var failuploader = new FileUploader(@"");
+            var failuploader = new CachedFileUploader(@"");
             bool ret = failuploader.RefreshData();
             Assert.AreEqual(false, ret);
 
-            failuploader = new FileUploader(@"a;sdflasd;fh");
+            failuploader = new CachedFileUploader(@"a;sdflasd;fh");
             ret = failuploader.RefreshData();
             Assert.AreEqual(false, ret);
         }

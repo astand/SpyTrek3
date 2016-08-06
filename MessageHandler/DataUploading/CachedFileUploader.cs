@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MessageHandler.DataUploading
 {
-    public class FileUploader : IDataUploader
+    public class CachedFileUploader : IDataUploader
     {
         private string m_fpath;
 
@@ -16,7 +16,7 @@ namespace MessageHandler.DataUploading
 
         MemoryStream m_firmstream = new MemoryStream();
 
-        public FileUploader(string rootpath)
+        public CachedFileUploader(string rootpath)
         {
             m_fpath = rootpath;
         }
