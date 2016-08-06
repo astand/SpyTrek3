@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataFormats\TrekDescriptor.cs" />
+    <Compile Include="DataUploading\FileUploader.cs" />
+    <Compile Include="DataUploading\IDataUploader.cs" />
     <Compile Include="Extension\DateTimeUtil.cs" />
     <Compile Include="FrameHandler\IHandler.cs" />
     <Compile Include="FrameHandler\FileHandler.cs" />
