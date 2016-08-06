@@ -66,7 +66,7 @@ namespace MessageHandler
                 return;
             }
             /* select length of result array */
-            Int32 array_length = (length > 0 && length <= data.Length) ? length : data.Length;
+            Int32 array_length = (length >= 0 && length <= data.Length) ? length : data.Length;
 
             Data = new Byte[array_length];
             Array.Copy(data, Data, Data.Length);
