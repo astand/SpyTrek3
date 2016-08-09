@@ -53,33 +53,39 @@ namespace MessageHandler
         /// <param name="answer"></param>
         public void Process(FramePacket packet, ref IStreamData answer)
         {
-            m_blockDriver.PassAckBlock(packet.Id);
+            lock (m_blockDriver)
+            {
+                m_blockDriver.PassAckBlock(packet.Id);
 
-            if (m_blockDriver.IsLastAck)
-                StopSending();
-
+                if (m_blockDriver.IsLastAck)
+                    StopSending();
+            }
         }
 
         public void ScheduleSendingData()
         {
-            if (m_send_is_active == false)
+            lock (m_blockDriver)
             {
-                return;
-            }
-            if (m_blockDriver.IsWindAllow())
-            {
-                var readed = ReadDataChuck();
-
-                var fPacket = new FramePacket(OpCodes.DATA, m_blockDriver.BidSend, m_payload, readed);
-                m_pipe.SendData(fPacket);
-
-                if (readed == 0)
+                if (m_send_is_active == false)
                 {
-                    // last block sent
-                    m_blockDriver.BidLast = m_blockDriver.BidSend;
+                    return;
                 }
-                else
-                    m_blockDriver.BidSend++;
+
+                while (m_blockDriver.IsWindAllow())
+                {
+                    var readed = ReadDataChuck();
+
+                    var fPacket = new FramePacket(OpCodes.DATA, m_blockDriver.BidSend, m_payload, readed);
+                    m_pipe.SendData(fPacket);
+
+                    if (readed == 0)
+                    {
+                        // last block sent
+                        m_blockDriver.BidLast = m_blockDriver.BidSend;
+                    }
+                    else
+                        m_blockDriver.BidSend++;
+                }
             }
         }
 
