@@ -8,6 +8,7 @@ using StreamHandler.Abstract;
 using StreamHandler;
 using MessageHandler.DataUploading;
 using System.Timers;
+using System.Diagnostics;
 
 namespace MessageHandler
 {
@@ -25,7 +26,9 @@ namespace MessageHandler
 
         private IDataUploader dataUploader;
 
-        private bool m_send_is_active = false;
+        private bool m_request_sent = false;
+
+        private Boolean m_data_active = false;
 
         private Timer m_timer = new Timer();
 
@@ -37,12 +40,14 @@ namespace MessageHandler
             //dataUploader = new CachedFileUploader(source_path);
             dataUploader = new DiskFileUploader(source_path);
             dataUploader.RefreshData();
+            Debug.WriteLine($"Firmware processor initialized by file {dataUploader.ToString()} length = {dataUploader.Length}");
+
             m_timer.Elapsed += M_timer_Elapsed;
         }
 
         public void SendRequest()
         {
-            m_pipe.SendData(new WriteRequest(1, dataUploader.Length));
+            m_pipe.SendData(new WriteRequest(0x4003, dataUploader.Length));
             StartSending();
         }
 
@@ -55,10 +60,23 @@ namespace MessageHandler
         {
             lock (m_blockDriver)
             {
-                m_blockDriver.PassAckBlock(packet.Id);
+                if (packet.Opc == OpCodes.ACK)
+                {
+                    m_blockDriver.PassAckBlock(packet.Id);
+                    if (m_blockDriver.IsLastAck)
+                    {
+                        StopSending();
+                        Console.WriteLine("Stop sending action.");
+                    }
+                }
 
-                if (m_blockDriver.IsLastAck)
-                    StopSending();
+                /// reuest acknowledge handle here
+                /// 
+                if (packet.Opc == OpCodes.WRQ)
+                {
+                    m_data_active = true;
+                }
+
             }
         }
 
@@ -66,7 +84,7 @@ namespace MessageHandler
         {
             lock (m_blockDriver)
             {
-                if (m_send_is_active == false)
+                if (m_request_sent == false || m_data_active == false)
                 {
                     return;
                 }
@@ -76,6 +94,7 @@ namespace MessageHandler
                     var readed = ReadDataChuck();
 
                     var fPacket = new FramePacket(OpCodes.DATA, m_blockDriver.BidSend, m_payload, readed);
+
                     m_pipe.SendData(fPacket);
 
                     if (readed == 0)
@@ -104,7 +123,7 @@ namespace MessageHandler
         private void StartSending()
         {
             m_timer.Interval = 50;
-            m_send_is_active = true;
+            m_request_sent = true;
             m_timer.Start();
             m_blockDriver.Reset();
         }
@@ -112,7 +131,8 @@ namespace MessageHandler
         private void StopSending()
         {
             m_timer.Stop();
-            m_send_is_active = false;
+            m_request_sent = false;
+            m_data_active = false;
         }
 
 
