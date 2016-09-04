@@ -15,7 +15,7 @@ namespace MessageHandler.DataUploading.Tests
         [TestInitialize()]
         public void Initialize()
         {
-            fu = new CachedFileUploader(@"d:\wideprot.txt");
+            fu = new CachedFileUploader("StreamHandler.dll");
             fu.RefreshData();
         }
 

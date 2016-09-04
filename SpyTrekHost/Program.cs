@@ -74,7 +74,7 @@ namespace SpyTrekHost
                 IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
 
                 //var firmProcessor = new FirmwareProcessor(channelPipe, "");
-                var firmProcessor = new FirmwareProcessor(channelPipe, @"d:\zShare\k_p_4.28.bin");
+                var firmProcessor = new FirmwareProcessor(channelPipe, @"st8.bin");
                 // WRQ handlers
                 IHandler<FramePacket> firmHand = new ConcreteFileHandler<FramePacket>(null, firmProcessor, null);
 
