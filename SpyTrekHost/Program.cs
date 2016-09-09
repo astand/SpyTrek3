@@ -9,46 +9,37 @@ using StreamHandler;
 using MessageHandler.Abstract;
 using MessageHandler.ConcreteHandlers;
 using MessageHandler;
+using System.Threading;
 
 namespace SpyTrekHost
 {
     class Program
     {
-        static Piper channelPipe;
+
+        static List<HandleInstance> m_nodes = new List<HandleInstance>();
 
         static TcpClient tcpClient;
 
-        static OperationHandler<FramePacket,ReadOperationer> handleRead;
-
-        static OperationHandler<FramePacket,ErrorOperationer> handleError;
-
-        static OperationHandler<FramePacket,WriteOperationer> handleWrite;
-
         static void Main(string[] args)
         {
-            Console.WriteLine($"Spy Trek Host started @ {DateTime.Now}");
+
+            Console.Write($"Please input listening port number : ");
+            var PortNumber = Console.ReadLine();
+            Console.WriteLine("");
+            UInt16 PortNumberNum;
+            if (UInt16.TryParse(PortNumber, out PortNumberNum) == false)
+                PortNumberNum = 20201;
+            Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}");
+            Console.WriteLine($"Port number is {PortNumberNum}");
+            var tcpListener = new TcpListener(IPAddress.Any, PortNumberNum);
+            tcpListener.Start();
+
+            Thread td = new Thread(Dispatcher);
+
+            td.Start();
+
             while (true)
             {
-
-                Console.Write($"Please input listening port number : ");
-
-
-                var PortNumber = Console.ReadLine();
-                Console.WriteLine("");
-                UInt16 PortNumberNum = 0;
-                try
-                {
-                    PortNumberNum = Convert.ToUInt16(PortNumber);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Something wrong  with port number : {e.Message}");
-                    continue;
-                }
-
-                var tcpListener = new TcpListener(IPAddress.Any, PortNumberNum);
-                tcpListener.Start();
-
                 try
                 {
                     tcpClient = tcpListener.AcceptTcpClient();
@@ -58,77 +49,36 @@ namespace SpyTrekHost
                     Console.WriteLine($"Cannot accept client : {e.Message}");
                     continue;
                 }
-                Console.WriteLine($"Client connected! Info : {tcpListener.Server}");
 
+                m_nodes.Add(new HandleInstance(tcpClient.GetStream()));
 
-                var stream_for_pipe = new NetworkPipe(tcpClient.GetStream());
-
-                channelPipe = new Piper(stream_for_pipe, stream_for_pipe);
-
-                channelPipe.OnData += ChannelPipe_OnData;
-                // RRQ handlers
-                IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetInfoProcessor(), channelPipe.SendData);
-                IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), channelPipe.SendData);
-                IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), channelPipe.SendData);
-                // ERROR handlers 
-                IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
-
-                //var firmProcessor = new FirmwareProcessor(channelPipe, "");
-                var firmProcessor = new FirmwareProcessor(channelPipe, @"st8.bin");
-                // WRQ handlers
-                IHandler<FramePacket> firmHand = new ConcreteFileHandler<FramePacket>(null, firmProcessor, null);
-
-                // Set specification for RRQ files
-                infoHand.SetSpecification(fid => fid == FiledID.Info);
-                noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
-                trekHand.SetSpecification(fid => fid == FiledID.Track);
-
-                // True specification for ERROR messages
-                errorHand.SetSpecification(fid => true);
-
-                // Set specification for WRQ files
-                firmHand.SetSpecification(fid => true);
-
-                infoHand.SetSuccessor(noteHand);
-                noteHand.SetSuccessor(trekHand);
-
-                handleRead = new OperationHandler<FramePacket, ReadOperationer>(infoHand);
-                handleError = new OperationHandler<FramePacket, ErrorOperationer>(errorHand);
-                handleWrite = new OperationHandler<FramePacket, WriteOperationer>(firmHand);
-
-                handleRead.SetSuccessor(handleError);
-                handleError.SetSuccessor(handleWrite);
-
-                while (true)
-                {
-                    Console.WriteLine($"Input command number (1 - Echo, 2 - Info)...");
-                    var command = Console.ReadLine();
-                    Int32 commandNum = 0;
-
-                    var isDigit = Int32.TryParse(command, out commandNum);
-
-                    if (isDigit)
-                        channelPipe.SendData(new ReadRequest((UInt16)commandNum));
-
-                    if (command[0] == 'w')
-                        firmProcessor.SendRequest();
-
-
-                }
-
+                Console.WriteLine($"Client connected! Info : {tcpListener.Server}. Count in pool = {m_nodes.Count}");
             }
         }
 
-        private static void ChannelPipe_OnData(Object sender, PiperEventArgs e)
-        {
-            var frame = new FramePacket(e.Data);
 
-            Console.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
-            /// When the packets comes very fast and HandleRequest cannot process 
-            /// data in time the packets are lost, so need process with locking
-            lock (handleRead)
+        static void Dispatcher()
+        {
+            Console.WriteLine($"Dispatcher has started @ {DateTime.Now.ToShortTimeString()}");
+
+
+            while (true)
             {
-                handleRead.HandleRequest(new FramePacket(e.Data));
+                var input = Console.ReadLine();
+
+                if (m_nodes.Count != 0)
+                {
+                    var last_node_index = m_nodes.Count - 1;
+                    var pipe = m_nodes[last_node_index].Pipe;
+
+                    UInt16 commandNum;
+                    if (UInt16.TryParse(input, out commandNum) == false)
+                        commandNum = 4;
+
+                    pipe.SendData(new ReadRequest(commandNum));
+                }
+
+                Thread.Sleep(200);
             }
         }
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MessageHandler;
 using System.Diagnostics;
 using MessageHandler.DataFormats;
+using StreamHandler;
 
 namespace SpyTrekHost
 {
@@ -19,6 +20,7 @@ namespace SpyTrekHost
 
         static IFrameProccesor m_error;
 
+        static IFrameProccesor m_firmware;
         static ReadProcessorFactory()
         {
             m_info = new ReadProcessor("Info");
@@ -36,6 +38,15 @@ namespace SpyTrekHost
         public static IFrameProccesor GetInfoProcessor() => m_info;
 
         public static IFrameProccesor GetErrorProcessor() => m_error;
+
+        public static IFrameProccesor GetFirmwareProcessor(Piper piper, string path_to_image)
+        {
+            if (m_firmware == null)
+            {
+                m_firmware = new FirmwareProcessor(piper, path_to_image);
+            }
+            return m_firmware;
+        }
     }
 
     internal class TrekDescriptionProcessor : IFrameProccesor
