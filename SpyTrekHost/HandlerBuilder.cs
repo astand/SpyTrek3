@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -26,8 +27,7 @@ namespace SpyTrekHost
 
         public Piper Pipe { get { return piper; } }
 
-        Timer timeSchedule = new Timer();
-
+        System.Threading.Timer timecallback;
         public HandleInstance(NetworkStream stream)
         {
             networkPipe = new NetworkPipe(stream);
@@ -63,15 +63,12 @@ namespace SpyTrekHost
 
             handleRead.SetSuccessor(handleError);
             handleError.SetSuccessor(handleWrite);
-
-            timeSchedule.Elapsed += TimeSchedule_Elapsed;
-            timeSchedule.Interval = 10000;
-            timeSchedule.Start();
+            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 5000);
         }
 
-        private void TimeSchedule_Elapsed(Object sender, ElapsedEventArgs e)
+        private void TimerCallback(Object obj)
         {
-            Console.WriteLine("Timer scheduler elapsed");
+            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}. Timer scheduler elapsed");
 
             Pipe.SendData(new ReadRequest(4));
         }
