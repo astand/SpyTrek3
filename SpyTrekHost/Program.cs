@@ -18,11 +18,11 @@ namespace SpyTrekHost
     class Program
     {
 
-        static List<HandleInstance> m_nodes = new List<HandleInstance>();
+        static List<HandleInstance> nodes = new List<HandleInstance>();
 
         static TcpClient tcpClient;
 
-        static ListNodes listNodes;
+        static ListNodesForm listNodes;
 
         static void Main(string[] args)
         {
@@ -43,7 +43,7 @@ namespace SpyTrekHost
 
             td.Start();
 
-            listNodes = new ListNodes();
+            listNodes = new ListNodesForm();
             listNodes.SetListGetter(RefreshInstances);
 
             Thread ui = new Thread(UIThread);
@@ -61,8 +61,8 @@ namespace SpyTrekHost
                     continue;
                 }
 
-                m_nodes.Add(new HandleInstance(tcpClient.GetStream()));
-                string info = String.Format($"Client connected! Info : {tcpListener.Server}. Count in pool = {m_nodes.Count}");
+                nodes.Add(new HandleInstance(tcpClient.GetStream()));
+                string info = String.Format($"Client connected! Info : {tcpListener.Server}. Count in pool = {nodes.Count}");
                 listNodes.EnforceUpdating();
                 
                 Console.WriteLine(info);
@@ -79,10 +79,10 @@ namespace SpyTrekHost
             {
                 var input = Console.ReadLine();
 
-                if (m_nodes.Count != 0)
+                if (nodes.Count != 0)
                 {
-                    var last_node_index = m_nodes.Count - 1;
-                    var pipe = m_nodes[last_node_index].Pipe;
+                    var last_node_index = nodes.Count - 1;
+                    var pipe = nodes[last_node_index].Pipe;
 
                     UInt16 commandNum;
                     if (UInt16.TryParse(input, out commandNum) == false)
@@ -100,6 +100,6 @@ namespace SpyTrekHost
             Application.Run(listNodes);
         }
 
-        static List<HandleInstance> RefreshInstances() => m_nodes;
+        static List<HandleInstance> RefreshInstances() => nodes;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SpyTrekHost.UserUI
 {
-    partial class ListNodes
+    partial class ListNodesForm
     {
         /// <summary>
         /// Required designer variable.

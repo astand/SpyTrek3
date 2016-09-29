@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace SpyTrekHost.UserUI
 {
-    public partial class ListNodes : Form
+    public partial class ListNodesForm : Form
     {
-        public ListNodes()
+        public ListNodesForm()
         {
             InitializeComponent();
         }

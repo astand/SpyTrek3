@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace SpyTrekHost.UserUI
 {
-    public partial class ListNodes : Form
+    public partial class ListNodesForm : Form
     {
         protected Func<List<HandleInstance>> delGetList;
 
