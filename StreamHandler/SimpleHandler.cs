@@ -35,7 +35,6 @@ namespace StreamHandler
                 stream_out_packet = stuffer.UnstuffedToArray();
                 Boolean retval = crc.CheckValidCRCInArray(stream_out_packet, stream_out_packet.Length);
 
-                Debug.WriteLine($"Parsed array CRC valid ? = {retval}. Output array length = {stream_out_packet.Length}");
                 if (retval)
                 {
                     Array.Resize(ref stream_out_packet, stream_out_packet.Length - 2);
