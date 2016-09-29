@@ -1,9 +1,12 @@
 ﻿using MessageHandler;
 using MessageHandler.Abstract;
 using MessageHandler.ConcreteHandlers;
+using MessageHandler.DataFormats;
+using MessageHandler.Notifiers;
 using StreamHandler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -27,12 +30,17 @@ namespace SpyTrekHost
 
         public Piper Pipe { get { return piper; } }
 
+        public ISpyTrekInfoNotifier spyTrekNotifier = null;
+
         System.Threading.Timer timecallback;
         public HandleInstance(NetworkStream stream)
         {
             networkPipe = new NetworkPipe(stream);
 
             piper = new Piper(networkPipe, networkPipe);
+
+            spyTrekNotifier = ReadProcessorFactory.GetInfoNotifier();
+            spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
 
             piper.OnData += Piper_OnData;
 
@@ -84,6 +92,11 @@ namespace SpyTrekHost
             {
                 handleRead.HandleRequest(new FramePacket(e.Data));
             }
+        }
+
+        private void SpyTrekNotifier_Notify(Object sender, InfoEventArgs e)
+        {
+            Debug.WriteLine($"Info notifier calls. Info : {e.spyTrekInfo}");
         }
     }
 }

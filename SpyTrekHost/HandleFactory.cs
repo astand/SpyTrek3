@@ -10,13 +10,14 @@ using System.Diagnostics;
 using MessageHandler.DataFormats;
 using StreamHandler;
 using MessageHandler.Processors;
+using MessageHandler.Notifiers;
 
 namespace SpyTrekHost
 {
     static class ReadProcessorFactory
     {
         static IFrameProccesor m_trek;
-        static IFrameProccesor m_info;
+        static InfoProcessor m_info;
         static IFrameProccesor m_note;
 
         static IFrameProccesor m_error;
@@ -39,6 +40,8 @@ namespace SpyTrekHost
         public static IFrameProccesor GetInfoProcessor() => m_info;
 
         public static IFrameProccesor GetErrorProcessor() => m_error;
+
+        public static ISpyTrekInfoNotifier GetInfoNotifier() => m_info;
 
         public static IFrameProccesor GetFirmwareProcessor(Piper piper, string path_to_image)
         {
