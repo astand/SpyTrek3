@@ -58,6 +58,7 @@
     <Compile Include="Frame\ReadRequest.cs" />
     <Compile Include="Frame\StreamData.cs" />
     <Compile Include="Frame\WriteRequest.cs" />
+    <Compile Include="Processors\InfoProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WRQProcessors\FirmWareProcessor.cs" />
   </ItemGroup>

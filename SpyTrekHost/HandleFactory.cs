@@ -9,6 +9,7 @@ using MessageHandler;
 using System.Diagnostics;
 using MessageHandler.DataFormats;
 using StreamHandler;
+using MessageHandler.Processors;
 
 namespace SpyTrekHost
 {
@@ -23,7 +24,7 @@ namespace SpyTrekHost
         static IFrameProccesor m_firmware;
         static ReadProcessorFactory()
         {
-            m_info = new ReadProcessor("Info");
+            m_info = new InfoProcessor();
             m_note = new TrekDescriptionProcessor();
             //m_note = new ReadProcessor("note");
             m_trek = new ReadProcessor("Trek");
@@ -73,6 +74,8 @@ namespace SpyTrekHost
             }
         }
     }
+
+
     internal class ReadProcessor : IFrameProccesor
     {
         public Int32 HeadCount;
@@ -120,7 +123,7 @@ namespace SpyTrekHost
             Debug.WriteLine($"{Name} : type - {message}");
         }
 
-      
+
     }
 
     internal class ErrorProcessor : IFrameProccesor
