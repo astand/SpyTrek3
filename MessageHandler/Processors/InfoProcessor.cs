@@ -19,7 +19,7 @@ namespace MessageHandler.Processors
         {
             if (packet.Opc == OpCodes.DATA)
             {
-                if (CheckBlockSynchro(packet.Id))
+                if (CheckBlockSynchro(packet.Id) && packet.Id == 1)
                 {
                     SpyTrekInfo Info = new SpyTrekInfo();
                     Info.TryParse(Encoding.UTF8.GetString(packet.Data));
