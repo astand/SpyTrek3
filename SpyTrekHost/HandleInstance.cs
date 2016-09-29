@@ -33,6 +33,8 @@ namespace SpyTrekHost
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
         System.Threading.Timer timecallback;
+
+        SpyTrekInfo spyTrekInfo;
         public HandleInstance(NetworkStream stream)
         {
             networkPipe = new NetworkPipe(stream);
@@ -96,7 +98,19 @@ namespace SpyTrekHost
 
         private void SpyTrekNotifier_Notify(Object sender, InfoEventArgs e)
         {
-            Debug.WriteLine($"Info notifier calls. Info : {e.spyTrekInfo}");
+            spyTrekInfo = e.spyTrekInfo;
+        }
+
+        public override String ToString()
+        {
+            String retval = base.ToString();
+
+            if (spyTrekInfo != null)
+            {
+                retval = spyTrekInfo.ToString();
+            }
+            
+            return retval;
         }
     }
 }
