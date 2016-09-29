@@ -10,6 +10,8 @@ using MessageHandler.Abstract;
 using MessageHandler.ConcreteHandlers;
 using MessageHandler;
 using System.Threading;
+using SpyTrekHost.UserUI;
+using System.Windows.Forms;
 
 namespace SpyTrekHost
 {
@@ -20,6 +22,8 @@ namespace SpyTrekHost
 
         static TcpClient tcpClient;
 
+        static ListNodes listNodes;
+
         static void Main(string[] args)
         {
 
@@ -29,14 +33,21 @@ namespace SpyTrekHost
             UInt16 PortNumberNum;
             if (UInt16.TryParse(PortNumber, out PortNumberNum) == false)
                 PortNumberNum = 20201;
-            Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}");
-            Console.WriteLine($"Port number is {PortNumberNum}");
+
+            Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}.Port number is {PortNumberNum}");
+
             var tcpListener = new TcpListener(IPAddress.Any, PortNumberNum);
             tcpListener.Start();
 
             Thread td = new Thread(Dispatcher);
 
             td.Start();
+
+            listNodes = new ListNodes();
+            listNodes.SetListGetter(RefreshInstances);
+
+            Thread ui = new Thread(UIThread);
+            ui.Start();
 
             while (true)
             {
@@ -51,8 +62,10 @@ namespace SpyTrekHost
                 }
 
                 m_nodes.Add(new HandleInstance(tcpClient.GetStream()));
-
-                Console.WriteLine($"Client connected! Info : {tcpListener.Server}. Count in pool = {m_nodes.Count}");
+                string info = String.Format($"Client connected! Info : {tcpListener.Server}. Count in pool = {m_nodes.Count}");
+                listNodes.EnforceUpdating();
+                
+                Console.WriteLine(info);
             }
         }
 
@@ -81,5 +94,12 @@ namespace SpyTrekHost
                 Thread.Sleep(200);
             }
         }
+
+        static void UIThread()
+        {
+            Application.Run(listNodes);
+        }
+
+        static List<HandleInstance> RefreshInstances() => m_nodes;
     }
 }
