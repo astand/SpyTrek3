@@ -58,6 +58,7 @@
             this.dataGridView1.RowHeadersWidth = 11;
             this.dataGridView1.Size = new System.Drawing.Size(418, 392);
             this.dataGridView1.TabIndex = 2;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Num
             // 
@@ -66,14 +67,14 @@
             this.Num.Name = "Num";
             this.Num.ReadOnly = true;
             // 
-            // ListNodes
+            // ListNodesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(442, 469);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnRefresh);
-            this.Name = "ListNodes";
+            this.Name = "ListNodesForm";
             this.Text = "ListNodes";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

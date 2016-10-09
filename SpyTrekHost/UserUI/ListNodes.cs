@@ -17,5 +17,11 @@ namespace SpyTrekHost.UserUI
             InitializeComponent();
         }
 
+        private void dataGridView1_CellContentClick(Object sender, DataGridViewCellEventArgs e)
+        {
+            string msg = $"Index {e.RowIndex}. info: {listOfNodes[e.RowIndex]?.ToString()}";
+
+            MessageBox.Show(msg);
+        }
     }
 }

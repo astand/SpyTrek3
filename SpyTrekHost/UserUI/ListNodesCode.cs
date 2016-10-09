@@ -11,13 +11,13 @@ namespace SpyTrekHost.UserUI
     {
         protected Func<List<HandleInstance>> delGetList;
 
+        private List<HandleInstance> listOfNodes;
+
         public void SetListGetter(Func<List<HandleInstance>> d)
         {
             delGetList = d;
         }
-
-
-
+        
 
         private void btnRefresh_Click(Object sender, EventArgs e)
         {
@@ -41,9 +41,9 @@ namespace SpyTrekHost.UserUI
         {
             dataGridView1.Rows.Clear();
 
-            var list = delGetList?.Invoke();
+            listOfNodes = delGetList?.Invoke();
 
-            foreach (var item in list)
+            foreach (var item in listOfNodes)
             {
                 dataGridView1.Rows.Add(item.ToString());
             }
