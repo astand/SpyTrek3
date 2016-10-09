@@ -12,6 +12,7 @@ using MessageHandler;
 using System.Threading;
 using SpyTrekHost.UserUI;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SpyTrekHost
 {
@@ -61,8 +62,8 @@ namespace SpyTrekHost
                     continue;
                 }
 
-                nodes.Add(new HandleInstance(tcpClient.GetStream()));
-                string info = String.Format($"Client connected! Info : {tcpListener.Server}. Count in pool = {nodes.Count}");
+                nodes.Add(new HandleInstance(tcpClient.GetStream(), Deleter));
+                string info = String.Format($"{DateTime.Now.ToString("HH:mm:ss.ff")}> Client connected! Current counts = {nodes.Count}");
                 listNodes.EnforceUpdating();
                 
                 Console.WriteLine(info);
@@ -95,9 +96,29 @@ namespace SpyTrekHost
             }
         }
 
+
+
         static void UIThread()
         {
             Application.Run(listNodes);
+        }
+
+        static void Deleter(object sender, EventArgs args)
+        {
+            HandleInstance vic = sender as HandleInstance;
+            Int32 index = nodes.IndexOf(vic);
+
+            if (index == -1)
+            {
+                Debug.WriteLine($"Node was deleted previously.");
+                return;
+            }
+
+            Debug.WriteLine($"Node with index [{index}] will be deleted. Stream was broken.");
+            nodes.Remove(vic);
+            
+            vic.Dispose();
+            listNodes.EnforceUpdating();
         }
 
         static List<HandleInstance> RefreshInstances() => nodes;

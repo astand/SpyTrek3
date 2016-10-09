@@ -13,9 +13,9 @@ namespace StreamHandler
     /* NetworkPipe uses inner local buffer for caching data from source Stream
      * may be need more tests and it will possible to change this behaviour
      * */
-    public class NetworkPipe : IPipeReader, IPipeWriter
+    public class NetworkPipe : IPipeReader, IPipeWriter, IDisposable
     {
-        private readonly NetworkStream m_stream;
+        private NetworkStream m_stream;
 
         private Byte[] m_inner_buff;
 
@@ -68,6 +68,13 @@ namespace StreamHandler
             m_stream.Write(array, 0, count_to_write);
 
             return count_to_write;
+        }
+
+        public void Dispose()
+        {
+            // free network stream
+            m_stream?.Dispose();
+            m_stream = null;
         }
     }
 }

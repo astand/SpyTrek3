@@ -16,7 +16,7 @@ using System.Timers;
 
 namespace SpyTrekHost
 {
-    public class HandleInstance
+    public class HandleInstance : IDisposable
     {
         private NetworkPipe networkPipe;
 
@@ -28,6 +28,8 @@ namespace SpyTrekHost
 
         private OperationHandler<FramePacket,WriteOperationer> handleWrite;
 
+        private event EventHandler SelfDeleting;
+
         public Piper Pipe { get { return piper; } }
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
@@ -35,14 +37,16 @@ namespace SpyTrekHost
         System.Threading.Timer timecallback;
 
         SpyTrekInfo spyTrekInfo;
-        public HandleInstance(NetworkStream stream)
+        public HandleInstance(NetworkStream stream, EventHandler deleter)
         {
+            SelfDeleting += deleter;
             networkPipe = new NetworkPipe(stream);
 
             piper = new Piper(networkPipe, networkPipe);
 
             spyTrekNotifier = ReadProcessorFactory.GetInfoNotifier();
             spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
+            piper.OnFail += Piper_OnFail;
 
             piper.OnData += Piper_OnData;
 
@@ -74,6 +78,11 @@ namespace SpyTrekHost
             handleRead.SetSuccessor(handleError);
             handleError.SetSuccessor(handleWrite);
             timecallback = new System.Threading.Timer(TimerCallback, null, 0, 5000);
+        }
+
+        private void Piper_OnFail(Object sender, PiperEventArgs e)
+        {
+            SelfDeleting(this, null);
         }
 
         private void TimerCallback(Object obj)
@@ -111,6 +120,31 @@ namespace SpyTrekHost
             }
             
             return retval;
+        }
+
+        public void Dispose()
+        {
+            Debug.WriteLine("Disposing action for HandleInstance");
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                networkPipe?.Dispose();
+                networkPipe = null;
+
+                timecallback?.Dispose();
+                timecallback = null;
+
+                piper?.Dispose();
+                piper = null;
+
+                SelfDeleting = null;
+            }
         }
     }
 }
