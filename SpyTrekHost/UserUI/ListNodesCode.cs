@@ -11,7 +11,7 @@ namespace SpyTrekHost.UserUI
     {
         protected Func<List<HandleInstance>> delGetList;
 
-        private List<HandleInstance> listOfNodes;
+        private List<HandleInstance> listOfNodes = new List<HandleInstance>();
 
         public void SetListGetter(Func<List<HandleInstance>> d)
         {
@@ -28,8 +28,8 @@ namespace SpyTrekHost.UserUI
         {
             if (InvokeRequired)
             {
-                Action del = new Action(UpdateListNodes);
-                Invoke(del, new object[] { });
+                //Action del = new Action(UpdateListNodes);
+                //Invoke(del, new object[] { });
             }
             else
             {
@@ -41,7 +41,18 @@ namespace SpyTrekHost.UserUI
         {
             dataGridView1.Rows.Clear();
 
-            listOfNodes = delGetList?.Invoke();
+            var tempList = delGetList?.Invoke();
+
+            lock (tempList)
+            {
+                listOfNodes.Clear();
+                foreach (var temp in tempList)
+                {
+                    listOfNodes.Add(temp);
+                }
+            }
+
+            //listOfNodes = delGetList?.Invoke();
 
             foreach (var item in listOfNodes)
             {
