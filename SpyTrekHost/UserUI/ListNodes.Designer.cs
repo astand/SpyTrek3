@@ -58,7 +58,7 @@
             this.dataGridView1.RowHeadersWidth = 11;
             this.dataGridView1.Size = new System.Drawing.Size(418, 392);
             this.dataGridView1.TabIndex = 2;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Num
             // 
