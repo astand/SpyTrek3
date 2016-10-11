@@ -28,7 +28,11 @@ namespace SpyTrekHost
 
         private OperationHandler<FramePacket,WriteOperationer> handleWrite;
 
-        private event EventHandler SelfDeleting;
+        private readonly DateTime timeConnected;
+
+        public event EventHandler SelfDeleter;
+
+        public DateTime Connected => timeConnected;
 
         public Piper Pipe { get { return piper; } }
 
@@ -37,20 +41,27 @@ namespace SpyTrekHost
         System.Threading.Timer timecallback;
 
         SpyTrekInfo spyTrekInfo;
-        public HandleInstance(NetworkStream stream, EventHandler deleter)
+
+        public SpyTrekInfo Info => spyTrekInfo;
+
+        public HandleInstance(NetworkStream stream, EventHandler deleter = null)
         {
-            SelfDeleting += deleter;
+            timeConnected = DateTime.Now;
+            SelfDeleter += deleter;
             networkPipe = new NetworkPipe(stream);
 
             piper = new Piper(networkPipe, networkPipe);
 
-            spyTrekNotifier = ReadProcessorFactory.GetInfoNotifier();
+            object notif = ReadProcessorFactory.GetInfoProcessor();
+
+            spyTrekNotifier = (ISpyTrekInfoNotifier)notif;
+
             spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
             piper.OnFail += Piper_OnFail;
 
             piper.OnData += Piper_OnData;
 
-            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetInfoProcessor(), piper.SendData);
+            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, (IFrameProccesor)notif, piper.SendData);
             IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), piper.SendData);
             IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), piper.SendData);
 
@@ -77,12 +88,12 @@ namespace SpyTrekHost
 
             handleRead.SetSuccessor(handleError);
             handleError.SetSuccessor(handleWrite);
-            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 5000);
+            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 15000);
         }
 
         private void Piper_OnFail(Object sender, PiperEventArgs e)
         {
-            SelfDeleting(this, null);
+            SelfDeleter(this, null);
         }
 
         private void TimerCallback(Object obj)
@@ -118,7 +129,7 @@ namespace SpyTrekHost
             {
                 retval = spyTrekInfo.ToString();
             }
-            
+
             return retval;
         }
 
@@ -134,8 +145,6 @@ namespace SpyTrekHost
         {
             if (disposing)
             {
-                networkPipe?.Dispose();
-                networkPipe = null;
 
                 timecallback?.Dispose();
                 timecallback = null;
@@ -143,7 +152,8 @@ namespace SpyTrekHost
                 piper?.Dispose();
                 piper = null;
 
-                SelfDeleting = null;
+                networkPipe?.Dispose();
+                networkPipe = null;
             }
         }
     }

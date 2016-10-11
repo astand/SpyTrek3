@@ -19,8 +19,6 @@ namespace SpyTrekHost
     class Program
     {
 
-        static List<HandleInstance> nodes = new List<HandleInstance>();
-
         static TcpClient tcpClient;
 
         static ListNodesForm listNodes;
@@ -45,7 +43,6 @@ namespace SpyTrekHost
             td.Start();
 
             listNodes = new ListNodesForm();
-            listNodes.SetListGetter(RefreshInstances);
 
             Thread ui = new Thread(UIThread);
             ui.Start();
@@ -62,11 +59,7 @@ namespace SpyTrekHost
                     continue;
                 }
 
-                nodes.Add(new HandleInstance(tcpClient.GetStream(), Deleter));
-                string info = String.Format($"{DateTime.Now.ToString("HH:mm:ss.ff")}> Client connected! Current counts = {nodes.Count}");
-                listNodes.EnforceUpdating();
-                
-                Console.WriteLine(info);
+                HICollection.Add(new HandleInstance(tcpClient.GetStream()));
             }
         }
 
@@ -74,26 +67,6 @@ namespace SpyTrekHost
         static void Dispatcher()
         {
             Console.WriteLine($"Dispatcher has started @ {DateTime.Now.ToShortTimeString()}");
-
-
-            while (true)
-            {
-                var input = Console.ReadLine();
-
-                if (nodes.Count != 0)
-                {
-                    var last_node_index = nodes.Count - 1;
-                    var pipe = nodes[last_node_index].Pipe;
-
-                    UInt16 commandNum;
-                    if (UInt16.TryParse(input, out commandNum) == false)
-                        commandNum = 4;
-
-                    pipe.SendData(new ReadRequest(commandNum));
-                }
-
-                Thread.Sleep(200);
-            }
         }
 
 
@@ -102,25 +75,5 @@ namespace SpyTrekHost
         {
             Application.Run(listNodes);
         }
-
-        static void Deleter(object sender, EventArgs args)
-        {
-            HandleInstance vic = sender as HandleInstance;
-            Int32 index = nodes.IndexOf(vic);
-
-            if (index == -1)
-            {
-                Debug.WriteLine($"Node was deleted previously.");
-                return;
-            }
-
-            Debug.WriteLine($"Node with index [{index}] will be deleted. Stream was broken.");
-            nodes.Remove(vic);
-            
-            vic.Dispose();
-            listNodes.EnforceUpdating();
-        }
-
-        static List<HandleInstance> RefreshInstances() => nodes;
     }
 }

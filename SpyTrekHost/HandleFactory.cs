@@ -37,11 +37,12 @@ namespace SpyTrekHost
 
         public static IFrameProccesor GetNoteProcessor() => m_note;
 
-        public static IFrameProccesor GetInfoProcessor() => m_info;
+        public static IFrameProccesor GetInfoProcessor() => new InfoProcessor();
+
+        //public static ISpyTrekInfoNotifier GetInfoNotifier() => null;
 
         public static IFrameProccesor GetErrorProcessor() => m_error;
 
-        public static ISpyTrekInfoNotifier GetInfoNotifier() => m_info;
 
         public static IFrameProccesor GetFirmwareProcessor(Piper piper, string path_to_image)
         {
