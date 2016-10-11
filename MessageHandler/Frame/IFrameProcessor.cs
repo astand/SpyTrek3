@@ -15,6 +15,8 @@ namespace MessageHandler
     public interface IFrameProccesor
     {
         void Process(FramePacket packet, ref IStreamData answer);
+
+        event EventHandler ProcessFinished;
     }
 
    
