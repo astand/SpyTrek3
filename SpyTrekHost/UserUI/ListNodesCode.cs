@@ -11,13 +11,11 @@ namespace SpyTrekHost.UserUI
     {
         protected Func<List<HandleInstance>> delGetList;
 
-        private List<HandleInstance> listOfNodes = new List<HandleInstance>();
-
         public void SetListGetter(Func<List<HandleInstance>> d)
         {
             delGetList = d;
         }
-        
+
 
         private void btnRefresh_Click(Object sender, EventArgs e)
         {
@@ -43,20 +41,18 @@ namespace SpyTrekHost.UserUI
 
             var tempList = delGetList?.Invoke();
 
-            lock (tempList)
+            Int32 num = 0;
+
+            lock (HICollection.List)
             {
-                listOfNodes.Clear();
-                foreach (var temp in tempList)
+                var collection = HICollection.List;
+                foreach (var item in collection)
                 {
-                    listOfNodes.Add(temp);
+                    var index = dataGridView1.Rows.Add();
+                    dataGridView1.Rows[index].Cells[0].Value = ++num;
+                    dataGridView1.Rows[index].Cells[1].Value = item.ToString();
+                    dataGridView1.Rows[index].Cells[2].Value = item.Connected.ToString("HH:mm:ss.ff");
                 }
-            }
-
-            //listOfNodes = delGetList?.Invoke();
-
-            foreach (var item in listOfNodes)
-            {
-                dataGridView1.Rows.Add(item.ToString());
             }
         }
     }
