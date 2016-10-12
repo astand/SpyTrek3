@@ -33,11 +33,11 @@ namespace SpyTrekHost
             m_error = new ErrorProcessor();
         }
 
-        public static IFrameProccesor GetTrekProcessor() => m_trek;
+        //public static IFrameProccesor GetTrekProcessor() => m_trek;
 
-        public static IFrameProccesor GetNoteProcessor() => m_note;
+        //public static IFrameProccesor GetNoteProcessor() => m_note;
 
-        public static IFrameProccesor GetInfoProcessor() => new InfoProcessor();
+        //public static IFrameProccesor GetInfoProcessor() => new InfoProcessor();
 
         //public static ISpyTrekInfoNotifier GetInfoNotifier() => null;
 
@@ -56,6 +56,8 @@ namespace SpyTrekHost
 
     internal class TrekDescriptionProcessor : IFrameProccesor
     {
+        public event EventHandler ProcessFinished;
+
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             if (packet.Opc == OpCodes.DATA)
@@ -67,15 +69,31 @@ namespace SpyTrekHost
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
+            List<TrekDescriptor> NoteListDescriptor = new List<TrekDescriptor>();
             TrekDescriptor desc = new TrekDescriptor();
 
             Int32 current_offset = 0;
-
-            while (desc.TryParse(data, current_offset) == true)
+            bool parseOk;
+            do
             {
-                current_offset += TrekDescriptor.Length;
-                Console.WriteLine(desc.ToString());
-            }
+                var dsc = new TrekDescriptor();
+                parseOk = dsc.TryParse(data, current_offset);
+
+                if (parseOk == true)
+                {
+                    current_offset += TrekDescriptor.Length;
+                    NoteListDescriptor.Add(dsc);
+                    Console.WriteLine(desc.ToString());
+                }
+
+            } while (parseOk);
+
+            ProcessFinished?.Invoke(this, new NoteListEventArgs(NoteListDescriptor));
+
+            //while (desc.TryParse(data, current_offset) == true)
+            //{
+            //    current_offset += TrekDescriptor.Length;
+            //}
         }
     }
 
@@ -132,6 +150,8 @@ namespace SpyTrekHost
 
     internal class ErrorProcessor : IFrameProccesor
     {
+        public event EventHandler ProcessFinished;
+
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             Debug.WriteLine($"Error packet received!!!");
