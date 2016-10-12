@@ -3,6 +3,7 @@ using MessageHandler.Abstract;
 using MessageHandler.ConcreteHandlers;
 using MessageHandler.DataFormats;
 using MessageHandler.Notifiers;
+using MessageHandler.Processors;
 using StreamHandler;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace SpyTrekHost
 
         public DateTime Connected => timeConnected;
 
-        public Piper Pipe { get { return piper; } }
+        public Piper Pipe => piper;
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
@@ -42,6 +43,9 @@ namespace SpyTrekHost
 
         SpyTrekInfo spyTrekInfo;
 
+        InfoProcessor infoProcessor = new InfoProcessor();
+        TrekDescriptionProcessor noteProcessor = new TrekDescriptionProcessor();
+        ReadProcessor readProcessor = new ReadProcessor("Trek");
         public SpyTrekInfo Info => spyTrekInfo;
 
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
@@ -51,19 +55,23 @@ namespace SpyTrekHost
             networkPipe = new NetworkPipe(stream);
 
             piper = new Piper(networkPipe, networkPipe);
-
-            object notif = ReadProcessorFactory.GetInfoProcessor();
-
-            spyTrekNotifier = (ISpyTrekInfoNotifier)notif;
-
-            spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
             piper.OnFail += Piper_OnFail;
-
             piper.OnData += Piper_OnData;
 
-            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, (IFrameProccesor)notif, piper.SendData);
-            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetNoteProcessor(), piper.SendData);
-            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetTrekProcessor(), piper.SendData);
+
+            spyTrekNotifier = infoProcessor;
+            spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
+
+            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 15000);
+        }
+
+
+        private void CreateChainOfResponsibility()
+        {
+
+            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
+            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData);
+            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, readProcessor, piper.SendData);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
             noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
@@ -88,9 +96,9 @@ namespace SpyTrekHost
 
             handleRead.SetSuccessor(handleError);
             handleError.SetSuccessor(handleWrite);
-            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 15000);
         }
 
+     
         private void Piper_OnFail(Object sender, PiperEventArgs e)
         {
             SelfDeleter(this, null);
