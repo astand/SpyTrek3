@@ -17,35 +17,26 @@ namespace SpyTrekHost.UserUI
         }
 
 
-
-
         private void btnRefresh_Click(Object sender, EventArgs e)
         {
             UpdateListNodes();
         }
 
-        public void EnforceUpdating()
-        {
-            if (InvokeRequired)
-            {
-                Action del = new Action(UpdateListNodes);
-                Invoke(del, new object[] { });
-            }
-            else
-            {
-                UpdateListNodes();
-            }
-        }
 
-        private void UpdateListNodes()
+        public void UpdateListNodes()
         {
             dataGridView1.Rows.Clear();
-
-            var list = delGetList?.Invoke();
-
-            foreach (var item in list)
+            Int32 num = 0;
+            lock (HICollection.List)
             {
-                dataGridView1.Rows.Add(item.ToString());
+                var collection = HICollection.List;
+                foreach (var item in collection)
+                {
+                    var index = dataGridView1.Rows.Add();
+                    dataGridView1.Rows[index].Cells[0].Value = ++num;
+                    dataGridView1.Rows[index].Cells[1].Value = item.ToString();
+                    dataGridView1.Rows[index].Cells[2].Value = item.Connected.ToString("HH:mm:ss.ff");
+                }
             }
         }
     }

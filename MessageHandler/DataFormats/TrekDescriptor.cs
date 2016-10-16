@@ -8,11 +8,11 @@ namespace MessageHandler.DataFormats
 {
     public class TrekDescriptor
     {
-        private UInt16 id;
+        public UInt16 Id { get; private set; }
 
-        private DateTime start;
+        public DateTime Start { get; private set; }
 
-        private DateTime stop;
+        public DateTime Stop { get; private set; }
 
         public UInt32 TrekSize { get; private set; }
         public UInt32 Dist { get; private set; }
@@ -28,9 +28,9 @@ namespace MessageHandler.DataFormats
         {
             Int32 current_position = offset;
 
-            id = BitConverter.ToUInt16(buff, current_position);
-            start = DateTimeUtil.GetDateTime(buff, current_position += 2);
-            stop = DateTimeUtil.GetDateTime(buff, current_position += 6);
+            Id = BitConverter.ToUInt16(buff, current_position);
+            Start = DateTimeUtil.GetDateTime(buff, current_position += 2);
+            Stop = DateTimeUtil.GetDateTime(buff, current_position += 6);
             TrekSize = BitConverter.ToUInt32(buff, current_position += 6);
             Dist = BitConverter.ToUInt32(buff, current_position += 4);
             Odometr = BitConverter.ToUInt32(buff, current_position += 4);
@@ -56,7 +56,7 @@ namespace MessageHandler.DataFormats
             return false;
         }
 
-        public override String ToString() => $"{id:D4}: {start.ToJS()}  {stop.ToJS()}. " + 
+        public override String ToString() => $"{Id:D4}: {Start.ToJS()}  {Stop.ToJS()}. " +
             $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
     };
 

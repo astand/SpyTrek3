@@ -31,6 +31,8 @@
             this.btnRefresh = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Num = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Info = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.connTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,32 +50,52 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Num});
+            this.Num,
+            this.Info,
+            this.connTime});
             this.dataGridView1.Location = new System.Drawing.Point(12, 65);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 11;
             this.dataGridView1.Size = new System.Drawing.Size(418, 392);
             this.dataGridView1.TabIndex = 2;
+            this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Num
             // 
-            this.Num.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Num.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Num.FillWeight = 50F;
             this.Num.HeaderText = "#";
             this.Num.Name = "Num";
             this.Num.ReadOnly = true;
+            this.Num.Width = 30;
             // 
-            // ListNodes
+            // Info
+            // 
+            this.Info.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Info.HeaderText = "Info";
+            this.Info.Name = "Info";
+            this.Info.ReadOnly = true;
+            this.Info.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // connTime
+            // 
+            this.connTime.HeaderText = "Connected";
+            this.connTime.Name = "connTime";
+            this.connTime.ReadOnly = true;
+            // 
+            // ListNodesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(442, 469);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnRefresh);
-            this.Name = "ListNodes";
+            this.Name = "ListNodesForm";
             this.Text = "ListNodes";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -85,5 +107,7 @@
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Num;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Info;
+        private System.Windows.Forms.DataGridViewTextBoxColumn connTime;
     }
 }

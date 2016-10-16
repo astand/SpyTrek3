@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using StreamHandler.Abstract;
 using System.Diagnostics;
+using MessageHandler.Notifiers;
+using System.Threading;
 
 namespace MessageHandler.Processors
 {
@@ -15,6 +17,8 @@ namespace MessageHandler.Processors
 
         private Int32 block_synchro = 0;
 
+        public Action<SpyTrekInfo> OnUpdated;
+
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             if (packet.Opc == OpCodes.DATA)
@@ -23,7 +27,7 @@ namespace MessageHandler.Processors
                 {
                     SpyTrekInfo Info = new SpyTrekInfo();
                     Info.TryParse(Encoding.UTF8.GetString(packet.Data));
-                    Debug.WriteLine($"{DateTime.Now.ToString("mm:ss.fff")}. {Info}");
+                    OnUpdated?.Invoke(Info);
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)

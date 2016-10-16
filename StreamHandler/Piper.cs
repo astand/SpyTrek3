@@ -26,7 +26,7 @@ namespace StreamHandler
         public event EventHandler<PiperEventArgs> OnData;
 
         public event EventHandler<PiperEventArgs> OnFail;
-        
+
         public Piper(/*Stream stream, */IPipeReader reader, IPipeWriter writer)
         {
             /* need check for null ??? */
@@ -44,17 +44,25 @@ namespace StreamHandler
         public Int32 SendData(IStreamData streamdata)
         {
             var array_to_send = packman.PackPacket(streamdata.SerializeToByteArray());
-            writer.Write(array_to_send, array_to_send.Length);
+            try
+            {
+                writer.Write(array_to_send, array_to_send.Length);
+            }
+            catch (NullReferenceException ex)
+            {
+
+            }
+
+            catch (IOException ex)
+            {
+                OnFailCaller($"Write pipe is crashed. {ex.Message}");
+            }
             return 0;
         }
 
         public Byte[] ReadUnpackedData() => packman.Data();
 
-        public void Dispose()
-        {
-            readtime.Dispose();
-        }
-
+  
         private void TimerForPollingStreamInit(double ms)
         {
             readtime = new System.Timers.Timer(ms);
@@ -87,6 +95,16 @@ namespace StreamHandler
         public void TestOnDataInvoker()
         {
             OnDataCaller(new Byte[5], "Test invokation");
+        }
+        public void Dispose()
+        {
+            readtime?.Dispose();
+            readtime = null;
+            reader = null;
+            writer = null;
+            packman = null;
+            OnData = null;
+            OnFail = null;
         }
 
     }

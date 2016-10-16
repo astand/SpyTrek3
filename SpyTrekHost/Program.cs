@@ -12,13 +12,12 @@ using MessageHandler;
 using System.Threading;
 using SpyTrekHost.UserUI;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SpyTrekHost
 {
     class Program
     {
-
-        static List<HandleInstance> nodes = new List<HandleInstance>();
 
         static TcpClient tcpClient;
 
@@ -44,7 +43,8 @@ namespace SpyTrekHost
             td.Start();
 
             listNodes = new ListNodesForm();
-            listNodes.SetListGetter(RefreshInstances);
+
+            HICollection.AddListUpdater(listNodes.UpdateListNodes);
 
             Thread ui = new Thread(UIThread);
             ui.Start();
@@ -61,11 +61,7 @@ namespace SpyTrekHost
                     continue;
                 }
 
-                nodes.Add(new HandleInstance(tcpClient.GetStream()));
-                string info = String.Format($"Client connected! Info : {tcpListener.Server}. Count in pool = {nodes.Count}");
-                listNodes.EnforceUpdating();
-                
-                Console.WriteLine(info);
+                HICollection.Add(new HandleInstance(tcpClient.GetStream()));
             }
         }
 
@@ -73,33 +69,13 @@ namespace SpyTrekHost
         static void Dispatcher()
         {
             Console.WriteLine($"Dispatcher has started @ {DateTime.Now.ToShortTimeString()}");
-
-
-            while (true)
-            {
-                var input = Console.ReadLine();
-
-                if (nodes.Count != 0)
-                {
-                    var last_node_index = nodes.Count - 1;
-                    var pipe = nodes[last_node_index].Pipe;
-
-                    UInt16 commandNum;
-                    if (UInt16.TryParse(input, out commandNum) == false)
-                        commandNum = 4;
-
-                    pipe.SendData(new ReadRequest(commandNum));
-                }
-
-                Thread.Sleep(200);
-            }
         }
+
+
 
         static void UIThread()
         {
             Application.Run(listNodes);
         }
-
-        static List<HandleInstance> RefreshInstances() => nodes;
     }
 }
