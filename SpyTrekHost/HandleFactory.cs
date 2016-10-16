@@ -18,7 +18,6 @@ namespace SpyTrekHost
     {
         static IFrameProccesor m_trek;
         static InfoProcessor m_info;
-        static IFrameProccesor m_note;
 
         static IFrameProccesor m_error;
 
@@ -97,8 +96,6 @@ namespace SpyTrekHost
 
     internal class ErrorProcessor : IFrameProccesor
     {
-        public event EventHandler ProcessFinished;
-
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             Debug.WriteLine($"Error packet received!!!");
