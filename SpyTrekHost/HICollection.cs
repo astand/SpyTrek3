@@ -25,16 +25,6 @@ namespace SpyTrekHost
             }
         }
 
-        public static void Remove(HandleInstance instance)
-        {
-            lock (list_)
-            {
-                instance.SelfDeleter -= Deleter;
-                list_.Remove(instance);
-                RefreshList();
-            }
-        }
-
 
         public static void Deleter(Object sender, EventArgs e)
         {
@@ -43,9 +33,11 @@ namespace SpyTrekHost
                 var item = sender as HandleInstance;
                 Int32 index = list_.IndexOf(item);
                 if (index >= 0)
+                {
                     list_.RemoveAt(index);
-
-                item.Dispose();
+                    item.Dispose();
+                    RefreshList();
+                }
                 Debug.WriteLine($"Item [{index}] was been deleted.");
             }
         }
