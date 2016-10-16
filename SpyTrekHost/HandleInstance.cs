@@ -62,7 +62,7 @@ namespace SpyTrekHost
 
             CreateChainOfResponsibility();
 
-            timecallback = new System.Threading.Timer(TimerCallback, null, Timeout.Infinite, 15000);
+            timecallback = new System.Threading.Timer(TimerCallback, null, 500, 15000);
         }
 
 
@@ -106,7 +106,7 @@ namespace SpyTrekHost
 
         private void TimerCallback(Object obj)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}. Timer scheduler elapsed");
+            Debug.WriteLine($"{InstanceName()}:{DateTime.Now.ToString("HH:mm:ss.fff")}. Timer scheduler elapsed");
 
             Pipe.SendData(new ReadRequest(4));
         }
@@ -175,5 +175,7 @@ namespace SpyTrekHost
                 networkPipe = null;
             }
         }
+
+        private string InstanceName() => $"NODE[{timeConnected.ToString("mmssfff")}]";
     }
 }
