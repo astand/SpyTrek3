@@ -127,7 +127,6 @@ namespace SpyTrekHost
         private void WhenInfoUpdated(SpyTrekInfo info)
         {
             spyTrekInfo = info;
-            HICollection.RefreshList();
         }
 
         public override String ToString()
