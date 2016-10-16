@@ -33,8 +33,24 @@ namespace SpyTrekHost.UserUI
                     AddDescriptorToGrid(item);
                 }
             }
+        }
 
+        public void AddInfoToView(SpyTrekInfo info)
+        {
+            if (InvokeRequired)
+            {
+                var del = new Action<SpyTrekInfo>(AddInfoToView);
+                Invoke(del, new object[] { info });
+            }
+            else
+            {
+                if (info == null)
+                    return;
 
+                lblImei.Text = info.Imei;
+                lblName.Text = info.Name;
+                lblVer.Text = info.Version;
+            }
         }
 
         private void AddDescriptorToGrid(TrekDescriptor dsc)

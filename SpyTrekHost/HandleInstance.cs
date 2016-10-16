@@ -58,9 +58,7 @@ namespace SpyTrekHost
             piper.OnFail += Piper_OnFail;
             piper.OnData += Piper_OnData;
 
-
-            spyTrekNotifier = infoProcessor;
-            spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
+            infoProcessor.OnUpdated += WhenInfoUpdated;
 
             CreateChainOfResponsibility();
 
@@ -126,9 +124,10 @@ namespace SpyTrekHost
             }
         }
 
-        private void SpyTrekNotifier_Notify(Object sender, InfoEventArgs e)
+        private void WhenInfoUpdated(SpyTrekInfo info)
         {
-            spyTrekInfo = e.spyTrekInfo;
+            spyTrekInfo = info;
+
         }
 
         public override String ToString()
@@ -146,6 +145,11 @@ namespace SpyTrekHost
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
         {
             noteProcessor.OnUpdated += updater;
+        }
+
+        public void SetInfoUpdater(Action<SpyTrekInfo> updater)
+        {
+            infoProcessor.OnUpdated += updater;
         }
 
         public void Dispose()

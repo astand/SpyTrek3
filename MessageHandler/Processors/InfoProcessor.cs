@@ -11,13 +11,13 @@ using System.Threading;
 
 namespace MessageHandler.Processors
 {
-    public class InfoProcessor : IFrameProccesor, ISpyTrekInfoNotifier
+    public class InfoProcessor : IFrameProccesor
     {
         public SpyTrekInfo Info { get; }
 
         private Int32 block_synchro = 0;
 
-        public event EventHandler<InfoEventArgs> Notify;
+        public Action<SpyTrekInfo> OnUpdated;
 
         public void Process(FramePacket packet, ref IStreamData answer)
         {
@@ -27,8 +27,7 @@ namespace MessageHandler.Processors
                 {
                     SpyTrekInfo Info = new SpyTrekInfo();
                     Info.TryParse(Encoding.UTF8.GetString(packet.Data));
-                    var argsToEvent = new InfoEventArgs(info: Info);
-                    Volatile.Read(ref Notify)?.Invoke(this, argsToEvent);
+                    OnUpdated?.Invoke(Info);
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
