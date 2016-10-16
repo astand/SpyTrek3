@@ -22,27 +22,11 @@ namespace SpyTrekHost.UserUI
             UpdateListNodes();
         }
 
-        public void EnforceUpdating()
-        {
-            if (InvokeRequired)
-            {
-                //Action del = new Action(UpdateListNodes);
-                //Invoke(del, new object[] { });
-            }
-            else
-            {
-                UpdateListNodes();
-            }
-        }
 
-        private void UpdateListNodes()
+        public void UpdateListNodes()
         {
             dataGridView1.Rows.Clear();
-
-            var tempList = delGetList?.Invoke();
-
             Int32 num = 0;
-
             lock (HICollection.List)
             {
                 var collection = HICollection.List;

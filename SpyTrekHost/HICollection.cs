@@ -8,6 +8,8 @@ namespace SpyTrekHost
     {
         static List<HandleInstance> list_;
         static public List<HandleInstance> List => list_;
+
+        static Action WhenListRefresh;
         static HICollection()
         {
             list_ = new List<HandleInstance>();
@@ -19,6 +21,7 @@ namespace SpyTrekHost
             {
                 instance.SelfDeleter += Deleter;
                 list_.Add(instance);
+                RefreshList();
             }
         }
 
@@ -28,6 +31,7 @@ namespace SpyTrekHost
             {
                 instance.SelfDeleter -= Deleter;
                 list_.Remove(instance);
+                RefreshList();
             }
         }
 
@@ -51,6 +55,18 @@ namespace SpyTrekHost
             if (index < list_.Count)
                 return list_[index];
             return null;
+        }
+
+
+        public static void AddListUpdater(Action updater)
+        {
+            WhenListRefresh += updater;
+        }
+
+
+        internal static void RefreshList()
+        {
+            WhenListRefresh?.Invoke();
         }
     }
 }

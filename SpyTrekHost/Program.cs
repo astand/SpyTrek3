@@ -44,6 +44,8 @@ namespace SpyTrekHost
 
             listNodes = new ListNodesForm();
 
+            HICollection.AddListUpdater(listNodes.UpdateListNodes);
+
             Thread ui = new Thread(UIThread);
             ui.Start();
 
