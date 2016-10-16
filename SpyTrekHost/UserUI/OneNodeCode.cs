@@ -15,15 +15,34 @@ namespace SpyTrekHost.UserUI
 {
     public partial class OneNodeForm : Form
     {
-        public void AddNotesToGridView(Object obj, NoteListEventArgs e)
+
+
+        public void AddNotesToGridView(List<TrekDescriptor> list, bool isNew)
         {
-            foreach (var item in e.NoteList)
+
+            if (InvokeRequired)
             {
-                float indist = 0;
-                indist = (item.Dist / 10000);
-                UInt32 allmileage = (item.Odometr/ 10000);
-                dataGridView1.Rows.Add(item.Id, item.ToString(), item.TrekSize, indist, allmileage);
+                var del = new Action<List<TrekDescriptor>, bool>(AddNotesToGridView);
+                Invoke(del, new object[] { list, isNew });
             }
+            else
+            {
+                dataGridView1.Rows.Clear();
+                foreach (var item in list)
+                {
+                    AddDescriptorToGrid(item);
+                }
+            }
+
+
+        }
+
+        private void AddDescriptorToGrid(TrekDescriptor dsc)
+        {
+            float indist = 0;
+            indist = (dsc.Dist / 10000);
+            UInt32 allmileage = (dsc.Odometr/ 10000);
+            dataGridView1.Rows.Add(dsc.Id, dsc.ToString(), dsc.TrekSize, indist, allmileage);
         }
     }
 }

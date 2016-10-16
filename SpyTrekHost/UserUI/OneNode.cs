@@ -19,12 +19,16 @@ namespace SpyTrekHost.UserUI
         public OneNodeForm(HandleInstance handleInstance)
         {
             node_ = handleInstance;
+            node_.SetListUpdater(AddNotesToGridView);
             InitializeComponent();
         }
 
         private void btnInfo_Click(Object sender, EventArgs e)
         {
             var info = node_.Info;
+
+            if (info == null)
+                return;
 
             lblImei.Text = info.Imei;
 
@@ -36,6 +40,11 @@ namespace SpyTrekHost.UserUI
         private void button3_Click(Object sender, EventArgs e)
         {
             node_.Pipe.SendData(new ReadRequest(FiledID.Filenotes));
+        }
+
+        private void button4_Click(Object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
         }
     }
 }
