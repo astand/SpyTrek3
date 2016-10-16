@@ -26,20 +26,10 @@ namespace SpyTrekHost
         static ReadProcessorFactory()
         {
             m_info = new InfoProcessor();
-            m_note = new TrekDescriptionProcessor();
-            //m_note = new ReadProcessor("note");
             m_trek = new ReadProcessor("Trek");
-
             m_error = new ErrorProcessor();
         }
 
-        //public static IFrameProccesor GetTrekProcessor() => m_trek;
-
-        //public static IFrameProccesor GetNoteProcessor() => m_note;
-
-        //public static IFrameProccesor GetInfoProcessor() => new InfoProcessor();
-
-        //public static ISpyTrekInfoNotifier GetInfoNotifier() => null;
 
         public static IFrameProccesor GetErrorProcessor() => m_error;
 
@@ -51,49 +41,6 @@ namespace SpyTrekHost
                 m_firmware = new FirmwareProcessor(piper, path_to_image);
             }
             return m_firmware;
-        }
-    }
-
-    internal class TrekDescriptionProcessor : IFrameProccesor
-    {
-        public event EventHandler ProcessFinished;
-
-        public void Process(FramePacket packet, ref IStreamData answer)
-        {
-            if (packet.Opc == OpCodes.DATA)
-            {
-                ProcessTrekDescriptors(packet.Data, packet.Id);
-                answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
-            }
-        }
-
-        private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
-        {
-            List<TrekDescriptor> NoteListDescriptor = new List<TrekDescriptor>();
-            TrekDescriptor desc = new TrekDescriptor();
-
-            Int32 current_offset = 0;
-            bool parseOk;
-            do
-            {
-                var dsc = new TrekDescriptor();
-                parseOk = dsc.TryParse(data, current_offset);
-
-                if (parseOk == true)
-                {
-                    current_offset += TrekDescriptor.Length;
-                    NoteListDescriptor.Add(dsc);
-                    Console.WriteLine(desc.ToString());
-                }
-
-            } while (parseOk);
-
-            ProcessFinished?.Invoke(this, new NoteListEventArgs(NoteListDescriptor));
-
-            //while (desc.TryParse(data, current_offset) == true)
-            //{
-            //    current_offset += TrekDescriptor.Length;
-            //}
         }
     }
 

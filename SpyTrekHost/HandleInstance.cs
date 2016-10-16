@@ -44,8 +44,8 @@ namespace SpyTrekHost
         SpyTrekInfo spyTrekInfo;
 
         InfoProcessor infoProcessor = new InfoProcessor();
-        TrekDescriptionProcessor noteProcessor = new TrekDescriptionProcessor();
         ReadProcessor readProcessor = new ReadProcessor("Trek");
+        TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
         public SpyTrekInfo Info => spyTrekInfo;
 
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
@@ -62,7 +62,9 @@ namespace SpyTrekHost
             spyTrekNotifier = infoProcessor;
             spyTrekNotifier.Notify += SpyTrekNotifier_Notify;
 
-            timecallback = new System.Threading.Timer(TimerCallback, null, 0, 15000);
+            CreateChainOfResponsibility();
+
+            timecallback = new System.Threading.Timer(TimerCallback, null, Timeout.Infinite, 15000);
         }
 
 
@@ -115,7 +117,7 @@ namespace SpyTrekHost
         {
             var frame = new FramePacket(e.Data);
 
-            Console.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
+            Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
             /// When the packets comes very fast and HandleRequest cannot process 
             /// data in time the packets are lost, so need process with locking
             lock (handleRead)
@@ -139,6 +141,11 @@ namespace SpyTrekHost
             }
 
             return retval;
+        }
+
+        public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
+        {
+            noteProcessor.OnUpdated += updater;
         }
 
         public void Dispose()
