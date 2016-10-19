@@ -19,6 +19,7 @@ namespace MessageHandler.Processors
                 // data
                 if (block_id + 1 == packet.Id)
                 {
+                    block_id = packet.Id;
                     SaveTrek(packet.Data, packet.Id);
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 }
