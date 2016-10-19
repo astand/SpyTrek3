@@ -38,5 +38,10 @@ namespace SpyTrekHost.UserUI
         {
             dataGridView1.Rows.Clear();
         }
+
+        private void button1_Click(Object sender, EventArgs e)
+        {
+            node_.ReadTrek(0);
+        }
     }
 }

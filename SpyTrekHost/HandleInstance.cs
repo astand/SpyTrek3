@@ -46,6 +46,7 @@ namespace SpyTrekHost
         InfoProcessor infoProcessor = new InfoProcessor();
         ReadProcessor readProcessor = new ReadProcessor("Trek");
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
+        TrekSaverProcessor saveProc = new TrekSaverProcessor();
         public SpyTrekInfo Info => spyTrekInfo;
 
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
@@ -71,7 +72,7 @@ namespace SpyTrekHost
 
             IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
             IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData);
-            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, readProcessor, piper.SendData);
+            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
             noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
@@ -98,7 +99,7 @@ namespace SpyTrekHost
             handleError.SetSuccessor(handleWrite);
         }
 
-     
+
         private void Piper_OnFail(Object sender, PiperEventArgs e)
         {
             SelfDeleter(this, null);
@@ -143,6 +144,19 @@ namespace SpyTrekHost
             }
 
             return retval;
+        }
+
+        public Int32 ReadTrek(int index_in_list)
+        {
+            var ret = noteProcessor.GetTrekID(index_in_list);
+            UInt16 file_id = (UInt16)ret;
+            var paydata = BitConverter.GetBytes((UInt16)file_id);
+
+            if (ret >= 0)
+            {
+                piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
+            }
+            return ret;
         }
 
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
