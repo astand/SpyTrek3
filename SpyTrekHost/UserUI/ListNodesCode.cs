@@ -9,14 +9,6 @@ namespace SpyTrekHost.UserUI
 {
     public partial class ListNodesForm : Form
     {
-        protected Func<List<HandleInstance>> delGetList;
-
-        public void SetListGetter(Func<List<HandleInstance>> d)
-        {
-            delGetList = d;
-        }
-
-
         private void btnRefresh_Click(Object sender, EventArgs e)
         {
             UpdateListNodes();
