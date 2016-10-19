@@ -16,7 +16,6 @@ namespace MessageHandler.Processors
 
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        public List<TrekDescriptor> GetList => list;
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             if (packet.Opc == OpCodes.DATA)
@@ -24,6 +23,27 @@ namespace MessageHandler.Processors
                 ProcessTrekDescriptors(packet.Data, packet.Id);
                 answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
             }
+        }
+
+        public Int32 GetTrekID(int index_in_list)
+        {
+            if (index_in_list <= list.Count)
+            {
+                return -1;
+            }
+
+            var item = list[index_in_list];
+
+            if (CheckTrekParams(item) == false)
+                return -2;
+
+            return item.Id;
+        }
+
+        private bool CheckTrekParams(TrekDescriptor desc)
+        {
+            // TODO - real checking work
+            return true;
         }
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
