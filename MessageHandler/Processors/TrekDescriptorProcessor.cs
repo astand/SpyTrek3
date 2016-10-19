@@ -27,7 +27,7 @@ namespace MessageHandler.Processors
 
         public Int32 GetTrekID(int index_in_list)
         {
-            if (index_in_list <= list.Count)
+            if (index_in_list >= list.Count)
             {
                 return -1;
             }
