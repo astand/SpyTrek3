@@ -15,6 +15,8 @@ namespace MessageHandler
         public const UInt16 ACK = 4;
 
         public const UInt16 ERROR = 5;
+
+        public const UInt16 kFirstDataBlockNum = 1;
     }
 
     public class ReadOperationer : IFrameSpecification
