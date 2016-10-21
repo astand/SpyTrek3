@@ -34,17 +34,9 @@ namespace MessageHandler.Processors
 
             var item = list[index_in_list];
 
-            if (CheckTrekParams(item) == false)
-                return -2;
-
             return item.Id;
         }
 
-        private bool CheckTrekParams(TrekDescriptor desc)
-        {
-            // TODO - real checking work
-            return true;
-        }
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
