@@ -46,11 +46,11 @@ namespace MessageHandler.Processors
         }
 
 
-
-        //public bool IsNewTrek(MatrixItem item)
-        //{
-
-        //}
+        public bool IsTrekNeed(TrekDescriptor desc)
+        {
+            return true;
+        }
+     
 
         private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
