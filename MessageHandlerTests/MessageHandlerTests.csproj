@@ -59,6 +59,8 @@
     <Compile Include="Frame\WriteRequestTests.cs" />
     <Compile Include="Message\PacketFrameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrekWriter\TrekDescriptorArray.cs" />
+    <Compile Include="TrekWriter\TrekFileFolderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageHandler\MessageHandler.csproj">
