@@ -41,7 +41,7 @@ namespace SpyTrekHost.UserUI
 
         private void button1_Click(Object sender, EventArgs e)
         {
-            node_.ReadTrek(0);
+            node_.ReadTrekCmd(0);
         }
     }
 }

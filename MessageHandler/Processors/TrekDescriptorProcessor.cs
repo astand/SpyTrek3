@@ -37,6 +37,7 @@ namespace MessageHandler.Processors
             return item.Id;
         }
 
+        public TrekDescriptor GetDescriptor(Int32 i) => i < list.Count ? (list[i]) : null;
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
