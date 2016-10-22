@@ -130,6 +130,7 @@ namespace SpyTrekHost
             if (spyTrekInfo == null)
             {
                 spyTrekInfo = info;
+                saveProc.SetImeiPath(spyTrekInfo.Imei);
                 HICollection.RefreshList();
             }
         }
@@ -146,17 +147,23 @@ namespace SpyTrekHost
             return retval;
         }
 
-        public Int32 ReadTrek(int index_in_list)
+        public Int32 ReadTrekCmd(int index_in_list)
         {
-            var ret = noteProcessor.GetTrekID(index_in_list);
-            UInt16 file_id = (UInt16)ret;
-            var paydata = BitConverter.GetBytes((UInt16)file_id);
+            var ret = noteProcessor.GetDescriptor(index_in_list);
+            if (ret == null)
+                /// trek not found
+                return -1;
 
-            if (ret >= 0)
-            {
-                piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
-            }
-            return ret;
+            var isneed = saveProc.IsTrekNeed(ret);
+            if (!isneed)
+                /// no needness to downloading
+                return -2;
+                
+            var paydata = BitConverter.GetBytes(ret.Id);
+
+            piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
+
+            return ret.Id;
         }
 
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
