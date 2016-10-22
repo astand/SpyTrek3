@@ -11,12 +11,18 @@ namespace MessageHandler.Processors
 {
     public class TrekSaverProcessor : IFrameProccesor
     {
+        public Action<String> onData;
+
         Int32 block_id;
 
         Int32 trekNoteNum;
 
+        private StringBuilder statusString = new StringBuilder();
+
         public void Process(FramePacket packet, ref IStreamData answer)
         {
+            statusString.Clear();
+
             if (packet.Opc == OpCodes.DATA)
             {
                 // data
@@ -24,6 +30,7 @@ namespace MessageHandler.Processors
                 {
                     block_id = packet.Id;
                     SaveTrek(packet.Data, packet.Id);
+                    statusString.Append($"Downloading... {trekNoteNum}");
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 }
                 else return;
@@ -31,8 +38,11 @@ namespace MessageHandler.Processors
             else if (packet.Opc == OpCodes.RRQ)
             {
                 // Head confirmation
+                statusString.Append($"RRQ Answer received");
                 block_id = 0;
             }
+
+            onData?.Invoke(statusString.ToString());
         }
 
 
@@ -42,7 +52,7 @@ namespace MessageHandler.Processors
 
         //}
 
-        private void SaveTrek(byte[] data, UInt16 block_num)
+        private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
             if (block_num == OpCodes.kFirstDataBlockNum)
             {
@@ -63,6 +73,8 @@ namespace MessageHandler.Processors
                 }
             }
             while (parseOk);
+
+            return trekNoteNum;
         }
     }
 }
