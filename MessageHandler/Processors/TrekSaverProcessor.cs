@@ -19,6 +19,8 @@ namespace MessageHandler.Processors
 
         private StringBuilder statusString = new StringBuilder();
 
+        private String imeiPath;
+
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             statusString.Clear();
@@ -51,6 +53,10 @@ namespace MessageHandler.Processors
             return true;
         }
      
+        public void SetImeiPath(String imei)
+        {
+            imeiPath = imei;
+        }
 
         private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
@@ -69,7 +75,7 @@ namespace MessageHandler.Processors
                 {
                     current_offset += NaviNote.Lenght;
                     trekNoteNum++;
-                    Debug.WriteLine($"[{trekNoteNum}] Trek: {trekNote.ToString()}");
+                    Debug.WriteLine($"{imeiPath}:[{trekNoteNum}] Trek: {trekNote.ToString()}");
                 }
             }
             while (parseOk);

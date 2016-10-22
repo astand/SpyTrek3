@@ -130,6 +130,7 @@ namespace SpyTrekHost
             if (spyTrekInfo == null)
             {
                 spyTrekInfo = info;
+                saveProc.SetImeiPath(spyTrekInfo.Imei);
                 HICollection.RefreshList();
             }
         }
