@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using StreamHandler.Abstract;
 using System.Diagnostics;
 using MessageHandler.DataFormats;
+using MessageHandler.TrekWriter;
 
 namespace MessageHandler.Processors
 {
@@ -15,7 +16,7 @@ namespace MessageHandler.Processors
 
         Int32 block_id;
 
-        Int32 trekNoteNum;
+        private ITrekWriter trekWr = new FileTrekWriter();
 
         private StringBuilder statusString = new StringBuilder();
 
@@ -31,8 +32,8 @@ namespace MessageHandler.Processors
                 if (block_id + 1 == packet.Id)
                 {
                     block_id = packet.Id;
-                    SaveTrek(packet.Data, packet.Id);
-                    statusString.Append($"Downloading... {trekNoteNum}");
+                    var note_counts = SaveTrek(packet.Data, packet.Id);
+                    statusString.Append($"Downloading... {note_counts * NaviNote.Lenght} Bytes.");
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 }
                 else return;
@@ -50,9 +51,9 @@ namespace MessageHandler.Processors
 
         public bool IsTrekNeed(TrekDescriptor desc)
         {
-            return true;
+            return trekWr.TrekCanBeWrite(imeiPath, desc);
         }
-     
+
         public void SetImeiPath(String imei)
         {
             imeiPath = imei;
@@ -60,13 +61,11 @@ namespace MessageHandler.Processors
 
         private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
-            if (block_num == OpCodes.kFirstDataBlockNum)
-            {
-                trekNoteNum = 0;
-            }
+            var is_start_block = (block_num == OpCodes.kFirstDataBlockNum);
 
             Int32 current_offset = 0;
             bool parseOk;
+            var notes = new List<NaviNote>();
             do
             {
                 var trekNote = new NaviNote();
@@ -74,13 +73,13 @@ namespace MessageHandler.Processors
                 if (parseOk)
                 {
                     current_offset += NaviNote.Lenght;
-                    trekNoteNum++;
-                    Debug.WriteLine($"{imeiPath}:[{trekNoteNum}] Trek: {trekNote.ToString()}");
+                    notes.Add(trekNote);
                 }
             }
             while (parseOk);
 
-            return trekNoteNum;
+            /// try write all available notes
+            return trekWr.WriteNotes(notes, is_start_block);
         }
     }
 }

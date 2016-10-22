@@ -66,6 +66,8 @@
     <Compile Include="Processors\TrekDescriptorProcessor.cs" />
     <Compile Include="Processors\TrekSaverProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrekWriter\FileTrekWriter.cs" />
+    <Compile Include="TrekWriter\ITrekWriter.cs" />
     <Compile Include="WRQProcessors\FirmWareProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
