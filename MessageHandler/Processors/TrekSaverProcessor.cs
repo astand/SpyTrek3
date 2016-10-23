@@ -49,10 +49,7 @@ namespace MessageHandler.Processors
         }
 
 
-        public bool IsTrekNeed(TrekDescriptor desc)
-        {
-            return trekWr.TrekCanBeWrite(imeiPath, desc);
-        }
+        public bool IsTrekNeed(TrekDescriptor desc) => trekWr.TrekCanBeWrite(imeiPath, desc);
 
         public void SetImeiPath(String imei)
         {
