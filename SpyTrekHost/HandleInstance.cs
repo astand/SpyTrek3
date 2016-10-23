@@ -176,6 +176,11 @@ namespace SpyTrekHost
             infoProcessor.OnUpdated += updater;
         }
 
+        public void SetTrekUpdater(Action<string> updater)
+        {
+            saveProc.WriteStatus += updater;
+        }
+
         public void Dispose()
         {
             Debug.WriteLine("Disposing action for HandleInstance");

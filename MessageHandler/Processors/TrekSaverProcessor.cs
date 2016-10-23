@@ -12,7 +12,7 @@ namespace MessageHandler.Processors
 {
     public class TrekSaverProcessor : IFrameProccesor
     {
-        public Action<String> onData;
+        public Action<String> WriteStatus;
 
         Int32 block_id;
 
@@ -45,7 +45,7 @@ namespace MessageHandler.Processors
                 block_id = 0;
             }
 
-            onData?.Invoke(statusString.ToString());
+            WriteStatus?.Invoke(statusString.ToString());
         }
 
 
