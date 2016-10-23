@@ -11,15 +11,15 @@ namespace MessageHandler.TrekWriter
     public class FileTrekWriter : ITrekWriter
     {
         Int32 currentOffset = 0;
+
+        TrekFileFolder trekFolder = new TrekFileFolder("user/");
+
         public void ResetWriter()
         {
             throw new NotImplementedException();
         }
 
-        public Boolean TrekCanBeWrite(String idPath, TrekDescriptor desc)
-        {
-            return true;
-        }
+        public Boolean TrekCanBeWrite(String idPath, TrekDescriptor desc) => trekFolder.IsTrekNotPresented(desc, idPath);
 
         public Int32 WriteNotes(List<NaviNote> notes, Boolean start)
         {
@@ -28,11 +28,9 @@ namespace MessageHandler.TrekWriter
                 currentOffset = 0;
             }
 
-            foreach (var item in notes)
-            {
-                Debug.WriteLine($"Note [{currentOffset}]: {item.ToString()}");
-                currentOffset++;
-            }
+            trekFolder.AddNoteList(notes);
+            currentOffset += notes.Count;
+            Debug.WriteLine($"{currentOffset} notes was added.");
 
             return currentOffset;
         }
