@@ -46,6 +46,7 @@ namespace SpyTrekHost
         InfoProcessor infoProcessor = new InfoProcessor();
         ReadProcessor readProcessor = new ReadProcessor("Trek");
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
+        TrekSaverProcessor saveProc = new TrekSaverProcessor();
         public SpyTrekInfo Info => spyTrekInfo;
 
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
@@ -71,7 +72,7 @@ namespace SpyTrekHost
 
             IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
             IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData);
-            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, readProcessor, piper.SendData);
+            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
             noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
@@ -98,7 +99,7 @@ namespace SpyTrekHost
             handleError.SetSuccessor(handleWrite);
         }
 
-     
+
         private void Piper_OnFail(Object sender, PiperEventArgs e)
         {
             SelfDeleter(this, null);
@@ -115,7 +116,7 @@ namespace SpyTrekHost
         {
             var frame = new FramePacket(e.Data);
 
-            Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
+            //Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
             /// When the packets comes very fast and HandleRequest cannot process 
             /// data in time the packets are lost, so need process with locking
             lock (handleRead)
@@ -126,8 +127,12 @@ namespace SpyTrekHost
 
         private void WhenInfoUpdated(SpyTrekInfo info)
         {
-            spyTrekInfo = info;
-            HICollection.RefreshList();
+            if (spyTrekInfo == null)
+            {
+                spyTrekInfo = info;
+                saveProc.SetImeiPath(spyTrekInfo.Imei);
+                HICollection.RefreshList();
+            }
         }
 
         public override String ToString()
@@ -142,6 +147,25 @@ namespace SpyTrekHost
             return retval;
         }
 
+        public Int32 ReadTrekCmd(int index_in_list)
+        {
+            var ret = noteProcessor.GetDescriptor(index_in_list);
+            if (ret == null)
+                /// trek not found
+                return -1;
+
+            var isneed = saveProc.IsTrekNeed(ret);
+            if (!isneed)
+                /// no needness to downloading
+                return -2;
+                
+            var paydata = BitConverter.GetBytes(ret.Id);
+
+            piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
+
+            return ret.Id;
+        }
+
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
         {
             noteProcessor.OnUpdated += updater;
@@ -150,6 +174,11 @@ namespace SpyTrekHost
         public void SetInfoUpdater(Action<SpyTrekInfo> updater)
         {
             infoProcessor.OnUpdated += updater;
+        }
+
+        public void SetTrekUpdater(Action<string> updater)
+        {
+            saveProc.WriteStatus += updater;
         }
 
         public void Dispose()

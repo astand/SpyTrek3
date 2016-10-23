@@ -60,5 +60,18 @@ namespace SpyTrekHost.UserUI
             UInt32 allmileage = (dsc.Odometr/ 10000);
             dataGridView1.Rows.Add(dsc.Id, dsc.ToString(), dsc.TrekSize, indist, allmileage);
         }
+
+        private void Label2Updater(String str)
+        {
+            if (InvokeRequired)
+            {
+                var del = new Action<string>(Label2Updater);
+                Invoke(del, new object[] { str });
+            }
+            else
+            {
+                label2.Text = str;
+            }
+        }
     }
 }

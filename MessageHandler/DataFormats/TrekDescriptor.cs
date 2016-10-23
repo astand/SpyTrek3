@@ -20,6 +20,8 @@ namespace MessageHandler.DataFormats
 
         public static Int32 Length { get; } = 2 + 6 + 6 + 4 + 4 + 4;
 
+        public Int32 NotesCount => ((int)(TrekSize / NaviNote.Lenght));
+
         private static readonly Int32 MINIMUM_DISTANCE_DETECT = (200 * 10);
 
         public TrekDescriptor() { }

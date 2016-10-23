@@ -40,7 +40,7 @@
             // 
             this.btnRefresh.Location = new System.Drawing.Point(12, 12);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(260, 25);
+            this.btnRefresh.Size = new System.Drawing.Size(260, 38);
             this.btnRefresh.TabIndex = 1;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
@@ -51,8 +51,9 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Num,
             this.Info,
@@ -60,18 +61,24 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 65);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
             this.dataGridView1.RowHeadersWidth = 11;
-            this.dataGridView1.Size = new System.Drawing.Size(418, 392);
-            this.dataGridView1.TabIndex = 2;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataGridView1.Size = new System.Drawing.Size(539, 484);
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.TabStop = false;
             this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // Num
             // 
             this.Num.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Num.FillWeight = 50F;
+            this.Num.Frozen = true;
             this.Num.HeaderText = "#";
+            this.Num.MaxInputLength = 5;
             this.Num.Name = "Num";
             this.Num.ReadOnly = true;
+            this.Num.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Num.Width = 30;
             // 
             // Info
@@ -92,9 +99,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(442, 469);
+            this.ClientSize = new System.Drawing.Size(564, 561);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnRefresh);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(580, 600);
+            this.MinimumSize = new System.Drawing.Size(580, 600);
             this.Name = "ListNodesForm";
             this.Text = "ListNodes";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

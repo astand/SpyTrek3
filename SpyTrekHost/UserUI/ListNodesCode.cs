@@ -9,14 +9,6 @@ namespace SpyTrekHost.UserUI
 {
     public partial class ListNodesForm : Form
     {
-        protected Func<List<HandleInstance>> delGetList;
-
-        public void SetListGetter(Func<List<HandleInstance>> d)
-        {
-            delGetList = d;
-        }
-
-
         private void btnRefresh_Click(Object sender, EventArgs e)
         {
             UpdateListNodes();
@@ -25,10 +17,24 @@ namespace SpyTrekHost.UserUI
 
         public void UpdateListNodes()
         {
+            if (InvokeRequired)
+            {
+                var del = new Action(UpdateListNodes);
+                Invoke(del, new object[] { });
+
+            }
+            else
+            {
+                UpdateGridView();
+            }
+        }
+
+        private void UpdateGridView()
+        {
             dataGridView1.Rows.Clear();
             Int32 num = 0;
-            lock (HICollection.List)
-            {
+            //lock (HICollection.List)
+            //{
                 var collection = HICollection.List;
                 foreach (var item in collection)
                 {
@@ -37,7 +43,7 @@ namespace SpyTrekHost.UserUI
                     dataGridView1.Rows[index].Cells[1].Value = item.ToString();
                     dataGridView1.Rows[index].Cells[2].Value = item.Connected.ToString("HH:mm:ss.ff");
                 }
-            }
+            //}
         }
     }
 }
