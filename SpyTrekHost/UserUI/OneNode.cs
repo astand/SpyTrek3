@@ -21,6 +21,7 @@ namespace SpyTrekHost.UserUI
             node_ = handleInstance;
             node_.SetListUpdater(AddNotesToGridView);
             node_.SetInfoUpdater(AddInfoToView);
+            node_.SetTrekUpdater(Label2Updater);
             InitializeComponent();
         }
 
@@ -41,7 +42,8 @@ namespace SpyTrekHost.UserUI
 
         private void button1_Click(Object sender, EventArgs e)
         {
-            node_.ReadTrekCmd(0);
+            Int32 ret = node_.ReadTrekCmd(0);
+            label2.Text = (ret < 0) ? $"File cannot be downloaded [{ret}]" : "Send trek request";
         }
     }
 }
