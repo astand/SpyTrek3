@@ -31,14 +31,24 @@ namespace MessageHandler.TrekWriter
             return 0;
         }
 
-
+        public Int32 AddNoteList(List<NaviNote> naviList)
+        {
+            using (StreamWriter sw = File.AppendText(mainDestinationPath))
+            {
+                foreach (var item in naviList)
+                {
+                    sw.WriteLine(item.GetStringNotify());
+                }
+            }
+            return 0;
+        }
         /// <summary>
         /// Must decide wheter to load trek or not
         /// </summary>
         /// <param name="desc">Trek descriptor</param>
         /// <param name="imei">Imei</param>
         /// <returns></returns>
-        public bool IsTrekPresentedInFileBank(TrekDescriptor desc, string imei)
+        public bool IsTrekNotPresented(TrekDescriptor desc, string imei)
         {
             /// create file full file location with name
             mainDestinationPath = BuildFullFileNameChain(desc, imei);
