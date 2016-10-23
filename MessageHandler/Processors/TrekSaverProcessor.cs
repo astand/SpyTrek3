@@ -25,6 +25,7 @@ namespace MessageHandler.Processors
         public void Process(FramePacket packet, ref IStreamData answer)
         {
             statusString.Clear();
+            Int32 note_counts = 0;
 
             if (packet.Opc == OpCodes.DATA)
             {
@@ -32,9 +33,14 @@ namespace MessageHandler.Processors
                 if (block_id + 1 == packet.Id)
                 {
                     block_id = packet.Id;
-                    var note_counts = SaveTrek(packet.Data, packet.Id);
+                    note_counts = SaveTrek(packet.Data, packet.Id);
                     statusString.Append($"Downloading... {note_counts * NaviNote.Lenght} Bytes.");
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        statusString.Clear();
+                        statusString.Append($"Finished {note_counts * NaviNote.Lenght} Bytes loaded.");
+                    }
                 }
                 else return;
             }
