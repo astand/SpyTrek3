@@ -42,7 +42,8 @@ namespace SpyTrekHost.UserUI
 
         private void button1_Click(Object sender, EventArgs e)
         {
-            Int32 ret = node_.ReadTrekCmd(0);
+            int fid = (int)fileIdNum.Value;
+            Int32 ret = node_.ReadTrekCmd(fid);
             label2.Text = (ret < 0) ? $"File cannot be downloaded [{ret}]" : "Send trek request";
         }
     }
