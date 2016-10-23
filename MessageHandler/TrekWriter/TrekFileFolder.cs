@@ -15,13 +15,6 @@ namespace MessageHandler.TrekWriter
 
         internal MotherDirectory motherDir;
 
-        static private Int32 MAX_SIZE
-        {
-            get { return 500; }
-        }
-
-        Int32[] itemSize = new Int32[MAX_SIZE];
-
         public TrekFileFolder(string s)
         {
             motherDir = new MotherDirectory(s);
@@ -38,43 +31,22 @@ namespace MessageHandler.TrekWriter
             return 0;
         }
 
-        private Int32 getSavedTopicSize(Int32 index)
+
+        /// <summary>
+        /// Must decide wheter to load trek or not
+        /// </summary>
+        /// <param name="desc">Trek descriptor</param>
+        /// <param name="imei">Imei</param>
+        /// <returns></returns>
+        public bool IsTrekPresentedInFileBank(TrekDescriptor desc, string imei)
         {
-            Int32 filesize = 0;
+            /// create file full file location with name
+            mainDestinationPath = BuildFullFileNameChain(desc, imei);
 
-            try
-            {
-                filesize = itemSize[index];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return 0;
-            }
-
-            return filesize;
-        }
-
-
-        public bool PrepareDirectory(TrekDescriptor desc, string im, Int32 topic_id = -1)
-        {
-            mainDestinationPath = BuildFullFileNameChain(desc, im);
-
-
-            if (getSavedTopicSize(topic_id) == CurrentFileSize())
+            if (GetCountOfNotesFromFile() == desc.NotesCount)
             {
                 return false;
             }
-
-            Int32 count_of_navi_file = getCountOfNaviNotes();
-            Int32 count_of_navi_trek = (int)(desc.TrekSize / NaviNote.Lenght);
-
-            if (count_of_navi_file == count_of_navi_trek)
-            {
-                itemSize[topic_id] = (Int32)new FileInfo(mainDestinationPath).Length;
-
-                return false;
-            }
-
             /* no file or file not full */
             File.Delete(mainDestinationPath);
 
@@ -88,45 +60,24 @@ namespace MessageHandler.TrekWriter
         /// <param name="im"></param>
         public string BuildFullFileNameChain(TrekDescriptor desc, string im)
         {
+            /// prepare directory
             string desc_dir = motherDir.UpdateAndCreateDir(im, desc.Start.ToString(@"yyyy\\MM\\dd\\"));
-            /* prepare file name */
-            return TrackUnconflictName(GetTrekFileName(desc), desc_dir, true);
+
+            /// prepare file name 
+            string desc_fname = GetTrekFileName(desc);
+
+            CleanAllPreviousCopies(desc_dir, GetTrekFileName(desc));
+
+            return desc_dir + desc_fname;
         }
 
 
-
-
         /// <summary>
-        /// 
+        /// Clean files that starts with same timePoint but other part of name is different
         /// </summary>
-        /// <param name="dir"></param>
-        /// <returns></returns>
-        private Int32 TrackDirCreate(string dir)
-        {
-            /* check existing of directory */
-            if (Directory.Exists(dir))
-                return 0;
-
-            try
-            {
-                Directory.CreateDirectory(dir);
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
-
-            return 0;
-        }
-        
-        /// <summary>
-        /// Create full Path for trek
-        /// </summary>
-        /// <param name="fname">Name for new trek (without extension)</param>
-        /// <param name="directory">Full directory path</param>
-        /// <param name="rewritetrek">if true - existing trek will overwrite</param>
-        /// <returns></returns>
-        private string TrackUnconflictName(string fname, string directoryPath, bool rewritetrek = true)
+        /// <param name="fname"></param>
+        /// <param name="directoryPath"></param>
+        private void CleanAllPreviousCopies(string directoryPath, string fname)
         {
             //Int32 findex = 1;
 
@@ -140,41 +91,8 @@ namespace MessageHandler.TrekWriter
                 if (delfil.Name != fname)
                     delfil.Delete();
             }
-
-            fname = directoryPath + fname;
-
-            //if (!File.Exists(fname) || rewritetrek)
-            {
-                return (fname);
-            }
-
-            //while (File.Exists(fname + "_(" + findex + ")"))
-            //{
-            //    findex++;
-            //}
-
-            //return (fname + "_(" + findex + ")");
         }
-        
-        /// <summary>
-        /// Check exsisting file size. If error occured return -1 that means no file
-        /// </summary>
-        /// <returns></returns>
-        private Int32 CurrentFileSize()
-        {
-            try
-            {
-                return (Int32)(new FileInfo(mainDestinationPath)).Length;
-            }
-            catch (FileNotFoundException)
-            {
-                return -1;
-            }
-            catch (Exception)
-            {
-                return -2;
-            }
-        }
+
 
         private string GetTrekFileName(TrekDescriptor desc)
         {
@@ -190,7 +108,7 @@ namespace MessageHandler.TrekWriter
             return ret.ToString();
         }
 
-        private Int32 getCountOfNaviNotes()
+        private Int32 GetCountOfNotesFromFile()
         {
             var lineCount = 0;
 
