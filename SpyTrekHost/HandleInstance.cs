@@ -147,9 +147,9 @@ namespace SpyTrekHost
             return retval;
         }
 
-        public Int32 ReadTrekCmd(int index_in_list)
+        public Int32 ReadTrekCmd(int trek_id)
         {
-            var ret = noteProcessor.GetDescriptor(index_in_list);
+            var ret = noteProcessor.GetDescriptor(trek_id);
             if (ret == null)
                 /// trek not found
                 return -1;

@@ -37,7 +37,12 @@ namespace MessageHandler.Processors
             return item.Id;
         }
 
-        public TrekDescriptor GetDescriptor(Int32 i) => i < list.Count ? (list[i]) : null;
+        /// <summary>
+        /// Return TrekDescriptor
+        /// </summary>
+        /// <param name="trek_id">Requested Trek ID</param>
+        /// <returns>Instance in case of existing</returns>
+        public TrekDescriptor GetDescriptor(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
