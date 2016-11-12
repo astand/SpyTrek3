@@ -158,7 +158,10 @@ namespace SpyTrekHost
             if (!isneed)
                 /// no needness to downloading
                 return -2;
-                
+
+            if (ret.IsBadTrek())
+                return -3;
+
             var paydata = BitConverter.GetBytes(ret.Id);
 
             piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
