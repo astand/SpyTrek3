@@ -222,8 +222,10 @@ namespace MessageHandler.ConcreteHandlers.Tests
         }
 
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out Processors.State state)
         {
+            state = Processors.State.Idle;
+
             answer = null;
             if (packet.Opc == OpCodes.RRQ)
             {
