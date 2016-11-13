@@ -14,8 +14,10 @@ namespace MessageHandler
     /// </summary>
     public abstract class FrameProccesorTemplate : IFrameProccesor
     {
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out Processors.ProcState state)
         {
+            state = Processors.ProcState.Idle;
+
             if (packet.Opc == OpCodes.RRQ)
                 ProcessHead(packet);
             else if (packet.Opc == OpCodes.DATA)

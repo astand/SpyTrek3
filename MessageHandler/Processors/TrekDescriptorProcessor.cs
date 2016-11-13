@@ -16,12 +16,18 @@ namespace MessageHandler.Processors
 
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
+            state = ProcState.Idle;
+
             if (packet.Opc == OpCodes.DATA)
             {
                 ProcessTrekDescriptors(packet.Data, packet.Id);
                 answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                if (packet.Data.Length == 0)
+                {
+                    state = ProcState.Finished;
+                }
             }
         }
 

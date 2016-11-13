@@ -34,5 +34,17 @@ namespace MessageHandler.DataFormats
         public static string ToDirectory(this DateTime dt) => $"{dt.Year:D4}/{dt.Month:D2}/{dt.Day:D2}";
 
         public static string ToJS(this DateTime dt) => dt.ToLocalTime().ToString(@"yyyy.MM.dd HH:mm");
+
+        /// <summary>
+        /// Method must implement reloading of timer counter.
+        /// </summary>
+        /// <param name="tim"></param>
+        public static void Reset(this System.Timers.Timer tim)
+        {
+            tim.Stop();
+            tim.Start();
+        }
     }
+
+    
 }
