@@ -56,27 +56,31 @@ namespace MessageHandler
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="answer"></param>
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out Processors.State state)
         {
             lock (m_blockDriver)
             {
+                state = Processors.State.Idle;
+
                 if (packet.Opc == OpCodes.ACK)
                 {
+                    state = Processors.State.Data;
                     m_blockDriver.PassAckBlock(packet.Id);
+
                     if (m_blockDriver.IsLastAck)
                     {
+                        state = Processors.State.Finished;
                         StopSending();
                         Console.WriteLine("Stop sending action.");
                     }
                 }
 
                 /// reuest acknowledge handle here
-                /// 
                 if (packet.Opc == OpCodes.WRQ)
                 {
+                    state = Processors.State.CmdAck;
                     m_data_active = true;
                 }
-
             }
         }
 
