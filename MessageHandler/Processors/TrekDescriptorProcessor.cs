@@ -16,9 +16,9 @@ namespace MessageHandler.Processors
 
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer, out State state)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
-            state = State.Idle;
+            state = ProcState.Idle;
 
             if (packet.Opc == OpCodes.DATA)
             {
@@ -26,7 +26,7 @@ namespace MessageHandler.Processors
                 answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 if (packet.Data.Length == 0)
                 {
-                    state = State.Finished;
+                    state = ProcState.Finished;
                 }
             }
         }

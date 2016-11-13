@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace MessageHandler.Processors
 {
-    public enum State { CmdAck = 0, Data, Finished, Idle };
+    public enum ProcState { CmdAck = 0, Data, Finished, Idle };
 }

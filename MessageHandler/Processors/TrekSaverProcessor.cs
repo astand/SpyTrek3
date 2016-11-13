@@ -22,9 +22,9 @@ namespace MessageHandler.Processors
 
         private String imeiPath;
 
-        public void Process(FramePacket packet, ref IStreamData answer, out State state)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
-            state = State.Idle;
+            state = ProcState.Idle;
             statusString.Clear();
             Int32 note_counts = 0;
 
@@ -39,7 +39,7 @@ namespace MessageHandler.Processors
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
-                        state = State.Finished;
+                        state = ProcState.Finished;
                         statusString.Clear();
                         statusString.Append($"Finished {note_counts * NaviNote.Lenght} Bytes loaded.");
                     }
@@ -48,7 +48,7 @@ namespace MessageHandler.Processors
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
-                state = State.CmdAck;
+                state = ProcState.CmdAck;
                 // Head confirmation
                 statusString.Append($"RRQ Answer received");
                 block_id = 0;

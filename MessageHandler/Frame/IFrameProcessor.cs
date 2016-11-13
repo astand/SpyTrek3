@@ -15,7 +15,7 @@ namespace MessageHandler
     /// </summary>
     public interface IFrameProccesor
     {
-        void Process(FramePacket packet, ref IStreamData answer, out Processors.State state);
+        void Process(FramePacket packet, ref IStreamData answer, out Processors.ProcState state);
     }
 
    

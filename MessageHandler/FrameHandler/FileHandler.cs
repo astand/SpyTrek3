@@ -37,7 +37,7 @@ namespace MessageHandler.ConcreteHandlers
         {
             if (CheckFileID(id))
             {
-                Processors.State outstate;
+                Processors.ProcState outstate;
                 m_answer = null;
                 processor?.Process(o, ref m_answer, out outstate);
                 if (m_answer != null)
