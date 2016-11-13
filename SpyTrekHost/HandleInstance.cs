@@ -39,7 +39,7 @@ namespace SpyTrekHost
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
-        System.Threading.Timer timecallback;
+        System.Threading.Timer echoTimer;
 
         SpyTrekInfo spyTrekInfo;
 
@@ -63,7 +63,7 @@ namespace SpyTrekHost
 
             CreateChainOfResponsibility();
 
-            timecallback = new System.Threading.Timer(TimerCallback, null, 500, 15000);
+            echoTimer = new System.Threading.Timer(TimerCallback, null, 500, 15000);
         }
 
 
@@ -197,8 +197,8 @@ namespace SpyTrekHost
             if (disposing)
             {
 
-                timecallback?.Dispose();
-                timecallback = null;
+                echoTimer?.Dispose();
+                echoTimer = null;
 
                 piper?.Dispose();
                 piper = null;
