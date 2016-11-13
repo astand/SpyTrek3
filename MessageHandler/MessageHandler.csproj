@@ -48,7 +48,7 @@
     <Compile Include="DataUploading\IDataUploader.cs" />
     <Compile Include="Extension\DateTimeUtil.cs" />
     <Compile Include="FrameHandler\IHandler.cs" />
-    <Compile Include="FrameHandler\FileHandler.cs" />
+    <Compile Include="FrameHandler\ConcreteFileHanlder.cs" />
     <Compile Include="FrameHandler\OperationHandler.cs" />
     <Compile Include="Frame\DataAck.cs" />
     <Compile Include="Frame\FrameProcessorTemplate.cs" />
