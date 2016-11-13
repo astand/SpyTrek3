@@ -147,9 +147,9 @@ namespace SpyTrekHost
             return retval;
         }
 
-        public Int32 ReadTrekCmd(int index_in_list)
+        public Int32 ReadTrekCmd(int trek_id)
         {
-            var ret = noteProcessor.GetDescriptor(index_in_list);
+            var ret = noteProcessor.GetDescriptor(trek_id);
             if (ret == null)
                 /// trek not found
                 return -1;
@@ -158,7 +158,10 @@ namespace SpyTrekHost
             if (!isneed)
                 /// no needness to downloading
                 return -2;
-                
+
+            if (ret.IsBadTrek())
+                return -3;
+
             var paydata = BitConverter.GetBytes(ret.Id);
 
             piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));

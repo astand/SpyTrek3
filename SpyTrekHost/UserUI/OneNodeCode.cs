@@ -58,7 +58,8 @@ namespace SpyTrekHost.UserUI
             float indist = 0;
             indist = (dsc.Dist / 10000);
             UInt32 allmileage = (dsc.Odometr/ 10000);
-            dataGridView1.Rows.Add(dsc.Id, dsc.ToString(), dsc.TrekSize, indist, allmileage);
+            var avr_speed = (dsc.Dist / 10000) / dsc.Duration.TotalHours;
+            dataGridView1.Rows.Add(dsc.Id, dsc.TrekTime(), dsc.TrekDuration(), avr_speed.ToString("000.00"), dsc.TrekSize, indist, allmileage);
         }
 
         private void Label2Updater(String str)
