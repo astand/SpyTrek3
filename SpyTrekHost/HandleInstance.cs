@@ -39,7 +39,8 @@ namespace SpyTrekHost
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
-        System.Threading.Timer echoTimer;
+        System.Timers.Timer echoTimer;
+        readonly double kEchoTimeout = 15000.0;
 
         SpyTrekInfo spyTrekInfo;
 
@@ -63,9 +64,16 @@ namespace SpyTrekHost
 
             CreateChainOfResponsibility();
 
-            echoTimer = new System.Threading.Timer(TimerCallback, null, 500, 15000);
+            echoTimer = new System.Timers.Timer(kEchoTimeout);
+            echoTimer.Start();
+            echoTimer.Elapsed += EchoTime2_Elapsed;
+            EchoTime2_Elapsed(echoTimer, null);
         }
 
+        private void EchoTime2_Elapsed(Object sender, ElapsedEventArgs e)
+        {
+            TimerCallback(null);
+        }
 
         private void CreateChainOfResponsibility()
         {
@@ -115,12 +123,12 @@ namespace SpyTrekHost
         private void Piper_OnData(Object sender, PiperEventArgs e)
         {
             var frame = new FramePacket(e.Data);
-
             //Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
             /// When the packets comes very fast and HandleRequest cannot process 
             /// data in time the packets are lost, so need process with locking
             lock (handleRead)
             {
+                echoTimer.Reset();
                 handleRead.HandleRequest(new FramePacket(e.Data));
             }
         }
