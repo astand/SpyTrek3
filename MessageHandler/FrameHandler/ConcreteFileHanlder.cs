@@ -1,4 +1,5 @@
 ﻿using MessageHandler.Abstract;
+using MessageHandler.Processors;
 using StreamHandler;
 using StreamHandler.Abstract;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace MessageHandler.ConcreteHandlers
 {
+    public delegate void ProcessorDing(Object obj, ProcState args);
     public class ConcreteFileHandler<T> : IHandler<T> where T : FramePacket
     {
         private IHandler<T> m_successor;
@@ -24,26 +26,30 @@ namespace MessageHandler.ConcreteHandlers
 
         private Func<IStreamData, int> sending;
 
-        public ConcreteFileHandler(string name,
-            IFrameProccesor processor,
-            Func<IStreamData, int> pipe)
+        ProcessorDing ding_;
+
+
+        public ConcreteFileHandler(string name, IFrameProccesor processor, Func<IStreamData, int> pipe, ProcessorDing ding = null)
         {
             this.name = name;
             this.processor = processor;
             sending = pipe;
+            ding_ = ding;
         }
 
         public void HandleRequest(T o, UInt16 id)
         {
             if (CheckFileID(id))
             {
-                Processors.ProcState outstate;
+                ProcState outstate = ProcState.Idle;
                 m_answer = null;
                 processor?.Process(o, ref m_answer, out outstate);
+
                 if (m_answer != null)
                 {
                     sending(m_answer);
                 }
+                ding_?.Invoke(processor, outstate);
             }
             else
                 m_successor?.HandleRequest(o, id);

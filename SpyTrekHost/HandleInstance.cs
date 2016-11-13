@@ -79,7 +79,7 @@ namespace SpyTrekHost
         {
 
             IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
-            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData);
+            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData, ProcessorDingHanlder);
             IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
@@ -141,6 +141,11 @@ namespace SpyTrekHost
                 saveProc.SetImeiPath(spyTrekInfo.Imei);
                 HICollection.RefreshList();
             }
+        }
+
+        private void ProcessorDingHanlder(Object obj, ProcState state)
+        {
+            Debug.WriteLine($"Processor Ding: {obj.ToString()}. State = {state}");
         }
 
         public override String ToString()
