@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MessageHandler
 {
 
@@ -14,7 +15,7 @@ namespace MessageHandler
     /// </summary>
     public interface IFrameProccesor
     {
-        void Process(FramePacket packet, ref IStreamData answer);
+        void Process(FramePacket packet, ref IStreamData answer, out Processors.State state);
     }
 
    
