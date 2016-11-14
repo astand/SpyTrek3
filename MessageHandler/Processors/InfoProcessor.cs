@@ -21,6 +21,7 @@ namespace MessageHandler.Processors
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
                 if (CheckBlockSynchro(packet.Id))
@@ -33,12 +34,17 @@ namespace MessageHandler.Processors
                         OnUpdated?.Invoke(Info);
                     }
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        State = ProcState.Finished;
+                    }
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
+            {
+                State = ProcState.CmdAck;
                 ResetBlockSynchro();
-
-
+            }
         }
 
         private bool CheckBlockSynchro(UInt16 id)
