@@ -1,4 +1,5 @@
 ﻿using MessageHandler.Abstract;
+using MessageHandler.Processors;
 using StreamHandler;
 using StreamHandler.Abstract;
 using System;
@@ -24,13 +25,15 @@ namespace MessageHandler.ConcreteHandlers
 
         private Func<IStreamData, int> sending;
 
-        public ConcreteFileHandler(string name,
-            IFrameProccesor processor,
-            Func<IStreamData, int> pipe)
+        private Action<IFrameProccesor> ProcNotify;
+
+        public ConcreteFileHandler(string name, IFrameProccesor processor,
+            Func<IStreamData, int> pipe, Action<IFrameProccesor> notify = null)
         {
             this.name = name;
             this.processor = processor;
             sending = pipe;
+            ProcNotify = notify;
         }
 
         public void HandleRequest(T o, UInt16 id)
@@ -43,6 +46,7 @@ namespace MessageHandler.ConcreteHandlers
                 {
                     sending(m_answer);
                 }
+                ProcNotify?.Invoke(processor);
             }
             else
                 m_successor?.HandleRequest(o, id);
