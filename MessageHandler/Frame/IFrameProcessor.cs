@@ -20,9 +20,5 @@ namespace MessageHandler
 
         public abstract void Process(FramePacket packet, ref IStreamData answer);
 
-
     }
-
-
-
 }
