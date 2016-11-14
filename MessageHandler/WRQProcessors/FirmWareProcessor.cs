@@ -9,6 +9,7 @@ using StreamHandler;
 using MessageHandler.DataUploading;
 using System.Timers;
 using System.Diagnostics;
+using MessageHandler.Processors;
 
 namespace MessageHandler
 {
@@ -56,7 +57,7 @@ namespace MessageHandler
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="answer"></param>
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             lock (m_blockDriver)
             {
@@ -141,5 +142,9 @@ namespace MessageHandler
             ScheduleSendingData();
         }
 
+        public ProcState GetState()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

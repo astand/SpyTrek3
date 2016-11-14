@@ -22,7 +22,7 @@ namespace MessageHandler.Processors
 
         private String imeiPath;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             statusString.Clear();
             Int32 note_counts = 0;

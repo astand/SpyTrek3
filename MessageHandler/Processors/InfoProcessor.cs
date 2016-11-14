@@ -19,7 +19,7 @@ namespace MessageHandler.Processors
 
         public Action<SpyTrekInfo> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             if (packet.Opc == OpCodes.DATA)
             {

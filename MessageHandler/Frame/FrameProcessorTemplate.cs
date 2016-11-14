@@ -14,7 +14,7 @@ namespace MessageHandler
     /// </summary>
     public abstract class FrameProccesorTemplate : IFrameProccesor
     {
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             if (packet.Opc == OpCodes.RRQ)
                 ProcessHead(packet);

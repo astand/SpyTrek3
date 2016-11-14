@@ -222,7 +222,7 @@ namespace MessageHandler.ConcreteHandlers.Tests
         }
 
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             answer = null;
             if (packet.Opc == OpCodes.RRQ)

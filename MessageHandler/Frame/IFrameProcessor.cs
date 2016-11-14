@@ -12,11 +12,11 @@ namespace MessageHandler
     /// IFrameProcessor uses for invoke action in Read, Write or any
     /// other custom IHandlers
     /// </summary>
-    public interface IFrameProccesor
+    public abstract class  IFrameProccesor
     {
-        void Process(FramePacket packet, ref IStreamData answer);
+        public abstract void Process(FramePacket packet, ref IStreamData answer);
     }
 
-   
-    
+
+
 }
