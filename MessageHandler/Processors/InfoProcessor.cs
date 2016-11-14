@@ -19,10 +19,9 @@ namespace MessageHandler.Processors
 
         public Action<SpyTrekInfo> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
-            state = ProcState.Idle;
-
+            State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
                 if (CheckBlockSynchro(packet.Id))
@@ -33,21 +32,24 @@ namespace MessageHandler.Processors
                         SpyTrekInfo Info = new SpyTrekInfo();
                         Info.TryParse(Encoding.UTF8.GetString(packet.Data));
                         OnUpdated?.Invoke(Info);
-                        state = ProcState.Data;
+                        State = ProcState.Data;
                     }
                     if (packet.Data.Length == 0)
                     {
-                        state = ProcState.Finished;
+                        State = ProcState.Finished;
                     }
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        State = ProcState.Finished;
+                    }
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
-                state = ProcState.CmdAck;
+                State = ProcState.CmdAck;
                 ResetBlockSynchro();
             }
-
         }
 
         private bool CheckBlockSynchro(UInt16 id)

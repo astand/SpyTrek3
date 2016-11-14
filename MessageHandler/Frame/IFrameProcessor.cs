@@ -1,4 +1,5 @@
-﻿using StreamHandler.Abstract;
+﻿using MessageHandler.Processors;
+using StreamHandler.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,10 @@ namespace MessageHandler
     /// IFrameProcessor uses for invoke action in Read, Write or any
     /// other custom IHandlers
     /// </summary>
-    public interface IFrameProccesor
+    public abstract class  IFrameProccesor
     {
-        void Process(FramePacket packet, ref IStreamData answer, out Processors.ProcState state);
-    }
+        public ProcState State { get; protected set; } = ProcState.Idle;
 
-   
-    
+        public abstract void Process(FramePacket packet, ref IStreamData answer);
+    }
 }

@@ -78,9 +78,9 @@ namespace SpyTrekHost
         private void CreateChainOfResponsibility()
         {
 
-            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
-            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData, ProcessorDingHanlder);
-            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData);
+            IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData, ProcessorStateUpdated);
+            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData, ProcessorStateUpdated);
+            IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData, ProcessorStateUpdated);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
             noteHand.SetSpecification(fid => fid == FiledID.Filenotes);
@@ -90,7 +90,7 @@ namespace SpyTrekHost
             noteHand.SetSuccessor(trekHand);
 
 
-            IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null);
+            IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null, ProcessorStateUpdated);
             // True specification for ERROR messages
             errorHand.SetSpecification(fid => true);
 
@@ -143,9 +143,9 @@ namespace SpyTrekHost
             }
         }
 
-        private void ProcessorDingHanlder(Object obj, ProcState state)
+        private void ProcessorStateUpdated(IFrameProccesor proc)
         {
-            Debug.WriteLine($"Processor Ding: {obj.ToString()}. State = {state}");
+            Debug.WriteLine($"Processor {proc.ToString()} notify me. State = {proc.State}");
         }
 
         public override String ToString()
