@@ -13,7 +13,8 @@ namespace MessageHandler.Processors
 {
     public class InfoProcessor : IFrameProccesor
     {
-        public SpyTrekInfo Info { get; }
+        StringBuilder stateStr = new StringBuilder(255);
+        public SpyTrekInfo Info { get; private set; }
 
         BidControl bCtrl = new BidControl();
 
@@ -21,6 +22,7 @@ namespace MessageHandler.Processors
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            stateStr.Clear();
             State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
@@ -29,27 +31,28 @@ namespace MessageHandler.Processors
                     if (packet.Id == 1)
                     {
                         /// Pay load data placed in first data block
-                        SpyTrekInfo Info = new SpyTrekInfo();
+                        Info = new SpyTrekInfo();
                         Info.TryParse(Encoding.UTF8.GetString(packet.Data));
                         OnUpdated?.Invoke(Info);
                         State = ProcState.Data;
                     }
                     if (packet.Data.Length == 0)
                     {
+                        stateStr.Append($"Info updated. {Info.Name} - {Info.Imei}");
                         State = ProcState.Finished;
                     }
+                   
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
-                    if (packet.Data.Length == 0)
-                    {
-                        State = ProcState.Finished;
-                    }
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
                 State = ProcState.CmdAck;
+                stateStr.Append($"Info. RRQ ACK");
                 bCtrl.Reset();
             }
         }
+
+        public override String ToString() => stateStr.ToString();
     }
 }

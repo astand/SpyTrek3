@@ -61,7 +61,7 @@ namespace MessageHandler.Processors
                 State = ProcState.CmdAck;
                 // Head confirmation
                 trekSize = (packet.Data.Length >= 4) ? BitConverter.ToUInt16(packet.Data, 2) : (-1);
-                stateStr.Append($"Cmd Ack. Wait file: {trekSize} Bytes");
+                stateStr.Append($"Trek. RRQ ACK. File size: {trekSize} Bytes");
                 bidControl.Reset();
             }
         }
