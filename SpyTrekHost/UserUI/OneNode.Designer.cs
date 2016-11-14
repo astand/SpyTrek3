@@ -29,11 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dist = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.btnInfo = new System.Windows.Forms.Button();
             this.btnGetTreks = new System.Windows.Forms.Button();
@@ -48,6 +43,13 @@
             this.lblImei = new System.Windows.Forms.Label();
             this.lblVer = new System.Windows.Forms.Label();
             this.fileIdNum = new System.Windows.Forms.NumericUpDown();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAvrSpeed = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dist = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileIdNum)).BeginInit();
@@ -61,6 +63,8 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
             this.name,
+            this.cDuration,
+            this.cAvrSpeed,
             this.size,
             this.dist,
             this.mileage});
@@ -70,37 +74,6 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(626, 361);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // id
-            // 
-            this.id.HeaderText = "ID";
-            this.id.Name = "id";
-            this.id.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.id.Width = 35;
-            // 
-            // name
-            // 
-            this.name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.name.HeaderText = "Name";
-            this.name.Name = "name";
-            // 
-            // size
-            // 
-            this.size.HeaderText = "Size (bytes)";
-            this.size.Name = "size";
-            this.size.Width = 80;
-            // 
-            // dist
-            // 
-            this.dist.HeaderText = "Dist (km)";
-            this.dist.Name = "dist";
-            this.dist.Width = 80;
-            // 
-            // mileage
-            // 
-            this.mileage.HeaderText = "Mileage (km)";
-            this.mileage.Name = "mileage";
-            this.mileage.Width = 80;
             // 
             // button1
             // 
@@ -243,6 +216,52 @@
             this.fileIdNum.Size = new System.Drawing.Size(58, 20);
             this.fileIdNum.TabIndex = 12;
             // 
+            // id
+            // 
+            this.id.HeaderText = "ID";
+            this.id.Name = "id";
+            this.id.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.id.Width = 35;
+            // 
+            // name
+            // 
+            this.name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.name.FillWeight = 80F;
+            this.name.HeaderText = "Name";
+            this.name.Name = "name";
+            // 
+            // cDuration
+            // 
+            this.cDuration.HeaderText = "Duration";
+            this.cDuration.Name = "cDuration";
+            this.cDuration.ReadOnly = true;
+            this.cDuration.Width = 70;
+            // 
+            // cAvrSpeed
+            // 
+            this.cAvrSpeed.HeaderText = "Avr Spd";
+            this.cAvrSpeed.Name = "cAvrSpeed";
+            this.cAvrSpeed.ReadOnly = true;
+            this.cAvrSpeed.Width = 70;
+            // 
+            // size
+            // 
+            this.size.HeaderText = "Size (bytes)";
+            this.size.Name = "size";
+            this.size.Width = 80;
+            // 
+            // dist
+            // 
+            this.dist.HeaderText = "Dist (km)";
+            this.dist.Name = "dist";
+            this.dist.Width = 80;
+            // 
+            // mileage
+            // 
+            this.mileage.HeaderText = "Mileage (km)";
+            this.mileage.Name = "mileage";
+            this.mileage.Width = 80;
+            // 
             // OneNodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,11 +291,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn size;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dist;
-        private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnInfo;
         private System.Windows.Forms.Button btnGetTreks;
@@ -292,5 +306,12 @@
         private System.Windows.Forms.Label lblVer;
         public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.NumericUpDown fileIdNum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cDuration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cAvrSpeed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dist;
+        private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
     }
 }

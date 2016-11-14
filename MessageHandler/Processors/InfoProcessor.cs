@@ -19,20 +19,34 @@ namespace MessageHandler.Processors
 
         public Action<SpyTrekInfo> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
+            state = ProcState.Idle;
+
             if (packet.Opc == OpCodes.DATA)
             {
-                if (CheckBlockSynchro(packet.Id) && packet.Id == 1)
+                if (CheckBlockSynchro(packet.Id))
                 {
-                    SpyTrekInfo Info = new SpyTrekInfo();
-                    Info.TryParse(Encoding.UTF8.GetString(packet.Data));
-                    OnUpdated?.Invoke(Info);
+                    if (packet.Id == 1)
+                    {
+                        /// Pay load data placed in first data block
+                        SpyTrekInfo Info = new SpyTrekInfo();
+                        Info.TryParse(Encoding.UTF8.GetString(packet.Data));
+                        OnUpdated?.Invoke(Info);
+                        state = ProcState.Data;
+                    }
+                    if (packet.Data.Length == 0)
+                    {
+                        state = ProcState.Finished;
+                    }
+                    answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
+            {
+                state = ProcState.CmdAck;
                 ResetBlockSynchro();
-
+            }
 
         }
 

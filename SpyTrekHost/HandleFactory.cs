@@ -64,8 +64,10 @@ namespace SpyTrekHost
         }
 
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
+            state = ProcState.Idle;
+
             if (packet.Opc == OpCodes.RRQ)
             {
                 PrintResult("RRQ");
@@ -96,8 +98,9 @@ namespace SpyTrekHost
 
     internal class ErrorProcessor : IFrameProccesor
     {
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public void Process(FramePacket packet, ref IStreamData answer, out ProcState state)
         {
+            state = ProcState.Idle;
             Debug.WriteLine($"Error packet received!!!");
             Console.WriteLine($"Error packet received!!!");
         }

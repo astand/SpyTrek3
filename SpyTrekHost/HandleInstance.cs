@@ -39,7 +39,8 @@ namespace SpyTrekHost
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
-        System.Threading.Timer timecallback;
+        System.Timers.Timer echoTimer;
+        readonly double kEchoTimeout = 15000.0;
 
         SpyTrekInfo spyTrekInfo;
 
@@ -63,15 +64,22 @@ namespace SpyTrekHost
 
             CreateChainOfResponsibility();
 
-            timecallback = new System.Threading.Timer(TimerCallback, null, 500, 15000);
+            echoTimer = new System.Timers.Timer(kEchoTimeout);
+            echoTimer.Start();
+            echoTimer.Elapsed += EchoTime2_Elapsed;
+            EchoTime2_Elapsed(echoTimer, null);
         }
 
+        private void EchoTime2_Elapsed(Object sender, ElapsedEventArgs e)
+        {
+            TimerCallback(null);
+        }
 
         private void CreateChainOfResponsibility()
         {
 
             IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData);
-            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData);
+            IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData, ProcessorDingHanlder);
             IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData);
 
             infoHand.SetSpecification(fid => fid == FiledID.Info);
@@ -115,12 +123,12 @@ namespace SpyTrekHost
         private void Piper_OnData(Object sender, PiperEventArgs e)
         {
             var frame = new FramePacket(e.Data);
-
             //Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
             /// When the packets comes very fast and HandleRequest cannot process 
             /// data in time the packets are lost, so need process with locking
             lock (handleRead)
             {
+                echoTimer.Reset();
                 handleRead.HandleRequest(new FramePacket(e.Data));
             }
         }
@@ -135,6 +143,11 @@ namespace SpyTrekHost
             }
         }
 
+        private void ProcessorDingHanlder(Object obj, ProcState state)
+        {
+            Debug.WriteLine($"Processor Ding: {obj.ToString()}. State = {state}");
+        }
+
         public override String ToString()
         {
             String retval = base.ToString();
@@ -147,9 +160,9 @@ namespace SpyTrekHost
             return retval;
         }
 
-        public Int32 ReadTrekCmd(int index_in_list)
+        public Int32 ReadTrekCmd(int trek_id)
         {
-            var ret = noteProcessor.GetDescriptor(index_in_list);
+            var ret = noteProcessor.GetDescriptor(trek_id);
             if (ret == null)
                 /// trek not found
                 return -1;
@@ -158,7 +171,10 @@ namespace SpyTrekHost
             if (!isneed)
                 /// no needness to downloading
                 return -2;
-                
+
+            if (ret.IsBadTrek())
+                return -3;
+
             var paydata = BitConverter.GetBytes(ret.Id);
 
             piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
@@ -194,8 +210,8 @@ namespace SpyTrekHost
             if (disposing)
             {
 
-                timecallback?.Dispose();
-                timecallback = null;
+                echoTimer?.Dispose();
+                echoTimer = null;
 
                 piper?.Dispose();
                 piper = null;
