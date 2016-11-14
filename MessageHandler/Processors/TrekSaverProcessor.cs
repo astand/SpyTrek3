@@ -12,21 +12,26 @@ namespace MessageHandler.Processors
 {
     public class TrekSaverProcessor : IFrameProccesor
     {
-        public Action<String> WriteStatus;
+        //public Action<String> WriteStatus;
 
         Int32 block_id;
 
         private ITrekWriter trekWr = new FileTrekWriter();
 
-        private StringBuilder statusString = new StringBuilder();
-
         private String imeiPath;
+
+        private Int32 noteCount;
+
+        private Int32 trekSize = 0;
+
+        private StringBuilder stateStr = new StringBuilder(255);
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
             State = ProcState.Idle;
-            statusString.Clear();
-            Int32 note_counts = 0;
+            noteCount = 0;
+
+            stateStr.Clear();
 
             if (packet.Opc == OpCodes.DATA)
             {
@@ -34,14 +39,17 @@ namespace MessageHandler.Processors
                 if (block_id + 1 == packet.Id)
                 {
                     block_id = packet.Id;
-                    note_counts = SaveTrek(packet.Data, packet.Id);
-                    statusString.Append($"Downloading... {note_counts * NaviNote.Lenght} Bytes.");
+                    noteCount = SaveTrek(packet.Data, packet.Id);
+
+                    var by_size = noteCount * NaviNote.Lenght;
+                    var completed = (by_size * 100.0) / trekSize;
+
+                    stateStr.Append($"({completed:F1} %) {by_size} bytes downloaded.");
+
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
-                        State = ProcState.Finished;
-                        statusString.Clear();
-                        statusString.Append($"Finished {note_counts * NaviNote.Lenght} Bytes loaded.");
+                        stateStr.Append(". Finished");
                     }
                 }
                 else
@@ -53,11 +61,10 @@ namespace MessageHandler.Processors
             {
                 State = ProcState.CmdAck;
                 // Head confirmation
-                statusString.Append($"RRQ Answer received");
+                trekSize = (packet.Data.Length >= 4) ? BitConverter.ToUInt16(packet.Data, 2) : (-1);
+                stateStr.Append($"Cmd Ack. Wait file: {trekSize} Bytes");
                 block_id = 0;
             }
-
-            WriteStatus?.Invoke(statusString.ToString());
         }
 
 
@@ -90,5 +97,7 @@ namespace MessageHandler.Processors
             /// try write all available notes
             return trekWr.WriteNotes(notes, is_start_block);
         }
+
+        public override String ToString() => stateStr.ToString();
     }
 }
