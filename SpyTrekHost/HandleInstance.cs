@@ -48,6 +48,9 @@ namespace SpyTrekHost
         ReadProcessor readProcessor = new ReadProcessor("Trek");
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
         TrekSaverProcessor saveProc = new TrekSaverProcessor();
+
+        Action<String> notifyUI = null;
+
         public SpyTrekInfo Info => spyTrekInfo;
 
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
@@ -145,7 +148,8 @@ namespace SpyTrekHost
 
         private void ProcessorStateUpdated(IFrameProccesor proc)
         {
-            Debug.WriteLine($"Processor {proc.ToString()} notify me. State = {proc.State}");
+            Debug.WriteLine($"{proc.ToString()} | State = {proc.State}");
+            notifyUI?.Invoke(proc.ToString());
         }
 
         public override String ToString()
@@ -194,7 +198,8 @@ namespace SpyTrekHost
 
         public void SetTrekUpdater(Action<string> updater)
         {
-            saveProc.WriteStatus += updater;
+            /// Set UI status string notifier
+            notifyUI += updater;
         }
 
         public void Dispose()

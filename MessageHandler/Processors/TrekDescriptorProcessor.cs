@@ -12,25 +12,39 @@ namespace MessageHandler.Processors
 {
     public class TrekDescriptorProcessor : IFrameProccesor
     {
+        public Action<List<TrekDescriptor>, bool> OnUpdated;
+
         private List<TrekDescriptor> list = new List<TrekDescriptor>();
 
-        public Action<List<TrekDescriptor>, bool> OnUpdated;
+        BidControl bidControl = new BidControl();
+
+        StringBuilder stateStr = new StringBuilder(255);
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            stateStr.Clear();
             State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
-                ProcessTrekDescriptors(packet.Data, packet.Id);
-                answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
-                if (packet.Data.Length == 0)
+                if (bidControl.Next(packet.Id))
                 {
-                    State = ProcState.Finished;
+                    ProcessTrekDescriptors(packet.Data, packet.Id);
+                    answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        State = ProcState.Finished;
+                    }
+                }
+                else
+                {
+                    /// wrong BlockID received
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
+                stateStr.Append("Descriptors. RRQ ACK");
                 State = ProcState.CmdAck;
+                bidControl.Reset();
             }
         }
 
@@ -77,7 +91,11 @@ namespace MessageHandler.Processors
 
             } while (parseOk);
 
+            stateStr.Append($"Trek list updated. Notes count = {list.Count}");
+            
             OnUpdated?.Invoke(list, block_num == 1);
         }
+
+        public override String ToString() => stateStr.ToString();
     }
 }
