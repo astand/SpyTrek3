@@ -24,6 +24,7 @@ namespace MessageHandler.Processors
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            State = ProcState.Idle;
             statusString.Clear();
             Int32 note_counts = 0;
 
@@ -38,14 +39,19 @@ namespace MessageHandler.Processors
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
+                        State = ProcState.Finished;
                         statusString.Clear();
                         statusString.Append($"Finished {note_counts * NaviNote.Lenght} Bytes loaded.");
                     }
                 }
-                else return;
+                else
+                {
+                    return;
+                }
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
+                State = ProcState.CmdAck;
                 // Head confirmation
                 statusString.Append($"RRQ Answer received");
                 block_id = 0;

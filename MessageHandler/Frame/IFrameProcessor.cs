@@ -1,4 +1,5 @@
-﻿using StreamHandler.Abstract;
+﻿using MessageHandler.Processors;
+using StreamHandler.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,12 @@ namespace MessageHandler
     /// </summary>
     public abstract class  IFrameProccesor
     {
+
+        public ProcState State { get; protected set; } = ProcState.Idle;
+
         public abstract void Process(FramePacket packet, ref IStreamData answer);
+
+
     }
 
 

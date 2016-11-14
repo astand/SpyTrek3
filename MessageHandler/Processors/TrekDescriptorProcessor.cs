@@ -18,10 +18,19 @@ namespace MessageHandler.Processors
 
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
                 ProcessTrekDescriptors(packet.Data, packet.Id);
                 answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                if (packet.Data.Length == 0)
+                {
+                    State = ProcState.Finished;
+                }
+            }
+            else if (packet.Opc == OpCodes.RRQ)
+            {
+                State = ProcState.CmdAck;
             }
         }
 
