@@ -14,7 +14,7 @@ namespace MessageHandler.Processors
     {
         //public Action<String> WriteStatus;
 
-        Int32 block_id;
+        BidControl bidControl = new BidControl();
 
         private ITrekWriter trekWr = new FileTrekWriter();
 
@@ -36,9 +36,8 @@ namespace MessageHandler.Processors
             if (packet.Opc == OpCodes.DATA)
             {
                 // data
-                if (block_id + 1 == packet.Id)
+                if (bidControl.Next(packet.Id))
                 {
-                    block_id = packet.Id;
                     noteCount = SaveTrek(packet.Data, packet.Id);
 
                     var by_size = noteCount * NaviNote.Lenght;
@@ -63,7 +62,7 @@ namespace MessageHandler.Processors
                 // Head confirmation
                 trekSize = (packet.Data.Length >= 4) ? BitConverter.ToUInt16(packet.Data, 2) : (-1);
                 stateStr.Append($"Cmd Ack. Wait file: {trekSize} Bytes");
-                block_id = 0;
+                bidControl.Reset();
             }
         }
 

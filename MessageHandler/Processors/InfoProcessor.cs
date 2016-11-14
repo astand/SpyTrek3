@@ -15,7 +15,7 @@ namespace MessageHandler.Processors
     {
         public SpyTrekInfo Info { get; }
 
-        private Int32 block_synchro = 0;
+        BidControl bCtrl = new BidControl();
 
         public Action<SpyTrekInfo> OnUpdated;
 
@@ -24,7 +24,7 @@ namespace MessageHandler.Processors
             State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
-                if (CheckBlockSynchro(packet.Id))
+                if (bCtrl.Next(packet.Id))
                 {
                     if (packet.Id == 1)
                     {
@@ -48,20 +48,8 @@ namespace MessageHandler.Processors
             else if (packet.Opc == OpCodes.RRQ)
             {
                 State = ProcState.CmdAck;
-                ResetBlockSynchro();
+                bCtrl.Reset();
             }
         }
-
-        private bool CheckBlockSynchro(UInt16 id)
-        {
-            if (block_synchro + 1 == id)
-            {
-                block_synchro += 1;
-                return true;
-            }
-            return false;
-        }
-
-        private void ResetBlockSynchro() => block_synchro = 0;
     }
 }

@@ -16,21 +16,30 @@ namespace MessageHandler.Processors
 
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
+        BidControl bidControl = new BidControl();
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
             State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
-                ProcessTrekDescriptors(packet.Data, packet.Id);
-                answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
-                if (packet.Data.Length == 0)
+                if (bidControl.Next(packet.Id))
                 {
-                    State = ProcState.Finished;
+                    ProcessTrekDescriptors(packet.Data, packet.Id);
+                    answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        State = ProcState.Finished;
+                    }
+                }
+                else
+                {
+                    /// wrong BlockID received
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
             {
                 State = ProcState.CmdAck;
+                bidControl.Reset();
             }
         }
 
