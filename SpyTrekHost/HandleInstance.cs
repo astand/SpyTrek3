@@ -45,7 +45,6 @@ namespace SpyTrekHost
         SpyTrekInfo spyTrekInfo;
 
         InfoProcessor infoProcessor = new InfoProcessor();
-        ReadProcessor readProcessor = new ReadProcessor("Trek");
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
         TrekSaverProcessor saveProc = new TrekSaverProcessor();
 
