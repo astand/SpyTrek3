@@ -266,7 +266,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 575);
+            this.ClientSize = new System.Drawing.Size(650, 571);
             this.Controls.Add(this.fileIdNum);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
@@ -277,8 +277,8 @@
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(666, 600);
-            this.MinimumSize = new System.Drawing.Size(666, 600);
+            this.MaximumSize = new System.Drawing.Size(666, 610);
+            this.MinimumSize = new System.Drawing.Size(666, 610);
             this.Name = "OneNodeForm";
             this.Text = "OneNode";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
