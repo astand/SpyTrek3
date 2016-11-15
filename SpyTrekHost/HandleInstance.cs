@@ -48,6 +48,8 @@ namespace SpyTrekHost
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
         TrekSaverProcessor saveProc = new TrekSaverProcessor();
 
+        ErrorProcessor errProc = new ErrorProcessor();
+
         Action<String> notifyUI = null;
 
         public SpyTrekInfo Info => spyTrekInfo;
@@ -92,7 +94,7 @@ namespace SpyTrekHost
             noteHand.SetSuccessor(trekHand);
 
 
-            IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetErrorProcessor(), null, ProcessorStateUpdated);
+            IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, errProc, null, ProcessorStateUpdated);
             // True specification for ERROR messages
             errorHand.SetSpecification(fid => true);
 

@@ -49,4 +49,12 @@ namespace MessageHandler
         public const UInt16 Track = 2;
         public const UInt16 Firmware = 3 | 1 << 14;
     }
+
+
+    public static class ErrorCode
+    {
+        public const UInt16 NoTrek = 6;
+        public const UInt16 NonSupportedOpc = 5;
+    }
+
 }
