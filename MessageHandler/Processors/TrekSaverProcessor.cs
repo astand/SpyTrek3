@@ -43,7 +43,7 @@ namespace MessageHandler.Processors
                     var by_size = noteCount * NaviNote.Lenght;
                     var completed = (by_size * 100.0) / trekSize;
 
-                    stateStr.Append($"({completed:F1} %) {by_size} bytes downloaded.");
+                    stateStr.Append($"({completed:F1} %)  {by_size} / {trekSize} ... ");
 
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
