@@ -42,9 +42,35 @@ namespace SpyTrekHost.UserUI
 
         private void button1_Click(Object sender, EventArgs e)
         {
-            int fid = (int)fileIdNum.Value;
-            Int32 ret = node_.ReadTrekCmd(fid);
-            label2.Text = (ret < 0) ? $"File cannot be downloaded [{ret}]" : "Send trek request";
+            var fid = GetTrekIdFromGrid();
+
+            /// for coloring grid row that cannot be downloaded.
+            //Int32 listindex = dataGridView1.CurrentCell.RowIndex;
+            //UInt16 dat = (UInt16)dataGridView1.Rows[i].Cells[0].Value;
+            //if (ret < 0)
+            //{
+            //    dataGridView1.Rows[listindex].DefaultCellStyle.BackColor = Color.Red;
+            //}
+
+            Int32 retval = node_.ReadTrekCmd(fid);
+
+            label2.Text = (retval < 0) ? $"File ({fid}) cannot be downloaded [{retval}]" : "Send trek request";
+        }
+
+        private Int32 GetTrekIdFromGrid()
+        {
+            Int32 retindex = -1;
+
+            try
+            {
+                retindex = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells[0].Value);
+            }
+            catch (Exception)
+            {
+                retindex = -2;
+            }
+
+            return retindex;
         }
     }
 }
