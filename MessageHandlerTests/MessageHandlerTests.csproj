@@ -54,6 +54,7 @@
     <Compile Include="ConcreteHandlers\FileHandlerTests.cs" />
     <Compile Include="DataFormats\TrekDescriptorTests.cs" />
     <Compile Include="DataUploading\FileUploaderTests.cs" />
+    <Compile Include="DiffTests\StringFormatTests.cs" />
     <Compile Include="Extension\DateTimeUtilTests.cs" />
     <Compile Include="Frame\ReadRequestTests.cs" />
     <Compile Include="Frame\WriteRequestTests.cs" />
