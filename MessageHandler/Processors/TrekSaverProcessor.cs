@@ -45,9 +45,11 @@ namespace MessageHandler.Processors
 
                     stateStr.Append($"({completed:F1} %)  {by_size} / {trekSize} ... ");
 
+                    State = ProcState.Data;
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
+                        State = ProcState.Finished;
                         stateStr.Append(". Finished");
                     }
                 }

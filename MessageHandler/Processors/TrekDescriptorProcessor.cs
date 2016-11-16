@@ -28,11 +28,13 @@ namespace MessageHandler.Processors
             {
                 if (bidControl.Next(packet.Id))
                 {
+                    State = ProcState.Data;
                     ProcessTrekDescriptors(packet.Data, packet.Id);
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
                         State = ProcState.Finished;
+                        stateStr.Append("Finished. ");
                     }
                 }
                 else
@@ -91,8 +93,8 @@ namespace MessageHandler.Processors
 
             } while (parseOk);
 
-            stateStr.Append($"Trek list updated. Notes count = {list.Count}");
-            
+            stateStr.Append($"Trek list updated. Notes count = {list.Count}... ");
+
             OnUpdated?.Invoke(list, block_num == 1);
         }
 
