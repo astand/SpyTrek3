@@ -38,7 +38,7 @@ namespace MessageHandler.Processors
                     }
                     if (packet.Data.Length == 0)
                     {
-                        stateStr.Append($"Info updated. {Info.Name} - {Info.Imei}");
+                        stateStr.Append($"Info updated. {Info.Imei}");
                         State = ProcState.Finished;
                     }
                    
