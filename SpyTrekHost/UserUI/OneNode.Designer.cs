@@ -70,6 +70,7 @@
             this.mileage});
             this.dataGridView1.Location = new System.Drawing.Point(12, 101);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 4;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(626, 399);
@@ -79,6 +80,7 @@
             // 
             this.id.HeaderText = "ID";
             this.id.Name = "id";
+            this.id.ReadOnly = true;
             this.id.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.id.Width = 35;
             // 
@@ -88,6 +90,7 @@
             this.name.FillWeight = 80F;
             this.name.HeaderText = "Name";
             this.name.Name = "name";
+            this.name.ReadOnly = true;
             // 
             // cDuration
             // 
@@ -107,18 +110,21 @@
             // 
             this.size.HeaderText = "Size (bytes)";
             this.size.Name = "size";
+            this.size.ReadOnly = true;
             this.size.Width = 80;
             // 
             // dist
             // 
             this.dist.HeaderText = "Dist (km)";
             this.dist.Name = "dist";
+            this.dist.ReadOnly = true;
             this.dist.Width = 80;
             // 
             // mileage
             // 
             this.mileage.HeaderText = "Mileage (km)";
             this.mileage.Name = "mileage";
+            this.mileage.ReadOnly = true;
             this.mileage.Width = 80;
             // 
             // button1
