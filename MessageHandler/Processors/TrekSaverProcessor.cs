@@ -55,6 +55,7 @@ namespace MessageHandler.Processors
                 }
                 else
                 {
+                    stateStr.Append($"Unexpected packet ID: {packet.Id}. Exp: {bidControl.Expected}.");
                     return;
                 }
             }
