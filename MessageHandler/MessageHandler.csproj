@@ -48,7 +48,7 @@
     <Compile Include="DataUploading\IDataUploader.cs" />
     <Compile Include="Extension\DateTimeUtil.cs" />
     <Compile Include="FrameHandler\IHandler.cs" />
-    <Compile Include="FrameHandler\FileHandler.cs" />
+    <Compile Include="FrameHandler\ConcreteFileHanlder.cs" />
     <Compile Include="FrameHandler\OperationHandler.cs" />
     <Compile Include="Frame\DataAck.cs" />
     <Compile Include="Frame\FrameProcessorTemplate.cs" />
@@ -62,7 +62,10 @@
     <Compile Include="Notifiers\InfoEventArgs.cs" />
     <Compile Include="Notifiers\ISpyTrekInfoNotifier.cs" />
     <Compile Include="Notifiers\NoteListEventArgs.cs" />
+    <Compile Include="Processors\BidControl.cs" />
+    <Compile Include="Processors\ErrorProcessor.cs" />
     <Compile Include="Processors\InfoProcessor.cs" />
+    <Compile Include="Processors\ProcState.cs" />
     <Compile Include="Processors\TrekDescriptorProcessor.cs" />
     <Compile Include="Processors\TrekSaverProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

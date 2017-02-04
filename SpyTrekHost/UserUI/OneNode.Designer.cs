@@ -31,6 +31,8 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAvrSpeed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.size = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -61,50 +63,73 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
             this.name,
+            this.cDuration,
+            this.cAvrSpeed,
             this.size,
             this.dist,
             this.mileage});
             this.dataGridView1.Location = new System.Drawing.Point(12, 101);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 4;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(626, 361);
+            this.dataGridView1.Size = new System.Drawing.Size(626, 399);
             this.dataGridView1.TabIndex = 0;
             // 
             // id
             // 
             this.id.HeaderText = "ID";
             this.id.Name = "id";
+            this.id.ReadOnly = true;
             this.id.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.id.Width = 35;
             // 
             // name
             // 
             this.name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.name.FillWeight = 80F;
             this.name.HeaderText = "Name";
             this.name.Name = "name";
+            this.name.ReadOnly = true;
+            // 
+            // cDuration
+            // 
+            this.cDuration.HeaderText = "Duration";
+            this.cDuration.Name = "cDuration";
+            this.cDuration.ReadOnly = true;
+            this.cDuration.Width = 70;
+            // 
+            // cAvrSpeed
+            // 
+            this.cAvrSpeed.HeaderText = "Avr Spd";
+            this.cAvrSpeed.Name = "cAvrSpeed";
+            this.cAvrSpeed.ReadOnly = true;
+            this.cAvrSpeed.Width = 70;
             // 
             // size
             // 
             this.size.HeaderText = "Size (bytes)";
             this.size.Name = "size";
+            this.size.ReadOnly = true;
             this.size.Width = 80;
             // 
             // dist
             // 
             this.dist.HeaderText = "Dist (km)";
             this.dist.Name = "dist";
+            this.dist.ReadOnly = true;
             this.dist.Width = 80;
             // 
             // mileage
             // 
             this.mileage.HeaderText = "Mileage (km)";
             this.mileage.Name = "mileage";
+            this.mileage.ReadOnly = true;
             this.mileage.Width = 80;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(79, 473);
+            this.button1.Location = new System.Drawing.Point(76, 515);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -134,7 +159,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(533, 468);
+            this.button4.Location = new System.Drawing.Point(533, 515);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(105, 23);
             this.button4.TabIndex = 4;
@@ -145,10 +170,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Verdana", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(176, 477);
+            this.label2.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(9, 548);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 18);
+            this.label2.Size = new System.Drawing.Size(29, 20);
             this.label2.TabIndex = 6;
             this.label2.Text = "Idle";
             // 
@@ -233,7 +258,7 @@
             // 
             // fileIdNum
             // 
-            this.fileIdNum.Location = new System.Drawing.Point(12, 475);
+            this.fileIdNum.Location = new System.Drawing.Point(12, 518);
             this.fileIdNum.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -247,7 +272,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(650, 503);
+            this.ClientSize = new System.Drawing.Size(650, 571);
             this.Controls.Add(this.fileIdNum);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
@@ -258,8 +283,8 @@
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(666, 542);
-            this.MinimumSize = new System.Drawing.Size(666, 542);
+            this.MaximumSize = new System.Drawing.Size(666, 610);
+            this.MinimumSize = new System.Drawing.Size(666, 610);
             this.Name = "OneNodeForm";
             this.Text = "OneNode";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -272,11 +297,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn size;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dist;
-        private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnInfo;
         private System.Windows.Forms.Button btnGetTreks;
@@ -292,5 +312,12 @@
         private System.Windows.Forms.Label lblVer;
         public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.NumericUpDown fileIdNum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cDuration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cAvrSpeed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dist;
+        private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
     }
 }

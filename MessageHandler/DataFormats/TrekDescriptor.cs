@@ -18,11 +18,14 @@ namespace MessageHandler.DataFormats
         public UInt32 Dist { get; private set; }
         public UInt32 Odometr { get; private set; }
 
+        private TimeSpan timeSpan_;
         public static Int32 Length { get; } = 2 + 6 + 6 + 4 + 4 + 4;
 
         public Int32 NotesCount => ((int)(TrekSize / NaviNote.Lenght));
 
-        private static readonly Int32 MINIMUM_DISTANCE_DETECT = (200 * 10);
+        public TimeSpan Duration => timeSpan_;
+
+        private static readonly Int32 kMinRealDistance = (200 * 10);
 
         public TrekDescriptor() { }
 
@@ -31,11 +34,12 @@ namespace MessageHandler.DataFormats
             Int32 current_position = offset;
 
             Id = BitConverter.ToUInt16(buff, current_position);
-            Start = DateTimeUtil.GetDateTime(buff, current_position += 2);
-            Stop = DateTimeUtil.GetDateTime(buff, current_position += 6);
+            Start = DateTimeUtil.GetDateTime(buff, current_position += 2).ToLocalTime();
+            Stop = DateTimeUtil.GetDateTime(buff, current_position += 6).ToLocalTime();
             TrekSize = BitConverter.ToUInt32(buff, current_position += 6);
             Dist = BitConverter.ToUInt32(buff, current_position += 4);
             Odometr = BitConverter.ToUInt32(buff, current_position += 4);
+            timeSpan_ = Stop - Start;
         }
 
         /// <summary>
@@ -58,8 +62,21 @@ namespace MessageHandler.DataFormats
             return false;
         }
 
+        public String TrekTime() => $"{Start.ToShortDateString()}  {Start.ToShortTimeString()} --> {Stop.ToShortTimeString()}";
+        public String TrekDuration() => (Stop - Start).ToString(@"d\.hh\:mm");
+
         public override String ToString() => $"{Id:D4}: {Start.ToJS()}  {Stop.ToJS()}. " +
             $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
+
+        public Boolean IsBadTrek()
+        {
+            var avr_spd_ = (Dist / 10000) / Duration.TotalHours;
+
+            if ((avr_spd_ < 3.0) || (Dist < kMinRealDistance))
+                /// Bad trek with low speed or low trek distance
+                return true;
+            return false;
+        }
     };
 
 }

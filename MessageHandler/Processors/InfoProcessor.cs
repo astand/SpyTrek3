@@ -13,39 +13,46 @@ namespace MessageHandler.Processors
 {
     public class InfoProcessor : IFrameProccesor
     {
-        public SpyTrekInfo Info { get; }
+        StringBuilder stateStr = new StringBuilder(255);
+        public SpyTrekInfo Info { get; private set; }
 
-        private Int32 block_synchro = 0;
+        BidControl bCtrl = new BidControl();
 
         public Action<SpyTrekInfo> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            stateStr.Clear();
+            State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
-                if (CheckBlockSynchro(packet.Id) && packet.Id == 1)
+                if (bCtrl.Next(packet.Id))
                 {
-                    SpyTrekInfo Info = new SpyTrekInfo();
-                    Info.TryParse(Encoding.UTF8.GetString(packet.Data));
-                    OnUpdated?.Invoke(Info);
+                    if (packet.Id == 1)
+                    {
+                        /// Pay load data placed in first data block
+                        Info = new SpyTrekInfo();
+                        Info.TryParse(Encoding.UTF8.GetString(packet.Data));
+                        OnUpdated?.Invoke(Info);
+                        State = ProcState.Data;
+                    }
+                    if (packet.Data.Length == 0)
+                    {
+                        stateStr.Append($"Info updated. {Info.Imei}");
+                        State = ProcState.Finished;
+                    }
+                   
+                    answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                 }
             }
             else if (packet.Opc == OpCodes.RRQ)
-                ResetBlockSynchro();
-
-
-        }
-
-        private bool CheckBlockSynchro(UInt16 id)
-        {
-            if (block_synchro + 1 == id)
             {
-                block_synchro += 1;
-                return true;
+                State = ProcState.CmdAck;
+                stateStr.Append($"Info. RRQ ACK");
+                bCtrl.Reset();
             }
-            return false;
         }
 
-        private void ResetBlockSynchro() => block_synchro = 0;
+        public override String ToString() => stateStr.ToString();
     }
 }

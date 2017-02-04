@@ -9,6 +9,7 @@ using StreamHandler;
 using MessageHandler.DataUploading;
 using System.Timers;
 using System.Diagnostics;
+using MessageHandler.Processors;
 
 namespace MessageHandler
 {
@@ -56,27 +57,31 @@ namespace MessageHandler
         /// </summary>
         /// <param name="packet"></param>
         /// <param name="answer"></param>
-        public void Process(FramePacket packet, ref IStreamData answer)
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
             lock (m_blockDriver)
             {
+                State = ProcState.Idle;
+
                 if (packet.Opc == OpCodes.ACK)
                 {
+                    State = ProcState.Data;
                     m_blockDriver.PassAckBlock(packet.Id);
+
                     if (m_blockDriver.IsLastAck)
                     {
+                        State = ProcState.Finished;
                         StopSending();
                         Console.WriteLine("Stop sending action.");
                     }
                 }
 
                 /// reuest acknowledge handle here
-                /// 
                 if (packet.Opc == OpCodes.WRQ)
                 {
+                    State = ProcState.CmdAck;
                     m_data_active = true;
                 }
-
             }
         }
 
@@ -141,5 +146,9 @@ namespace MessageHandler
             ScheduleSendingData();
         }
 
+        public ProcState GetState()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

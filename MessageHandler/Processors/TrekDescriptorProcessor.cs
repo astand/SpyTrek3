@@ -12,16 +12,41 @@ namespace MessageHandler.Processors
 {
     public class TrekDescriptorProcessor : IFrameProccesor
     {
-        private List<TrekDescriptor> list = new List<TrekDescriptor>();
-
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        public void Process(FramePacket packet, ref IStreamData answer)
+        private List<TrekDescriptor> list = new List<TrekDescriptor>();
+
+        BidControl bidControl = new BidControl();
+
+        StringBuilder stateStr = new StringBuilder(255);
+
+        public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            stateStr.Clear();
+            State = ProcState.Idle;
             if (packet.Opc == OpCodes.DATA)
             {
-                ProcessTrekDescriptors(packet.Data, packet.Id);
-                answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                if (bidControl.Next(packet.Id))
+                {
+                    State = ProcState.Data;
+                    ProcessTrekDescriptors(packet.Data, packet.Id);
+                    answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+                    if (packet.Data.Length == 0)
+                    {
+                        State = ProcState.Finished;
+                        stateStr.Append("Finished. ");
+                    }
+                }
+                else
+                {
+                    /// wrong BlockID received
+                }
+            }
+            else if (packet.Opc == OpCodes.RRQ)
+            {
+                stateStr.Append("Descriptors. RRQ ACK");
+                State = ProcState.CmdAck;
+                bidControl.Reset();
             }
         }
 
@@ -37,7 +62,12 @@ namespace MessageHandler.Processors
             return item.Id;
         }
 
-        public TrekDescriptor GetDescriptor(Int32 i) => i < list.Count ? (list[i]) : null;
+        /// <summary>
+        /// Return TrekDescriptor
+        /// </summary>
+        /// <param name="trek_id">Requested Trek ID</param>
+        /// <returns>Instance in case of existing</returns>
+        public TrekDescriptor GetDescriptor(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
@@ -63,7 +93,11 @@ namespace MessageHandler.Processors
 
             } while (parseOk);
 
+            stateStr.Append($"Trek list updated. Notes count = {list.Count}... ");
+
             OnUpdated?.Invoke(list, block_num == 1);
         }
+
+        public override String ToString() => stateStr.ToString();
     }
 }
