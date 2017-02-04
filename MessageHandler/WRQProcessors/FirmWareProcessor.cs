@@ -21,9 +21,9 @@ namespace MessageHandler
     {
         static private readonly Int32 BLOCK_SIZE = 1000;
 
-        private BlockDriver m_blockDriver = new BlockDriver();
+        private BlockDriver blockDriver = new BlockDriver();
 
-        private Piper m_pipe;
+        private Piper piper;
 
         private IDataUploader dataUploader;
 
@@ -37,7 +37,7 @@ namespace MessageHandler
 
         public FirmwareProcessor(Piper pipe, string source_path)
         {
-            m_pipe = pipe;
+            piper = pipe;
             //dataUploader = new CachedFileUploader(source_path);
             dataUploader = new DiskFileUploader(source_path);
             dataUploader.RefreshData();
@@ -48,7 +48,7 @@ namespace MessageHandler
 
         public void SendRequest()
         {
-            m_pipe.SendData(new WriteRequest(0x4003, dataUploader.Length));
+            piper.SendData(new WriteRequest(0x4003, dataUploader.Length));
             StartSending();
         }
 
@@ -59,16 +59,16 @@ namespace MessageHandler
         /// <param name="answer"></param>
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
-            lock (m_blockDriver)
+            lock (blockDriver)
             {
                 State = ProcState.Idle;
 
                 if (packet.Opc == OpCodes.ACK)
                 {
                     State = ProcState.Data;
-                    m_blockDriver.PassAckBlock(packet.Id);
+                    blockDriver.PassAckBlock(packet.Id);
 
-                    if (m_blockDriver.IsLastAck)
+                    if (blockDriver.IsLastAck)
                     {
                         State = ProcState.Finished;
                         StopSending();
@@ -87,28 +87,28 @@ namespace MessageHandler
 
         public void ScheduleSendingData()
         {
-            lock (m_blockDriver)
+            lock (blockDriver)
             {
                 if (m_request_sent == false || m_data_active == false)
                 {
                     return;
                 }
 
-                while (m_blockDriver.IsWindAllow())
+                while (blockDriver.IsWindAllow())
                 {
                     var readed = ReadDataChuck();
 
-                    var fPacket = new FramePacket(OpCodes.DATA, m_blockDriver.BidSend, m_payload, readed);
+                    var fPacket = new FramePacket(OpCodes.DATA, blockDriver.BidSend, m_payload, readed);
 
-                    m_pipe.SendData(fPacket);
+                    piper.SendData(fPacket);
 
                     if (readed == 0)
                     {
                         // last block sent
-                        m_blockDriver.BidLast = m_blockDriver.BidSend;
+                        blockDriver.BidLast = blockDriver.BidSend;
                     }
                     else
-                        m_blockDriver.BidSend++;
+                        blockDriver.BidSend++;
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace MessageHandler
 
         private Int32 ReadDataChuck()
         {
-            Int32 offset = (m_blockDriver.BidSend - 1) * BLOCK_SIZE;
+            Int32 offset = (blockDriver.BidSend - 1) * BLOCK_SIZE;
 
             return dataUploader.ReadData(m_payload, offset, BLOCK_SIZE);
         }
@@ -130,7 +130,7 @@ namespace MessageHandler
             m_timer.Interval = 50;
             m_request_sent = true;
             m_timer.Start();
-            m_blockDriver.Reset();
+            blockDriver.Reset();
         }
 
         private void StopSending()
@@ -144,11 +144,6 @@ namespace MessageHandler
         private void M_timer_Elapsed(Object sender, ElapsedEventArgs e)
         {
             ScheduleSendingData();
-        }
-
-        public ProcState GetState()
-        {
-            throw new NotImplementedException();
         }
     }
 }
