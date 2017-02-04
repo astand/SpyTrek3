@@ -50,6 +50,7 @@
             this.lblImei = new System.Windows.Forms.Label();
             this.lblVer = new System.Windows.Forms.Label();
             this.fileIdNum = new System.Windows.Forms.NumericUpDown();
+            this.btnFirmware = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileIdNum)).BeginInit();
@@ -149,7 +150,7 @@
             // 
             // btnGetTreks
             // 
-            this.btnGetTreks.Location = new System.Drawing.Point(472, 23);
+            this.btnGetTreks.Location = new System.Drawing.Point(468, 23);
             this.btnGetTreks.Name = "btnGetTreks";
             this.btnGetTreks.Size = new System.Drawing.Size(75, 23);
             this.btnGetTreks.TabIndex = 3;
@@ -268,11 +269,22 @@
             this.fileIdNum.Size = new System.Drawing.Size(58, 20);
             this.fileIdNum.TabIndex = 12;
             // 
+            // btnFirmware
+            // 
+            this.btnFirmware.Location = new System.Drawing.Point(563, 68);
+            this.btnFirmware.Name = "btnFirmware";
+            this.btnFirmware.Size = new System.Drawing.Size(75, 23);
+            this.btnFirmware.TabIndex = 13;
+            this.btnFirmware.Text = "Firmware";
+            this.btnFirmware.UseVisualStyleBackColor = true;
+            this.btnFirmware.Click += new System.EventHandler(this.btnFirmware_Click);
+            // 
             // OneNodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 571);
+            this.Controls.Add(this.btnFirmware);
             this.Controls.Add(this.fileIdNum);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
@@ -319,5 +331,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn size;
         private System.Windows.Forms.DataGridViewTextBoxColumn dist;
         private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
+        private System.Windows.Forms.Button btnFirmware;
     }
 }

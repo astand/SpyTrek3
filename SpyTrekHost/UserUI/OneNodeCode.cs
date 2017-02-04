@@ -74,5 +74,10 @@ namespace SpyTrekHost.UserUI
                 label2.Text = str;
             }
         }
+
+        private void btnFirmware_Click(Object sender, EventArgs e)
+        {
+            node_.StartFirmwareUpdating();
+        }
     }
 }

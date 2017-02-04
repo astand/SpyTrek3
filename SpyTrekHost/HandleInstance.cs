@@ -48,6 +48,8 @@ namespace SpyTrekHost
         TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
         TrekSaverProcessor saveProc = new TrekSaverProcessor();
 
+        FirmwareProcessor firmProc;
+
         ErrorProcessor errProc = new ErrorProcessor();
 
         Action<String> notifyUI = null;
@@ -63,6 +65,8 @@ namespace SpyTrekHost
             piper = new Piper(networkPipe, networkPipe);
             piper.OnFail += Piper_OnFail;
             piper.OnData += Piper_OnData;
+
+
 
             infoProcessor.OnUpdated += WhenInfoUpdated;
 
@@ -98,8 +102,8 @@ namespace SpyTrekHost
             // True specification for ERROR messages
             errorHand.SetSpecification(fid => true);
 
-
-            IHandler<FramePacket> firmHand = new ConcreteFileHandler<FramePacket>(null, ReadProcessorFactory.GetFirmwareProcessor(piper, @"st8.bin"), null);
+            firmProc = new FirmwareProcessor(piper, "st8.bin");
+            IHandler<FramePacket> firmHand = new ConcreteFileHandler<FramePacket>(null, firmProc, null, ProcessorStateUpdated);
             // Set specification for WRQ files
             firmHand.SetSpecification(fid => true);
 
@@ -185,6 +189,11 @@ namespace SpyTrekHost
             piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
 
             return ret.Id;
+        }
+
+        public void StartFirmwareUpdating()
+        {
+            firmProc.SendRequest();
         }
 
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
