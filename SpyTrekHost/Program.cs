@@ -12,6 +12,7 @@ using MessageHandler;
 using System.Threading;
 using SpyTrekHost.UserUI;
 using System.Windows.Forms;
+using System.Configuration;
 using System.Diagnostics;
 
 namespace SpyTrekHost
@@ -25,17 +26,12 @@ namespace SpyTrekHost
 
         static void Main(string[] args)
         {
+            var appSettings = ConfigurationManager.AppSettings;
+            UInt16 portNum = 20201;
+            UInt16.TryParse(appSettings["port"], out portNum);
+            Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}.Port number is {portNum}");
 
-            Console.Write($"Please input listening port number : ");
-            var PortNumber = Console.ReadLine();
-            Console.WriteLine("");
-            UInt16 PortNumberNum;
-            if (UInt16.TryParse(PortNumber, out PortNumberNum) == false)
-                PortNumberNum = 20201;
-
-            Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}.Port number is {PortNumberNum}");
-
-            var tcpListener = new TcpListener(IPAddress.Any, PortNumberNum);
+            var tcpListener = new TcpListener(IPAddress.Any, portNum);
             tcpListener.Start();
 
             Thread td = new Thread(Dispatcher);
