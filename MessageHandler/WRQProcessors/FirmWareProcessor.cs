@@ -39,6 +39,8 @@ namespace MessageHandler
 
         private Int32 sendedSize;
 
+        ByteRate byteRate = new ByteRate();
+
         public FirmwareProcessor(Piper pipe, string source_path)
         {
             piper = pipe;
@@ -55,6 +57,7 @@ namespace MessageHandler
             piper.SendData(new WriteRequest(0x4003, dataUploader.Length));
             StartSending();
             sendedSize = 0;
+            byteRate.MakeStartStamp();
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace MessageHandler
 
                     var acked_size = packet.Id * BLOCK_SIZE;
                     acked_size = (acked_size > sendedSize) ? (sendedSize) : (acked_size);
-                    stateStr.Append($"Uploading firm acked: {acked_size.ToString().PadRight(6, ' ')}");
+                    stateStr.Append($"Uploading firm acked: {acked_size.ToString().PadRight(6, ' ')}. Speed {byteRate.CalcKBperSec(acked_size):F2} kBps");
 
                     if (blockDriver.IsLastAck)
                     {
@@ -110,7 +113,7 @@ namespace MessageHandler
                     var readed = ReadDataChuck();
 
                     var fPacket = new FramePacket(OpCodes.DATA, blockDriver.BidSend, m_payload, readed);
-                    
+
                     piper.SendData(fPacket);
 
                     if (readed == 0)
