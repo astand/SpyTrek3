@@ -71,12 +71,10 @@ namespace MessageHandler.Processors
 
         private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
         {
-            Debug.WriteLine("Blocks num " + block_num);
+            stateStr.Clear();
 
             if (block_num == 1)
-            {
                 list.Clear();
-            }
 
             Int32 current_offset = 0;
             bool parseOk;
@@ -93,7 +91,7 @@ namespace MessageHandler.Processors
 
             } while (parseOk);
 
-            stateStr.Append($"Trek list updated. Notes count = {list.Count}... ");
+            stateStr.Append($"Notes count: {list.Count}... ");
 
             OnUpdated?.Invoke(list, block_num == 1);
         }

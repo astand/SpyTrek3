@@ -153,7 +153,7 @@ namespace SpyTrekHost
 
         private void ProcessorStateUpdated(IFrameProccesor proc)
         {
-            Debug.WriteLine($"{proc.ToString()} | State = {proc.State}");
+            Debug.WriteLine($"State: {proc.State.ToString().PadRight(10, ' ')}| {proc.ToString()}");
             notifyUI?.Invoke(proc.ToString());
         }
 
