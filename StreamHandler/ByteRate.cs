@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace StreamHandler
             if (start == null)
                 return 0;
 
-            var secDiff = (Int32)(DateTime.Now - start).TotalSeconds;
+            var secDiff = (DateTime.Now - start).TotalSeconds;
 
             return (passedSize / (secDiff * 1000.0));
         }

@@ -7,6 +7,7 @@ using StreamHandler.Abstract;
 using MessageHandler;
 using MessageHandler.DataFormats;
 using System.Diagnostics;
+using StreamHandler;
 
 namespace MessageHandler.Processors
 {
@@ -20,6 +21,10 @@ namespace MessageHandler.Processors
 
         StringBuilder stateStr = new StringBuilder(255);
 
+        ByteRate byteRate = new ByteRate();
+
+        Int32 recSize = 0;
+
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
             stateStr.Clear();
@@ -30,6 +35,7 @@ namespace MessageHandler.Processors
                 {
                     State = ProcState.Data;
                     ProcessTrekDescriptors(packet.Data, packet.Id);
+                    HandleByteRate(packet);
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
@@ -47,7 +53,19 @@ namespace MessageHandler.Processors
                 stateStr.Append("Descriptors. RRQ ACK");
                 State = ProcState.CmdAck;
                 bidControl.Reset();
+                recSize = 0;
+                byteRate.MakeStartStamp();
             }
+        }
+
+        private void HandleByteRate(FramePacket packet)
+        {
+            if (packet.Data.Length == 0)
+                return;
+
+            recSize += packet.Data.Length;
+            var tmp_kBps = byteRate.CalcKBperSec(recSize);
+            stateStr.Append($"Speed: {tmp_kBps:F1} kBps");
         }
 
         public Int32 GetTrekID(int index_in_list)
