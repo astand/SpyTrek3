@@ -35,6 +35,10 @@ namespace MessageHandler
 
         Byte[] m_payload = new byte[BLOCK_SIZE];
 
+        StringBuilder stateStr = new StringBuilder(255);
+
+        private Int32 sendedSize;
+
         public FirmwareProcessor(Piper pipe, string source_path)
         {
             piper = pipe;
@@ -50,6 +54,7 @@ namespace MessageHandler
         {
             piper.SendData(new WriteRequest(0x4003, dataUploader.Length));
             StartSending();
+            sendedSize = 0;
         }
 
         /// <summary>
@@ -59,26 +64,32 @@ namespace MessageHandler
         /// <param name="answer"></param>
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
+            stateStr.Clear();
+
             lock (blockDriver)
             {
                 State = ProcState.Idle;
 
-                if (packet.Opc == OpCodes.ACK)
+                if (packet.Opc == OpCodes.ACK && (blockDriver.PassAckBlock(packet.Id)))
                 {
                     State = ProcState.Data;
-                    blockDriver.PassAckBlock(packet.Id);
+
+                    var acked_size = packet.Id * BLOCK_SIZE;
+                    acked_size = (acked_size > sendedSize) ? (sendedSize) : (acked_size);
+                    stateStr.Append($"Uploading firm acked: {acked_size.ToString().PadRight(6, ' ')}");
 
                     if (blockDriver.IsLastAck)
                     {
+                        stateStr.Append("Finished.");
                         State = ProcState.Finished;
                         StopSending();
-                        Console.WriteLine("Stop sending action.");
                     }
                 }
 
                 /// reuest acknowledge handle here
                 if (packet.Opc == OpCodes.WRQ)
                 {
+                    stateStr.Append("Firmware was accepted...");
                     State = ProcState.CmdAck;
                     m_data_active = true;
                 }
@@ -99,7 +110,7 @@ namespace MessageHandler
                     var readed = ReadDataChuck();
 
                     var fPacket = new FramePacket(OpCodes.DATA, blockDriver.BidSend, m_payload, readed);
-
+                    
                     piper.SendData(fPacket);
 
                     if (readed == 0)
@@ -121,8 +132,12 @@ namespace MessageHandler
         private Int32 ReadDataChuck()
         {
             Int32 offset = (blockDriver.BidSend - 1) * BLOCK_SIZE;
+            var ret = dataUploader.ReadData(m_payload, offset, BLOCK_SIZE);
 
-            return dataUploader.ReadData(m_payload, offset, BLOCK_SIZE);
+            if (ret != 0)
+                sendedSize = offset + ret;
+
+            return ret;
         }
 
         private void StartSending()
@@ -145,5 +160,7 @@ namespace MessageHandler
         {
             ScheduleSendingData();
         }
+
+        public override String ToString() => stateStr.ToString();
     }
 }
