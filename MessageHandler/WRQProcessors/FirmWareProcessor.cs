@@ -31,7 +31,7 @@ namespace MessageHandler
 
         private Boolean m_data_active = false;
 
-        private Timer m_timer = new Timer();
+        private Timer sendTimer = new Timer();
 
         Byte[] m_payload = new byte[BLOCK_SIZE];
 
@@ -43,7 +43,7 @@ namespace MessageHandler
             dataUploader.RefreshData();
             Debug.WriteLine($"Firmware processor initialized by file {dataUploader.ToString()} length = {dataUploader.Length}");
 
-            m_timer.Elapsed += M_timer_Elapsed;
+            sendTimer.Elapsed += SendTimer_Elapsed;
         }
 
         public void SendRequest()
@@ -115,7 +115,7 @@ namespace MessageHandler
 
         public void Dispose()
         {
-            m_timer.Dispose();
+            sendTimer.Dispose();
         }
 
         private Int32 ReadDataChuck()
@@ -127,21 +127,21 @@ namespace MessageHandler
 
         private void StartSending()
         {
-            m_timer.Interval = 50;
+            sendTimer.Interval = 50;
             m_request_sent = true;
-            m_timer.Start();
+            sendTimer.Start();
             blockDriver.Reset();
         }
 
         private void StopSending()
         {
-            m_timer.Stop();
+            sendTimer.Stop();
             m_request_sent = false;
             m_data_active = false;
         }
 
 
-        private void M_timer_Elapsed(Object sender, ElapsedEventArgs e)
+        private void SendTimer_Elapsed(Object sender, ElapsedEventArgs e)
         {
             ScheduleSendingData();
         }
