@@ -30,7 +30,6 @@ namespace MessageHandler.TrekWriter
 
             trekFolder.AddNoteList(notes);
             currentOffset += notes.Count;
-            Debug.WriteLine($"{currentOffset} notes was added.");
 
             return currentOffset;
         }

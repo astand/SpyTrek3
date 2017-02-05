@@ -7,6 +7,7 @@ using StreamHandler.Abstract;
 using System.Diagnostics;
 using MessageHandler.DataFormats;
 using MessageHandler.TrekWriter;
+using StreamHandler;
 
 namespace MessageHandler.Processors
 {
@@ -26,6 +27,8 @@ namespace MessageHandler.Processors
 
         private StringBuilder stateStr = new StringBuilder(255);
 
+        ByteRate byteRate = new ByteRate();
+
         public override void Process(FramePacket packet, ref IStreamData answer)
         {
             State = ProcState.Idle;
@@ -38,14 +41,13 @@ namespace MessageHandler.Processors
                 // data
                 if (bidControl.Next(packet.Id))
                 {
-                    noteCount = SaveTrek(packet.Data, packet.Id);
-
-                    var by_size = noteCount * NaviNote.Lenght;
-                    var completed = (by_size * 100.0) / trekSize;
-
-                    stateStr.Append($"({completed:F1} %)  {by_size} / {trekSize} ... ");
-
                     State = ProcState.Data;
+                    noteCount = SaveTrek(packet.Data, packet.Id);
+                    var acked_size = noteCount * NaviNote.Lenght;
+
+
+                    HandleSizePassed(acked_size);
+                    HandleByteRate(acked_size);
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
                     if (packet.Data.Length == 0)
                     {
@@ -66,9 +68,24 @@ namespace MessageHandler.Processors
                 trekSize = (packet.Data.Length >= 4) ? BitConverter.ToUInt16(packet.Data, 2) : (-1);
                 stateStr.Append($"Trek. RRQ ACK. File size: {trekSize} Bytes");
                 bidControl.Reset();
+                byteRate.MakeStartStamp();
             }
         }
 
+        private void HandleSizePassed(Int32 acked_size)
+        {
+            var percent = ((acked_size * 100.0) / trekSize).ToString("F2").PadRight(6, ' ');
+            var bytes = $"{acked_size} from {trekSize}".PadRight(18, ' ');
+
+            stateStr.Append($"({percent} %)  {bytes}. ");
+
+        }
+
+        private void HandleByteRate(Int32 received_size)
+        {
+            var tmp_kBps = byteRate.CalcKBperSec(received_size);
+            stateStr.Append($"Speed: {tmp_kBps:F1} kBps");
+        }
 
         public bool IsTrekNeed(TrekDescriptor desc) => trekWr.TrekCanBeWrite(imeiPath, desc);
 

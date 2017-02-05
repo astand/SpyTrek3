@@ -44,6 +44,7 @@
     <Compile Include="Abstract\IStreamedData.cs" />
     <Compile Include="Abstract\IStreamHandler.cs" />
     <Compile Include="BlockDriver.cs" />
+    <Compile Include="ByteRate.cs" />
     <Compile Include="ByteSruffer\ByteStuffer.cs" />
     <Compile Include="ByteSruffer\ResizeableArray.cs" />
     <Compile Include="CommandSender.cs" />
