@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -27,11 +28,7 @@ namespace SpyTrekHost.UserUI
             }
             else
             {
-                dataGridView1.Rows.Clear();
-                foreach (var item in list)
-                {
-                    AddDescriptorToGrid(item);
-                }
+                AddDescriptorToGrid(list, isNew);
             }
         }
 
@@ -53,13 +50,26 @@ namespace SpyTrekHost.UserUI
             }
         }
 
-        private void AddDescriptorToGrid(TrekDescriptor dsc)
+        private void AddDescriptorToGrid(List<TrekDescriptor> list, bool need_clear)
         {
-            float indist = 0;
-            indist = (dsc.Dist / 10000);
-            UInt32 allmileage = (dsc.Odometr/ 10000);
-            var avr_speed = (dsc.Dist / 10000) / dsc.Duration.TotalHours;
-            dataGridView1.Rows.Add(dsc.Id, dsc.TrekTime(), dsc.TrekDuration(), avr_speed.ToString("000.00"), dsc.TrekSize, indist, allmileage);
+            /// This try block is needed for non-exception dataGrid row adding after first OneNode window closing
+            /// It throws InvalidOperationException - no columns in dataGrid
+            try
+            {
+                dataGridView1.Rows.Clear();
+                foreach (var item in list)
+                {
+                    float indist = 0;
+                    indist = (item.Dist / 10000);
+                    UInt32 allmileage = (item.Odometr/ 10000);
+                    var avr_speed = (item.Dist / 10000) / item.Duration.TotalHours;
+                    dataGridView1.Rows.Add(item.Id, item.TrekTime(), item.TrekDuration(), avr_speed.ToString("000.00"), item.TrekSize, indist, allmileage);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Error when notes adding. {e.GetType()}. {e.Message}");
+            }
         }
 
         private void Label2Updater(String str)
