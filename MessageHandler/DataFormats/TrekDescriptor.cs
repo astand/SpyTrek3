@@ -70,7 +70,7 @@ namespace MessageHandler.DataFormats
 
         public Boolean IsBadTrek()
         {
-            var avr_spd_ = (Dist / 10000) / Duration.TotalHours;
+            var avr_spd_ = (Dist / 1000.0) / Duration.TotalHours;
 
             if ((avr_spd_ < 3.0) || (Dist < kMinRealDistance))
                 /// Bad trek with low speed or low trek distance
