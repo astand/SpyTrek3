@@ -8,7 +8,7 @@ namespace MessageHandler.DataFormats
 {
     public class NaviNote
     {
-        const Int32 kCoordinatePrescaler = 1000000;
+        const double KoorPrescaler = 1000000.0;
         DateTime timePoint;
         Int16 altitude;
         Int32 lafull;
@@ -18,6 +18,8 @@ namespace MessageHandler.DataFormats
         UInt16 spare;
         UInt16 adcsrc;
         UInt16 adc1;
+
+        StringBuilder str = new StringBuilder(128);
 
         public static Int32 Lenght => (6 + (4 * 3) + (2 * 3) + (2 * 2));
 
@@ -50,33 +52,16 @@ namespace MessageHandler.DataFormats
             adc1 = BitConverter.ToUInt16(b, offset += 2);
         }
 
-        public static string PrintCoor(int crd)
-        {
-            int man = crd / kCoordinatePrescaler;
-            int div = crd % kCoordinatePrescaler;
-            return string.Format("{0}.{1:D6}", man, div);
-        }
-
-
-
-        public string PrintDistance()
-        {
-            string ret = string.Format("{0}.{1:D3}", accum_dist / 10000, (accum_dist % 10000) / 10);
-            return ret;
-        }
-
         public string GetStringNotify()
         {
-            string outvic;
+            var ret = new StringBuilder(128);
 
-            string stdate = timePoint.ToString("yyyy-MM-ddTHH:mm:ss");
-            outvic = "{ lat:" + PrintCoor(lafull) + ",lon:" + PrintCoor(lofull) + ",titl:";
-            outvic += stdate + ",spd:" + spd / 100 + ",dist:" + PrintDistance() + " },";
-
-            return outvic;
+            ret.Append($"{{ lat:{(lafull / KoorPrescaler):F6},");
+            ret.Append($"lon:{(lofull / KoorPrescaler):F6},");
+            ret.Append($"titl:\"{timePoint.ToString("yyyy-MM-ddTHH:mm:ss")}\",");
+            ret.Append($"spd:{spd / 100},".PadRight(8, ' '));
+            ret.Append($"dist:{accum_dist / 1000.0:F3} }},");
+            return ret.ToString();
         }
-
-        public override String ToString() => GetStringNotify();
-
     };
 }

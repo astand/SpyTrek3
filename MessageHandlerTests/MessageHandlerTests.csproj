@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ConcreteHandlers\FileHandlerTests.cs" />
+    <Compile Include="DataFormats\NaviNoteTests.cs" />
     <Compile Include="DataFormats\TrekDescriptorTests.cs" />
     <Compile Include="DataUploading\FileUploaderTests.cs" />
     <Compile Include="DiffTests\StringFormatTests.cs" />
