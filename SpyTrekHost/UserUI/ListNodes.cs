@@ -15,7 +15,6 @@ namespace SpyTrekHost.UserUI
     {
         public ListNodesForm()
         {
-
             InitializeComponent();
             lblVer.Text = Program.AppVersion;
         }
@@ -24,12 +23,9 @@ namespace SpyTrekHost.UserUI
         {
             //HandleInstance node = listOfNodes[e.RowIndex];
             HandleInstance node = HICollection.GetByIndex(e.RowIndex);
-
             var childform = new OneNodeForm(node);
-
             Thread thr = new Thread(new ParameterizedThreadStart(ChildFormStart));
             thr.Start(childform);
-
             //string msg = $"Index {e.RowIndex}. info: {listOfNodes[e.RowIndex]?.ToString()}";
             //MessageBox.Show(msg);
         }

@@ -32,12 +32,14 @@ namespace SpyTrekHost
             {
                 var item = sender as HandleInstance;
                 Int32 index = list_.IndexOf(item);
+
                 if (index >= 0)
                 {
                     list_.RemoveAt(index);
                     item.Dispose();
                     RefreshList();
                 }
+
                 Debug.WriteLine($"Item [{index}] was been deleted.");
             }
         }
@@ -46,6 +48,7 @@ namespace SpyTrekHost
         {
             if (index < list_.Count)
                 return list_[index];
+
             return null;
         }
 

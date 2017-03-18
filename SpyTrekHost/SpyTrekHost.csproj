@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HandleFactory.cs" />
     <Compile Include="HandleInstance.cs" />
     <Compile Include="HICollection.cs" />
     <Compile Include="Program.cs" />
