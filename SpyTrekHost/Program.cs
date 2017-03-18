@@ -14,11 +14,13 @@ using SpyTrekHost.UserUI;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace SpyTrekHost
 {
     class Program
     {
+        public static string AppVersion;
 
         static TcpClient tcpClient;
 
@@ -26,22 +28,17 @@ namespace SpyTrekHost
 
         static void Main(string[] args)
         {
+            ReadVersion();
             var appSettings = ConfigurationManager.AppSettings;
             UInt16 portNum = 20201;
             UInt16.TryParse(appSettings["port"], out portNum);
             Console.WriteLine($"Tcp listener has started @ {DateTime.Now.ToShortTimeString()}.Port number is {portNum}");
-
             var tcpListener = new TcpListener(IPAddress.Any, portNum);
             tcpListener.Start();
-
             Thread td = new Thread(Dispatcher);
-
             td.Start();
-
             listNodes = new ListNodesForm();
-
             HICollection.AddListUpdater(listNodes.UpdateListNodes);
-
             Thread ui = new Thread(UIThread);
             ui.Start();
 
@@ -64,14 +61,20 @@ namespace SpyTrekHost
 
         static void Dispatcher()
         {
+            Console.WriteLine("App version : {AppVersion}");
             Console.WriteLine($"Dispatcher has started @ {DateTime.Now.ToShortTimeString()}");
         }
-
 
 
         static void UIThread()
         {
             Application.Run(listNodes);
+        }
+
+        static void ReadVersion()
+        {
+            var assemblyFullName = Assembly.GetExecutingAssembly().FullName;
+            AppVersion = assemblyFullName.Split(',')[1].Split('=')[1];
         }
     }
 }

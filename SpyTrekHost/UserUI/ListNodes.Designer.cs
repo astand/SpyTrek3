@@ -33,6 +33,8 @@
             this.Num = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Info = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.connTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblVer = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -96,11 +98,32 @@
             this.connTime.Name = "connTime";
             this.connTime.ReadOnly = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(309, 33);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(82, 17);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "AppVersion :";
+            // 
+            // lblVer
+            // 
+            this.lblVer.AutoSize = true;
+            this.lblVer.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblVer.Location = new System.Drawing.Point(397, 34);
+            this.lblVer.Name = "lblVer";
+            this.lblVer.Size = new System.Drawing.Size(0, 16);
+            this.lblVer.TabIndex = 3;
+            // 
             // ListNodesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(572, 573);
+            this.ClientSize = new System.Drawing.Size(564, 561);
+            this.Controls.Add(this.lblVer);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnRefresh);
             this.MaximizeBox = false;
@@ -110,6 +133,7 @@
             this.Text = "ListNodes";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -120,5 +144,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Num;
         private System.Windows.Forms.DataGridViewTextBoxColumn Info;
         private System.Windows.Forms.DataGridViewTextBoxColumn connTime;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblVer;
     }
 }

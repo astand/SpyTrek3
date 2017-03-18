@@ -25,7 +25,7 @@ namespace MessageHandler.DataFormats
 
         public TimeSpan Duration => timeSpan_;
 
-        private static readonly Int32 kMinRealDistance = (200 * 10);
+        private static readonly Int32 kMinRealDistance = (200);
 
         public TrekDescriptor() { }
 

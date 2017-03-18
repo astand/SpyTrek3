@@ -15,7 +15,9 @@ namespace SpyTrekHost.UserUI
     {
         public ListNodesForm()
         {
+
             InitializeComponent();
+            lblVer.Text = Program.AppVersion;
         }
 
         private void dataGridView1_CellContentClick(Object sender, DataGridViewCellEventArgs e)
