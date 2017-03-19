@@ -61,7 +61,7 @@ namespace SpyTrekHost
 
         static void Dispatcher()
         {
-            Console.WriteLine("App version : {AppVersion}");
+            Console.WriteLine($"AppVersion : {AppVersion}");
             Console.WriteLine($"Dispatcher has started @ {DateTime.Now.ToShortTimeString()}");
         }
 

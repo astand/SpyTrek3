@@ -8,18 +8,40 @@ namespace MessageHandler.DataFormats
 {
     public class TrekDescriptor
     {
-        public UInt16 Id { get; private set; }
+        public UInt16 Id {
+            get;
+            private set;
+        }
 
-        public DateTime Start { get; private set; }
+        public DateTime Start {
+            get;
+            private set;
+        }
 
-        public DateTime Stop { get; private set; }
+        public DateTime Stop {
+            get;
+            private set;
+        }
 
-        public UInt32 TrekSize { get; private set; }
-        public UInt32 Dist { get; private set; }
-        public UInt32 Odometr { get; private set; }
+        public UInt32 TrekSize {
+            get;
+            private set;
+        }
+        public UInt32 Dist {
+            get;
+            private set;
+        }
+        public UInt32 Odometr {
+            get;
+            private set;
+        }
+
+        public double GetAvrSpd => ((Dist / 1000.0) / Duration.TotalHours);
 
         private TimeSpan timeSpan_;
-        public static Int32 Length { get; } = 2 + 6 + 6 + 4 + 4 + 4;
+        public static Int32 Length {
+            get;
+        } = 2 + 6 + 6 + 4 + 4 + 4;
 
         public Int32 NotesCount => ((int)(TrekSize / NaviNote.Lenght));
 
@@ -32,7 +54,6 @@ namespace MessageHandler.DataFormats
         private void Parse(Byte[] buff, Int32 offset)
         {
             Int32 current_position = offset;
-
             Id = BitConverter.ToUInt16(buff, current_position);
             Start = DateTimeUtil.GetDateTime(buff, current_position += 2).ToLocalTime();
             Stop = DateTimeUtil.GetDateTime(buff, current_position += 6).ToLocalTime();
@@ -66,15 +87,14 @@ namespace MessageHandler.DataFormats
         public String TrekDuration() => (Stop - Start).ToString(@"d\.hh\:mm");
 
         public override String ToString() => $"{Id:D4}: {Start.ToJS()}  {Stop.ToJS()}. " +
-            $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
+        $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
 
         public Boolean IsBadTrek()
         {
-            var avr_spd_ = (Dist / 1000.0) / Duration.TotalHours;
-
-            if ((avr_spd_ < 3.0) || (Dist < kMinRealDistance))
+            if ((GetAvrSpd < 3.0) || (Dist < kMinRealDistance))
                 /// Bad trek with low speed or low trek distance
                 return true;
+
             return false;
         }
     };

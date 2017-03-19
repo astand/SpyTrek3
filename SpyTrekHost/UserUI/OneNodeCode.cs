@@ -20,7 +20,6 @@ namespace SpyTrekHost.UserUI
 
         public void AddNotesToGridView(List<TrekDescriptor> list, bool isNew)
         {
-
             if (InvokeRequired)
             {
                 var del = new Action<List<TrekDescriptor>, bool>(AddNotesToGridView);
@@ -57,14 +56,14 @@ namespace SpyTrekHost.UserUI
             try
             {
                 dataGridView1.Rows.Clear();
+
                 foreach (var item in list)
                 {
-                    float indist = 0;
+                    var indist = 0.0;
                     indist = (item.Dist / 1000);
-                    UInt32 allmileage = (item.Odometr/ 1000);
-                    var avr_speed = (item.Dist / 1000) / item.Duration.TotalHours;
+                    UInt32 allmileage = (item.Odometr / 1000);
                     dataGridView1.Rows.Add(item.Id, item.TrekTime(), item.TrekDuration(),
-                        avr_speed.ToString("000.00"), item.TrekSize, indist, allmileage);
+                                           item.GetAvrSpd.ToString("000.00"), item.TrekSize, indist, allmileage);
                 }
             }
             catch (Exception e)

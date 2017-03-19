@@ -13,8 +13,6 @@ namespace MessageHandler.Processors
 {
     public class TrekSaverProcessor : IFrameProccesor
     {
-        //public Action<String> WriteStatus;
-
         BidControl bidControl = new BidControl();
 
         private ITrekWriter trekWr = new FileTrekWriter();
@@ -33,7 +31,6 @@ namespace MessageHandler.Processors
         {
             State = ProcState.Idle;
             noteCount = 0;
-
             stateStr.Clear();
 
             if (packet.Opc == OpCodes.DATA)
@@ -44,11 +41,10 @@ namespace MessageHandler.Processors
                     State = ProcState.Data;
                     noteCount = SaveTrek(packet.Data, packet.Id);
                     var acked_size = noteCount * NaviNote.Lenght;
-
-
                     HandleSizePassed(acked_size);
                     HandleByteRate(acked_size);
                     answer = new FramePacket(opc: OpCodes.ACK, id: packet.Id, data: null);
+
                     if (packet.Data.Length == 0)
                     {
                         State = ProcState.Finished;
@@ -76,9 +72,7 @@ namespace MessageHandler.Processors
         {
             var percent = ((acked_size * 100.0) / trekSize).ToString("F2").PadRight(6, ' ');
             var bytes = $"{acked_size} from {trekSize}".PadRight(18, ' ');
-
             stateStr.Append($"({percent} %)  {bytes}. ");
-
         }
 
         private void HandleByteRate(Int32 received_size)
@@ -97,14 +91,15 @@ namespace MessageHandler.Processors
         private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
             var is_start_block = (block_num == OpCodes.kFirstDataBlockNum);
-
             Int32 current_offset = 0;
             bool parseOk;
             var notes = new List<NaviNote>();
+
             do
             {
                 var trekNote = new NaviNote();
                 parseOk = trekNote.TryParse(data, current_offset);
+
                 if (parseOk)
                 {
                     current_offset += NaviNote.Lenght;

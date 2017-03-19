@@ -112,7 +112,7 @@ namespace MessageHandler.TrekWriter
             ret.Append("_");
             ret.Append(desc.Stop.ToString("yyyyMMddHHmm"));
             ret.Append("_");
-            ret.Append($"{desc.Dist / 10000:D5}_{desc.Dist / 10000:D5}");
+            ret.Append($"{desc.Dist / 1000:D5}_{desc.Odometr / 1000:D5}");
             ret.Append(".json");
 
             return ret.ToString();
