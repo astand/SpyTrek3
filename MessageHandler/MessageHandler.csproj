@@ -50,7 +50,6 @@
     <Compile Include="FrameHandler\IHandler.cs" />
     <Compile Include="FrameHandler\ConcreteFileHanlder.cs" />
     <Compile Include="FrameHandler\OperationHandler.cs" />
-    <Compile Include="Frame\DataAck.cs" />
     <Compile Include="Frame\FrameProcessorTemplate.cs" />
     <Compile Include="Frame\IFrameSpecification.cs" />
     <Compile Include="Frame\PacketFrame.cs" />
@@ -69,6 +68,19 @@
     <Compile Include="Processors\TrekDescriptorProcessor.cs" />
     <Compile Include="Processors\TrekSaverProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rig\Common\HeadCodes.cs" />
+    <Compile Include="Rig\Common\IFrameProcessor.cs" />
+    <Compile Include="Rig\Common\IReaderProcessor.cs" />
+    <Compile Include="Rig\Common\IRigHandler.cs" />
+    <Compile Include="Rig\Common\RigBid.cs" />
+    <Compile Include="Rig\Common\RigFrame.cs" />
+    <Compile Include="Rig\Common\RigHandler.cs" />
+    <Compile Include="Rig\Common\RigRouter.cs" />
+    <Compile Include="Rig\Common\RigRrqFrame.cs" />
+    <Compile Include="Rig\Processors\EchoHandler.cs" />
+    <Compile Include="Rig\Processors\InfoHandler.cs" />
+    <Compile Include="Rig\Processors\SoleTrekHandler.cs" />
+    <Compile Include="Rig\Processors\TrekListHandler.cs" />
     <Compile Include="TrekWriter\FileTrekWriter.cs" />
     <Compile Include="TrekWriter\ITrekWriter.cs" />
     <Compile Include="TrekWriter\TrekFileFolder.cs" />
