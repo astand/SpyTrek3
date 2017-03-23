@@ -1,5 +1,4 @@
 ﻿using System;
-using MessageHandler.Processors;
 using StreamHandler.Abstract;
 using System.Diagnostics;
 using MessageHandler.Rig.Common;
@@ -36,21 +35,21 @@ namespace MessageHandler.Rig
                     {
                         PState.State = ProcState.Finished;
                     }
-
-                    if (answer == null)
-                    {
-                        answer = new RigFrame()
-                        {
-                            Opc = OpCode.ACK,
-                            RigId = packet.RigId,
-                            BlockNum = (UInt16)bid.BidAck,
-                            Data = new byte[0]
-                        };
-                    }
                 }
                 else
                 {
                     Debug.WriteLine(Name + " : Warning: Non expecting block");
+                }
+
+                if (answer == null)
+                {
+                    answer = new RigFrame()
+                    {
+                        Opc = OpCode.ACK,
+                        RigId = packet.RigId,
+                        BlockNum = (UInt16)bid.BidAck,
+                        Data = new byte[0]
+                    };
                 }
             }
         }

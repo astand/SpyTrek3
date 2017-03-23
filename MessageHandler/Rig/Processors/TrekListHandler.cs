@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StreamHandler.Abstract;
-using MessageHandler.Processors;
-using System.Diagnostics;
 using MessageHandler.DataFormats;
 
 namespace MessageHandler.Rig.Processors

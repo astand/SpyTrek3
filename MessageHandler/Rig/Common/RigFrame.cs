@@ -92,8 +92,8 @@ namespace MessageHandler.Rig
         public override String ToString()
         {
             return $"{Opc.ToString().PadRight(6, ' ')}" +
-                   $" {RigId.ToString().PadRight(6, ' ')}" +
-                   $"{BlockNum.ToString().PadRight(3, ' ')}";
+                   $" {RigId.ToString().PadRight(10, ' ')}" +
+                   $"{BlockNum.ToString().PadRight(5, ' ')}" + $"{Data.Length.ToString().PadRight(5, ' ')}";
         }
     }
 }

@@ -37,7 +37,7 @@ namespace MessageHandler.Rig.Processors
 
         private Int32 SaveTrek(byte[] data, UInt16 block_num)
         {
-            var is_start_block = (block_num == OpCodes.kFirstDataBlockNum);
+            var is_start_block = (block_num == 1);
             Int32 current_offset = 0;
             bool parseOk;
             var notes = new List<NaviNote>();
