@@ -23,7 +23,7 @@ namespace MessageHandler
     {
         public Boolean IsData(UInt16 opc) => opc == OpCodes.DATA;
 
-        public Boolean IsHead(UInt16 opc) => opc == OpCodes.RRQ; 
+        public Boolean IsHead(UInt16 opc) => opc == OpCodes.RRQ;
     }
 
     public class WriteOperationer : IFrameSpecification

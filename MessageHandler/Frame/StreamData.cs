@@ -22,5 +22,10 @@ namespace MessageHandler
         }
 
         public Byte[] SerializeToByteArray() => _data;
+
+        public Boolean SerializeToByteArray(Byte[] destination)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using MessageHandler;
-using MessageHandler.Abstract;
-using MessageHandler.ConcreteHandlers;
 using MessageHandler.DataFormats;
 using MessageHandler.Notifiers;
-using MessageHandler.Processors;
 using MessageHandler.Rig;
 using MessageHandler.Rig.Common;
 using MessageHandler.Rig.Processors;
@@ -11,11 +8,7 @@ using StreamHandler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace SpyTrekHost
@@ -25,13 +18,6 @@ namespace SpyTrekHost
         private NetworkPipe networkPipe;
 
         private Piper piper;
-
-
-        private OperationHandler<FramePacket, ReadOperationer> handleRead;
-
-        private OperationHandler<FramePacket, ErrorOperationer> handleError;
-
-        private OperationHandler<FramePacket, WriteOperationer> handleWrite;
 
         private readonly DateTime timeConnected;
 
@@ -47,10 +33,6 @@ namespace SpyTrekHost
         readonly double kEchoTimeout = 15000.0;
 
         SpyTrekInfo spyTrekInfo;
-
-        //InfoProcessor infoProcessor = new InfoProcessor();
-        //TrekDescriptorProcessor noteProcessor = new TrekDescriptorProcessor();
-        //TrekSaverProcessor saveProc = new TrekSaverProcessor();
         // New Rig prototol instances
         InfoHandler infoHandler = new InfoHandler();
         SoleTrekHandler saveProc = new SoleTrekHandler();
@@ -58,8 +40,6 @@ namespace SpyTrekHost
         EchoHandler echoHandler = new EchoHandler();
         RigRouter rigRouter;
         // end of rig
-        FirmwareProcessor firmProc;
-        //ErrorProcessor errProc = new ErrorProcessor();
 
         Action<String> notifyUI = null;
 
@@ -73,7 +53,6 @@ namespace SpyTrekHost
             piper = new Piper(networkPipe, networkPipe);
             piper.OnFail += Piper_OnFail;
             piper.OnData += Piper_OnData;
-            //infoProcessor.OnUpdated += WhenInfoUpdated;
             infoHandler.OnUpdated += WhenInfoUpdated;
             CreateChainOfResponsibility();
             echoTimer = new System.Timers.Timer(kEchoTimeout);
@@ -89,36 +68,13 @@ namespace SpyTrekHost
 
         private void CreateChainOfResponsibility()
         {
-            //IHandler<FramePacket> infoHand = new ConcreteFileHandler<FramePacket>(null, infoProcessor, piper.SendData, ProcessorStateUpdated);
-            //IHandler<FramePacket> noteHand = new ConcreteFileHandler<FramePacket>(null, noteProcessor, piper.SendData, ProcessorStateUpdated);
-            //IHandler<FramePacket> trekHand = new ConcreteFileHandler<FramePacket>(null, saveProc, piper.SendData, ProcessorStateUpdated);
-            //infoHand.SetSpecification(fid => fid == FiledID.Info);
-            //noteHand.SetSpecification(fid => fid == FiledID.TrekList);
-            //trekHand.SetSpecification(fid => fid == FiledID.Track);
-            //infoHand.SetSuccessor(noteHand);
-            //noteHand.SetSuccessor(trekHand);
-            //IHandler<FramePacket> errorHand = new ConcreteFileHandler<FramePacket>(null, errProc, null, ProcessorStateUpdated);
-            // True specification for ERROR messages
-            //errorHand.SetSpecification(fid => true);
-            firmProc = new FirmwareProcessor(piper, "st8.bin");
-            //IHandler<FramePacket> firmHand = new ConcreteFileHandler<FramePacket>(null, firmProc, null, ProcessorStateUpdated);
-            // Set specification for WRQ files
-            //firmHand.SetSpecification(fid => true);
-            //handleRead = new OperationHandler<FramePacket, ReadOperationer>(infoHand);
-            //handleError = new OperationHandler<FramePacket, ErrorOperationer>(errorHand);
-            //handleWrite = new OperationHandler<FramePacket, WriteOperationer>(firmHand);
-            //handleRead.SetSuccessor(handleError);
-            //handleError.SetSuccessor(handleWrite);
-            // rig chain creation
+            //firmProc = new FirmwareProcessor(piper, "st8.bin");
             var tempList = new List<RigHandler>();
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.Info, infoHandler));
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.TrekList, listHandler));
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.SoleTrek, saveProc));
-
-            //tempList.Add(new RigHandler(fr => fr.RigId == FiledID.Echo, echoHandler));
             rigRouter = new RigRouter(piper.SendData, tempList);
             rigRouter.ProcUpdateListener += ProcFullStateNotify;
-            // end rig creation
         }
         private void Piper_OnFail(Object sender, PiperEventArgs e)
         {
@@ -131,16 +87,6 @@ namespace SpyTrekHost
         }
         private void Piper_OnData(Object sender, PiperEventArgs e)
         {
-            //var frame = new FramePacket(e.Data);
-
-            ////Debug.WriteLine($"Opc: {frame.Opc,04:X}. Id: {frame.Id,04:X}. Data length = {frame.Data.Length}");
-            ///// When the packets comes very fast and HandleRequest cannot process
-            ///// data in time the packets are lost, so need process with locking
-            //lock (handleRead)
-            //{
-            //    echoTimer.Reset();
-            //    handleRead.HandleRequest(new FramePacket(e.Data));
-            //}
             lock (rigRouter)
             {
                 var rigFrame = new RigFrame(e.Data);
@@ -209,7 +155,7 @@ namespace SpyTrekHost
         }
         public void StartFirmwareUpdating()
         {
-            firmProc.SendRequest();
+            //firmProc.SendRequest();
         }
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
         {

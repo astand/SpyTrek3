@@ -28,6 +28,11 @@ namespace MessageHandler
             return retarray;
         }
 
+        public Boolean SerializeToByteArray(Byte[] destination)
+        {
+            throw new NotImplementedException();
+        }
+
         public FrameHead(UInt16 opc, UInt16 id)
         {
             Opc = opc;

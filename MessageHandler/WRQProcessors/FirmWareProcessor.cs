@@ -1,15 +1,11 @@
-﻿using MessageHandler;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
+using System.Diagnostics;
 using StreamHandler.Abstract;
 using StreamHandler;
 using MessageHandler.DataUploading;
-using System.Timers;
-using System.Diagnostics;
-using MessageHandler.Processors;
+using MessageHandler.Rig;
 
 namespace MessageHandler
 {
@@ -48,13 +44,12 @@ namespace MessageHandler
             dataUploader = new DiskFileUploader(source_path);
             dataUploader.RefreshData();
             Debug.WriteLine($"Firmware processor initialized by file {dataUploader.ToString()} length = {dataUploader.Length}");
-
             sendTimer.Elapsed += SendTimer_Elapsed;
         }
 
         public void SendRequest()
         {
-            piper.SendData(new WriteRequest(0x4003, dataUploader.Length));
+            //piper.SendData(new WriteRequest(0x4003, dataUploader.Length));
             StartSending();
             sendedSize = 0;
             byteRate.MakeStartStamp();
@@ -76,7 +71,6 @@ namespace MessageHandler
                 if (packet.Opc == OpCodes.ACK && (blockDriver.PassAckBlock(packet.Id)))
                 {
                     State = ProcState.Data;
-
                     var acked_size = packet.Id * BLOCK_SIZE;
                     acked_size = (acked_size > sendedSize) ? (sendedSize) : (acked_size);
                     stateStr.Append($"Uploading firm acked: {acked_size.ToString().PadRight(6, ' ')}. Speed {byteRate.CalcKBperSec(acked_size):F2} kBps");
@@ -111,9 +105,7 @@ namespace MessageHandler
                 while (blockDriver.IsWindAllow())
                 {
                     var readed = ReadDataChuck();
-
                     var fPacket = new FramePacket(OpCodes.DATA, blockDriver.BidSend, m_payload, readed);
-
                     piper.SendData(fPacket);
 
                     if (readed == 0)

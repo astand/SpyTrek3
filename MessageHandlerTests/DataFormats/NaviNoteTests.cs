@@ -27,11 +27,11 @@ namespace MessageHandler.DataFormats.Tests
             0x10, 0x20, 0x0, 0x0, 0x0, 0x0}, 0);
         }
 
-        [TestMethod()]
-        public void NaviNote_GetStringNotify_Test()
-        {
-            Debug.WriteLine(note.GetStringNotify());
-            Assert.Fail();
-        }
+        //[TestMethod()]
+        //public void NaviNote_GetStringNotify_Test()
+        //{
+        //    Debug.WriteLine(note.GetStringNotify());
+        //    Assert.Fail();
+        //}
     }
 }

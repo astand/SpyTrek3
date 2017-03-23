@@ -51,14 +51,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConcreteHandlers\FileHandlerTests.cs" />
     <Compile Include="DataFormats\NaviNoteTests.cs" />
     <Compile Include="DataFormats\TrekDescriptorTests.cs" />
     <Compile Include="DataUploading\FileUploaderTests.cs" />
     <Compile Include="DiffTests\StringFormatTests.cs" />
     <Compile Include="Extension\DateTimeUtilTests.cs" />
     <Compile Include="Frame\ReadRequestTests.cs" />
-    <Compile Include="Frame\WriteRequestTests.cs" />
     <Compile Include="Message\PacketFrameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rig\Common\RigFrameTests.cs" />
@@ -75,9 +73,7 @@
       <Name>StreamHandler</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Abstract\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

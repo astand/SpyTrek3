@@ -24,5 +24,10 @@ namespace MessageHandler
             Array.Copy(BitConverter.GetBytes(m_file_id), 0, retval, 2, m_id_length);
             return retval;
         }
+
+        public Boolean SerializeToByteArray(Byte[] destination)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

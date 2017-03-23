@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using StreamHandler;
-using MessageHandler.Abstract;
-using MessageHandler.ConcreteHandlers;
-using MessageHandler;
 using System.Threading;
-using SpyTrekHost.UserUI;
 using System.Windows.Forms;
 using System.Configuration;
-using System.Diagnostics;
 using System.Reflection;
+using SpyTrekHost.UserUI;
 
 namespace SpyTrekHost
 {
