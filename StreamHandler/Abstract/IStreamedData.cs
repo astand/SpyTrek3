@@ -9,5 +9,6 @@ namespace StreamHandler.Abstract
     public interface IStreamData
     {
         Byte[] SerializeToByteArray();
+        bool SerializeToByteArray(Byte[] destination);
     }
 }

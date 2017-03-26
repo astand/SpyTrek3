@@ -1,4 +1,6 @@
 ﻿using MessageHandler;
+using MessageHandler.Rig;
+using MessageHandler.Rig.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,12 +29,26 @@ namespace SpyTrekHost.UserUI
 
         private void btnInfo_Click(Object sender, EventArgs e)
         {
-            node_.Pipe.SendData(new ReadRequest(FiledID.Info));
+            //node_.Pipe.SendData(new ReadRequest(FiledID.Info));
+            node_.Pipe.SendData(new RigFrame()
+            {
+                Opc = OpCode.RRQ,
+                RigId = OpID.Info,
+                BlockNum = 0,
+                Data = new byte[0],
+            });
         }
 
         private void button3_Click(Object sender, EventArgs e)
         {
-            node_.Pipe.SendData(new ReadRequest(FiledID.Filenotes));
+            //node_.Pipe.SendData(new ReadRequest(OpID.TrekList));
+            node_.Pipe.SendData(new RigFrame()
+            {
+                Opc = OpCode.RRQ,
+                RigId = OpID.TrekList,
+                BlockNum = 0,
+                Data = new byte[0],
+            });
         }
 
         private void button4_Click(Object sender, EventArgs e)
@@ -43,7 +59,6 @@ namespace SpyTrekHost.UserUI
         private void button1_Click(Object sender, EventArgs e)
         {
             var fid = GetTrekIdFromGrid();
-
             /// for coloring grid row that cannot be downloaded.
             //Int32 listindex = dataGridView1.CurrentCell.RowIndex;
             //UInt16 dat = (UInt16)dataGridView1.Rows[i].Cells[0].Value;
@@ -51,9 +66,7 @@ namespace SpyTrekHost.UserUI
             //{
             //    dataGridView1.Rows[listindex].DefaultCellStyle.BackColor = Color.Red;
             //}
-
             Int32 retval = node_.ReadTrekCmd(fid);
-
             label2.Text = (retval < 0) ? $"File ({fid}) cannot be downloaded [{retval}]" : "Send trek request";
         }
 
