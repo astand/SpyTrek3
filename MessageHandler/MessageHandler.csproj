@@ -47,12 +47,6 @@
     <Compile Include="DataUploading\DiskFileUploader.cs" />
     <Compile Include="DataUploading\IDataUploader.cs" />
     <Compile Include="Extension\DateTimeUtil.cs" />
-    <Compile Include="Frame\IFrameSpecification.cs" />
-    <Compile Include="Frame\PacketFrame.cs" />
-    <Compile Include="Frame\IFrameProcessor.cs" />
-    <Compile Include="Frame\OpCodes.cs" />
-    <Compile Include="Frame\ReadRequest.cs" />
-    <Compile Include="Frame\StreamData.cs" />
     <Compile Include="Notifiers\InfoEventArgs.cs" />
     <Compile Include="Notifiers\ISpyTrekInfoNotifier.cs" />
     <Compile Include="Notifiers\NoteListEventArgs.cs" />

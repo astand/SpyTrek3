@@ -56,8 +56,6 @@
     <Compile Include="DataUploading\FileUploaderTests.cs" />
     <Compile Include="DiffTests\StringFormatTests.cs" />
     <Compile Include="Extension\DateTimeUtilTests.cs" />
-    <Compile Include="Frame\ReadRequestTests.cs" />
-    <Compile Include="Message\PacketFrameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rig\Common\RigFrameTests.cs" />
     <Compile Include="TrekWriter\TrekDescriptorArray.cs" />

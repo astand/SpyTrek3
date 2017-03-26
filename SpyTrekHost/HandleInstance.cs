@@ -102,9 +102,9 @@ namespace SpyTrekHost
                 HICollection.RefreshList();
             }
         }
-        private void ProcessorStateUpdated(IFrameProccesor proc)
+        private void ProcessorStateUpdated(IFrameProccesor<RigFrame> proc)
         {
-            Debug.WriteLine($"State: {proc.State.ToString().PadRight(10, ' ')}| {proc.ToString()}");
+            Debug.WriteLine($"State: {proc.PState.ToString().PadRight(10, ' ')}| {proc.ToString()}");
             notifyUI?.Invoke(proc.ToString());
         }
 
