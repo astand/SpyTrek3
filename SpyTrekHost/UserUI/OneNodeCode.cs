@@ -59,11 +59,11 @@ namespace SpyTrekHost.UserUI
 
                 foreach (var item in list)
                 {
-                    var indist = 0.0;
-                    indist = (item.Dist / 1000);
-                    UInt32 allmileage = (item.Odometr / 1000);
+                    var dist_str = (item.Dist < 10) ? (item.Dist.ToString("0.0")) : (item.Dist.ToString("F0"));
+
                     dataGridView1.Rows.Add(item.Id, item.TrekTime(), item.TrekDuration(),
-                                           item.GetAvrSpd.ToString("000.00"), item.TrekSize, indist, allmileage);
+                                           item.GetAvrSpd.ToString("000.00"), item.TrekSize,
+                                           dist_str, item.Odometr.ToString("F0"));
                 }
             }
             catch (Exception e)

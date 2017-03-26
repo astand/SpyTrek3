@@ -27,16 +27,16 @@ namespace MessageHandler.DataFormats
             get;
             private set;
         }
-        public UInt32 Dist {
+        public double Dist {
             get;
             private set;
         }
-        public UInt32 Odometr {
+        public double Odometr {
             get;
             private set;
         }
 
-        public double GetAvrSpd => ((Dist / 1000.0) / Duration.TotalHours);
+        public double GetAvrSpd => (Dist / Duration.TotalHours);
 
         private TimeSpan timeSpan_;
         public static Int32 Length {
@@ -47,7 +47,7 @@ namespace MessageHandler.DataFormats
 
         public TimeSpan Duration => timeSpan_;
 
-        private static readonly Int32 kMinRealDistance = (200);
+        private static readonly double kMinRealDistance = 0.2;
 
         public TrekDescriptor() { }
 
@@ -58,8 +58,8 @@ namespace MessageHandler.DataFormats
             Start = DateTimeUtil.GetDateTime(buff, current_position += 2).ToLocalTime();
             Stop = DateTimeUtil.GetDateTime(buff, current_position += 6).ToLocalTime();
             TrekSize = BitConverter.ToUInt32(buff, current_position += 6);
-            Dist = BitConverter.ToUInt32(buff, current_position += 4);
-            Odometr = BitConverter.ToUInt32(buff, current_position += 4);
+            Dist = BitConverter.ToUInt32(buff, current_position += 4) / 1000.0;
+            Odometr = BitConverter.ToUInt32(buff, current_position += 4) / 1000.0;
             timeSpan_ = Stop - Start;
         }
 
@@ -87,7 +87,7 @@ namespace MessageHandler.DataFormats
         public String TrekDuration() => (Stop - Start).ToString(@"d\.hh\:mm");
 
         public override String ToString() => $"{Id:D4}: {Start.ToJS()}  {Stop.ToJS()}. " +
-        $"File size = {TrekSize:D5} bytes\tDist = {Dist:D5} km \tOdometr: {Odometr:D5} km";
+        $"File size = {TrekSize:D5} bytes\tDist = {Dist:F1} km \tOdometr: {Odometr:F1} km";
 
         public Boolean IsBadTrek()
         {
