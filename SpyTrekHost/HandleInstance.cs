@@ -35,9 +35,10 @@ namespace SpyTrekHost
         SpyTrekInfo spyTrekInfo;
         // New Rig prototol instances
         InfoHandler infoHandler = new InfoHandler();
-        SoleTrekHandler saveProc = new SoleTrekHandler();
+        SoleTrekHandler saveHandler = new SoleTrekHandler();
         TrekListHandler listHandler = new TrekListHandler();
         EchoHandler echoHandler = new EchoHandler();
+        FirmHandler firmHandler;
         RigRouter rigRouter;
         // end of rig
 
@@ -53,6 +54,7 @@ namespace SpyTrekHost
             piper = new Piper(networkPipe, networkPipe);
             piper.OnFail += Piper_OnFail;
             piper.OnData += Piper_OnData;
+            firmHandler = new FirmHandler(piper);
             infoHandler.OnUpdated += WhenInfoUpdated;
             CreateChainOfResponsibility();
             echoTimer = new System.Timers.Timer(kEchoTimeout);
@@ -72,7 +74,9 @@ namespace SpyTrekHost
             var tempList = new List<RigHandler>();
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.Info, infoHandler));
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.TrekList, listHandler));
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.SoleTrek, saveProc));
+            tempList.Add(new RigHandler(fr => fr.RigId == OpID.SoleTrek, saveHandler));
+            tempList.Add(new RigHandler(fr => fr.RigId == OpID.Firmware, firmHandler));
+
             rigRouter = new RigRouter(piper.SendData, tempList);
             rigRouter.ProcUpdateListener += ProcFullStateNotify;
         }
@@ -98,7 +102,7 @@ namespace SpyTrekHost
             if (spyTrekInfo == null)
             {
                 spyTrekInfo = info;
-                saveProc.ImeiPath = (spyTrekInfo.Imei);
+                saveHandler.ImeiPath = (spyTrekInfo.Imei);
                 HICollection.RefreshList();
             }
         }
@@ -133,7 +137,7 @@ namespace SpyTrekHost
                 /// trek not found
                 return -1;
 
-            var isneed = saveProc.IsTrekNeed(ret);
+            var isneed = saveHandler.IsTrekNeed(ret);
 
             if (!isneed)
                 /// no needness to downloading
@@ -156,6 +160,7 @@ namespace SpyTrekHost
         public void StartFirmwareUpdating()
         {
             //firmProc.SendRequest();
+            firmHandler.StartWriteAction();
         }
         public void SetListUpdater(Action<List<TrekDescriptor>, bool> updater)
         {

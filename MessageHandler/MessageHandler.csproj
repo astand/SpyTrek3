@@ -50,6 +50,7 @@
     <Compile Include="Notifiers\InfoEventArgs.cs" />
     <Compile Include="Notifiers\ISpyTrekInfoNotifier.cs" />
     <Compile Include="Notifiers\NoteListEventArgs.cs" />
+    <Compile Include="Rig\Common\IWriterProcessor.cs" />
     <Compile Include="Rig\Common\ProcState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rig\Common\HeadCodes.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Rig\Common\RigRouter.cs" />
     <Compile Include="Rig\Common\RigRrqFrame.cs" />
     <Compile Include="Rig\Processors\EchoHandler.cs" />
+    <Compile Include="Rig\Processors\FirmHandler.cs" />
     <Compile Include="Rig\Processors\InfoHandler.cs" />
     <Compile Include="Rig\Processors\SoleTrekHandler.cs" />
     <Compile Include="Rig\Processors\TrekListHandler.cs" />
