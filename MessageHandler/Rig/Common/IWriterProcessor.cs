@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,18 +26,40 @@ namespace MessageHandler.Rig.Common
             set;
         }
 
+        Int32 resendCnt = 0;
+
         private Timer sendTimer = new Timer();
+
+        private Timer resendTimer = new Timer();
 
         protected virtual void SetName(string name)
         {
             Name = name;
+            resendTimer.Interval = 6000;
             sendTimer.Elapsed += SendTimer_Elapsed;
+            resendTimer.Elapsed += ResendTimer_Elapsed;
+        }
+
+        private void ResendTimer_Elapsed(Object sender, ElapsedEventArgs e)
+        {
+            if (PState.State != ProcState.Data)
+            {
+                resendTimer.Stop();
+                return;
+            }
+
+            if (resendCnt > 2)
+                PState.State = ProcState.Idle;
+
+            bid.BidSend = bid.BidAck + 1;
+            resendCnt++;
         }
 
         private void SendTimer_Elapsed(Object sender, ElapsedEventArgs e)
         {
             if (PState.State != ProcState.Data)
             {
+                sendTimer.Stop();
                 return;
             }
 
@@ -46,6 +68,7 @@ namespace MessageHandler.Rig.Common
 
             while ((bid.BidAck + passWindow) > bid.BidSend && (bid.BidSend != bid.BidLast))
             {
+                resendTimer.Start();
                 rigFrame.BlockNum = (UInt16)bid.BidSend;
                 var readed = ReadDataChunk();
 
@@ -82,12 +105,14 @@ namespace MessageHandler.Rig.Common
                 PState.State = ProcState.Data;
                 sendTimer.Interval = 50;
                 sendTimer.Start();
+                resendTimer.Start();
             }
             else if (packet.Opc == OpCode.ACK)
             {
                 // node acked data frame
                 if (packet.BlockNum == bid.BidAck + 1)
                 {
+                    resendCnt = 0;
                     bid.BidAck += 1;
 
                     if (bid.BidAck == bid.BidLast)
