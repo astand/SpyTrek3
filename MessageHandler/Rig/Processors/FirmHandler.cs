@@ -14,7 +14,7 @@ namespace MessageHandler.Rig.Processors
     public class FirmHandler : IWriterProcessor
     {
 
-        Int32 fileSize = 99999;
+        Int32 fileSize = 7000;
         Int32 blockSize = 850;
 
         public FirmHandler(Piper pipe)
@@ -28,6 +28,7 @@ namespace MessageHandler.Rig.Processors
             rigFrame.Opc = OpCode.WRQ;
             rigFrame.RigId = OpID.Firmware;
             rigFrame.Data = BitConverter.GetBytes(fileSize);
+            PState.Message = Name + $": Write request is sent. Size {fileSize}";
             return 4;
         }
 
@@ -52,8 +53,11 @@ namespace MessageHandler.Rig.Processors
                 passed_bytes = fileSize;
 
             var passed_percent = ((passed_bytes * 100.0) / fileSize) ;
-
             PState.Message = Name + $": Passed {passed_percent:F1} %. {passed_bytes.ToString().PadRight(5, ' ')} bytes of {fileSize}";
+
+            if (PState.State == ProcState.Finished)
+                PState.Message += ". Finished.";
+
             return 0;
         }
 

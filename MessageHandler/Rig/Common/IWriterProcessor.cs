@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,8 @@ namespace MessageHandler.Rig.Common
 
         protected Int32 passWindow = 4;
 
-        protected int FSize {
+        protected int FSize
+        {
             get;
             set;
         }
@@ -47,11 +48,11 @@ namespace MessageHandler.Rig.Common
             {
                 rigFrame.BlockNum = (UInt16)bid.BidSend;
                 var readed = ReadDataChunk();
-                ++bid.BidSend;
 
                 if (readed == 0)
-                    // last block sent
                     bid.BidLast = bid.BidSend;
+                else
+                    bid.BidSend++;
 
                 Debug.WriteLine(Name + $": DATA SEND {rigFrame.BlockNum}. Length {rigFrame.Data.Length}");
 
@@ -88,6 +89,10 @@ namespace MessageHandler.Rig.Common
                 if (packet.BlockNum == bid.BidAck + 1)
                 {
                     bid.BidAck += 1;
+
+                    if (bid.BidAck == bid.BidLast)
+                        PState.State = ProcState.Finished;
+
                     OnAckReceive();
                 }
             }
