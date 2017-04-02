@@ -15,5 +15,7 @@ namespace MessageHandler.Rig
         public int BidSend { get; set; }
 
         public int BidAck { get; set; }
+
+        public int BidLast { get; set; }
     }
 }
