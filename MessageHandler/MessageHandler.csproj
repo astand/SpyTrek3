@@ -70,7 +70,6 @@
     <Compile Include="TrekWriter\FileTrekWriter.cs" />
     <Compile Include="TrekWriter\ITrekWriter.cs" />
     <Compile Include="TrekWriter\TrekFileFolder.cs" />
-    <Compile Include="WRQProcessors\FirmWareProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamHandler\StreamHandler.csproj">
