@@ -13,18 +13,23 @@ namespace MessageHandler.Rig.Processors
 {
     public class FirmHandler : IWriterProcessor
     {
+        Int32 fileSize = 0;
+        Int32 blockSize = 4 * 240;
 
-        Int32 fileSize = 7000;
-        Int32 blockSize = 850;
+        private IDataUploader dataUploader;
+        byte[] rawBuff;
 
         public FirmHandler(Piper pipe)
         {
+            dataUploader = new DiskFileUploader("st8.bin");
             piper = pipe;
+            rawBuff = new byte[blockSize];
             SetName("Firmware");
         }
 
         protected override Int32 OnWriteRequest()
         {
+            fileSize = dataUploader.Length;
             rigFrame.Opc = OpCode.WRQ;
             rigFrame.RigId = OpID.Firmware;
             rigFrame.Data = BitConverter.GetBytes(fileSize);
@@ -34,14 +39,10 @@ namespace MessageHandler.Rig.Processors
 
         protected override Int32 ReadDataChunk()
         {
-            Int32 ret = fileSize - ((bid.BidSend - 1) * blockSize);
-
-            if (ret > blockSize)
-                ret = blockSize;
-            else if (ret < 0)
-                ret = 0;
-
+            Int32 offset = (bid.BidSend - 1) * blockSize;
+            var ret = dataUploader.ReadData(rawBuff, offset, blockSize);
             rigFrame.Data = new byte[ret];
+            Array.Copy(rawBuff, rigFrame.Data, ret);
             return ret;
         }
 
