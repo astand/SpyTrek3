@@ -22,19 +22,26 @@ namespace MessageHandler.Rig
                 {
                     PState.State = ProcState.Data;
                     bid.BidAck = 0;
+                    bid.Passed = 0;
                 }
+
+                PState.Message = Name + $": RRQ ack. Size {bid.Size}";
             }
             else if (packet.Opc == OpCode.DATA)
             {
                 if ((bid.BidAck + 1) == packet.BlockNum && PState.State == ProcState.Data)
                 {
-                    ProcessData(packet, ref answer);
+                    bid.Passed += packet.Data.Length;
                     bid.BidAck += 1;
+                    PState.Message = Name + $": DATA passed {bid.Passed} of {bid.Size}";
 
                     if (packet.Data.Length == 0)
                     {
                         PState.State = ProcState.Finished;
+                        PState.Message += ". Finished.";
                     }
+
+                    ProcessData(packet, ref answer);
                 }
                 else
                 {

@@ -25,7 +25,6 @@ namespace MessageHandler.Rig.Processors
         protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
         {
             bid.Size = BitConverter.ToUInt32(packet.Data, 0);
-            bid.Passed = 0;
             return true;
         }
 

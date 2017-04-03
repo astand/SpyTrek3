@@ -21,13 +21,11 @@ namespace MessageHandler.Rig.Processors
 
         private Int32 noteCount;
 
-        private Int32 trekSize = 0;
-
         public bool IsTrekNeed(TrekDescriptor desc) => trekWr.TrekCanBeWrite(ImeiPath, desc);
 
         protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
         {
-            trekSize = BitConverter.ToUInt16(packet.Data, 2);
+            bid.Size = BitConverter.ToUInt32(packet.Data, 0);
             return true;
         }
         protected override void ProcessData(RigFrame packet, ref IStreamData answer)
