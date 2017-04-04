@@ -3,26 +3,43 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Threading.Tasks;
 
 namespace StreamHandler
 {
+
     public class ByteRate
     {
-        DateTime start;
 
-        public void MakeStartStamp()
+        public int Rate
         {
-            start = DateTime.Now;
+            get;
+            set;
         }
-        public double CalcKBperSec(Int32 passedSize)
+
+
+        Timer tim = new Timer();
+
+        int passedBytes = 0;
+
+        public ByteRate()
         {
-            if (start == null)
-                return 0;
+            tim.Interval = 1000;
+            tim.Elapsed += Tim_Elapsed;
+            tim.Start();
+        }
 
-            var secDiff = (DateTime.Now - start).TotalSeconds;
+        public void PassData(int size)
+        {
+            passedBytes += size;
+        }
 
-            return (passedSize / (secDiff * 1000.0));
+        private void Tim_Elapsed(Object sender, ElapsedEventArgs e)
+        {
+            Rate = passedBytes;
+            passedBytes = 0;
         }
     }
 }
+

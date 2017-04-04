@@ -47,7 +47,6 @@
     <Compile Include="ByteRate.cs" />
     <Compile Include="ByteSruffer\ByteStuffer.cs" />
     <Compile Include="ByteSruffer\ResizeableArray.cs" />
-    <Compile Include="CommandSender.cs" />
     <Compile Include="Crc16\Crc16.cs" />
     <Compile Include="Crc16\Crc16Data.cs" />
     <Compile Include="Piper.cs" />
