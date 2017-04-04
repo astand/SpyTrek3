@@ -52,25 +52,12 @@ namespace SpyTrekHost.UserUI
         private void btnInfo_Click(Object sender, EventArgs e)
         {
             //node_.Pipe.SendData(new ReadRequest(FiledID.Info));
-            node_.Pipe.SendData(new RigFrame()
-            {
-                Opc = OpCode.RRQ,
-                RigId = OpID.Info,
-                BlockNum = 0,
-                Data = new byte[0],
-            });
+            node_.Pipe.SendData(new RigRrqFrame(OpID.Info));
         }
 
         private void button3_Click(Object sender, EventArgs e)
         {
-            //node_.Pipe.SendData(new ReadRequest(OpID.TrekList));
-            node_.Pipe.SendData(new RigFrame()
-            {
-                Opc = OpCode.RRQ,
-                RigId = OpID.TrekList,
-                BlockNum = 0,
-                Data = new byte[0],
-            });
+            node_.Pipe.SendData(new RigRrqFrame(OpID.TrekList));
         }
 
         private void button4_Click(Object sender, EventArgs e)

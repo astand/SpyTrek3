@@ -87,7 +87,7 @@ namespace SpyTrekHost
         private void TimerCallback(Object obj)
         {
             Debug.WriteLine($"{InstanceName()}:{DateTime.Now.ToString("HH: mm: ss.fff")}. Timer scheduler elapsed");
-            Pipe.SendData(new RigRrqFrame(OpID.Info));
+            Pipe.SendData(new RigRrqFrame(OpID.Echo));
         }
         private void Piper_OnData(Object sender, PiperEventArgs e)
         {
