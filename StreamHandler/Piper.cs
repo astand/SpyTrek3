@@ -13,19 +13,18 @@ namespace StreamHandler
 {
     public class Piper : IDisposable
     {
-        //private Stream stream;
-
-        private IPipeReader reader;
-
-        private IPipeWriter writer;
-
-        private System.Timers.Timer readtime;
-
-        private IStreamHandler packman = new SimpleHandler();
 
         public event EventHandler<PiperEventArgs> OnData;
 
         public event EventHandler<PiperEventArgs> OnFail;
+
+        IPipeReader reader;
+
+        IPipeWriter writer;
+
+        System.Timers.Timer readtime;
+
+        IStreamHandler packman = new SimpleHandler();
 
         public Piper(/*Stream stream, */IPipeReader reader, IPipeWriter writer)
         {
@@ -34,35 +33,32 @@ namespace StreamHandler
                 throw new NullReferenceException($"Cannot assign null stream");
 
             this.reader = reader;
-
             this.writer = writer;
-
             TimerForPollingStreamInit(10);
-
         }
 
         public Int32 SendData(IStreamData streamdata)
         {
             var array_to_send = packman.PackPacket(streamdata.SerializeToByteArray());
+
             try
             {
                 writer.Write(array_to_send, array_to_send.Length);
             }
             catch (NullReferenceException ex)
             {
-
             }
-
             catch (IOException ex)
             {
                 OnFailCaller($"Write pipe is crashed. {ex.Message}");
             }
+
             return 0;
         }
 
         public Byte[] ReadUnpackedData() => packman.Data();
 
-  
+
         private void TimerForPollingStreamInit(double ms)
         {
             readtime = new System.Timers.Timer(ms);
@@ -74,7 +70,7 @@ namespace StreamHandler
         private void Readtime_Elapsed(Object sender, ElapsedEventArgs e)
         {
             if (packman.ExtractPacket(reader))
-            //if (packer.UnpackPacket(reader))
+                //if (packer.UnpackPacket(reader))
             {
                 OnDataCaller(packman.Data(), "Packer received one packet");
             }
