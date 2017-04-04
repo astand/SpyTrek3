@@ -18,6 +18,16 @@ namespace StreamHandler
 
         public event EventHandler<PiperEventArgs> OnFail;
 
+        public ByteRate UploadRate {
+            get;
+            set;
+        } = new ByteRate();
+
+        public ByteRate DownloadRate {
+            get;
+            set;
+        } = new ByteRate();
+
         IPipeReader reader;
 
         IPipeWriter writer;
@@ -40,6 +50,7 @@ namespace StreamHandler
         public Int32 SendData(IStreamData streamdata)
         {
             var array_to_send = packman.PackPacket(streamdata.SerializeToByteArray());
+            UploadRate.PassData(array_to_send.Length);
 
             try
             {
@@ -70,8 +81,8 @@ namespace StreamHandler
         private void Readtime_Elapsed(Object sender, ElapsedEventArgs e)
         {
             if (packman.ExtractPacket(reader))
-                //if (packer.UnpackPacket(reader))
             {
+                DownloadRate.PassData(packman.Data().Length);
                 OnDataCaller(packman.Data(), "Packer received one packet");
             }
         }

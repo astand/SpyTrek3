@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace StreamHandler
 {
 
-    public class ByteRate
+    public class ByteRate : IDisposable
     {
 
         public int Rate
@@ -17,7 +17,6 @@ namespace StreamHandler
             get;
             set;
         }
-
 
         Timer tim = new Timer();
 
@@ -39,6 +38,11 @@ namespace StreamHandler
         {
             Rate = passedBytes;
             passedBytes = 0;
+        }
+
+        public void Dispose()
+        {
+            tim.Dispose();
         }
     }
 }
