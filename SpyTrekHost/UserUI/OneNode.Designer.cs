@@ -51,6 +51,7 @@
             this.lblVer = new System.Windows.Forms.Label();
             this.fileIdNum = new System.Windows.Forms.NumericUpDown();
             this.btnFirmware = new System.Windows.Forms.Button();
+            this.labRate = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileIdNum)).BeginInit();
@@ -279,11 +280,21 @@
             this.btnFirmware.UseVisualStyleBackColor = true;
             this.btnFirmware.Click += new System.EventHandler(this.btnFirmware_Click);
             // 
+            // labRate
+            // 
+            this.labRate.AutoSize = true;
+            this.labRate.Font = new System.Drawing.Font("Verdana", 8F);
+            this.labRate.Location = new System.Drawing.Point(445, 548);
+            this.labRate.Name = "labRate";
+            this.labRate.Size = new System.Drawing.Size(0, 13);
+            this.labRate.TabIndex = 14;
+            // 
             // OneNodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 571);
+            this.Controls.Add(this.labRate);
             this.Controls.Add(this.btnFirmware);
             this.Controls.Add(this.fileIdNum);
             this.Controls.Add(this.groupBox1);
@@ -332,5 +343,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dist;
         private System.Windows.Forms.DataGridViewTextBoxColumn mileage;
         private System.Windows.Forms.Button btnFirmware;
+        private System.Windows.Forms.Label labRate;
     }
 }

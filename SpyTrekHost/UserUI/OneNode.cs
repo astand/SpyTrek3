@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,9 @@ namespace SpyTrekHost.UserUI
     public partial class OneNodeForm : Form
     {
 
-        private HandleInstance node_;
+        HandleInstance node_;
+
+        Timer rateTime = new Timer();
 
         public OneNodeForm(HandleInstance handleInstance)
         {
@@ -25,6 +28,25 @@ namespace SpyTrekHost.UserUI
             node_.SetInfoUpdater(AddInfoToView);
             node_.SetTrekUpdater(Label2Updater);
             InitializeComponent();
+            rateTime.Interval = 2000;
+            rateTime.Start();
+            rateTime.Tick += RateTime_Tick;
+            labRate.Text = String.Empty;
+        }
+
+        private void RateTime_Tick(Object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                var del = new Action<Object, EventArgs>(RateTime_Tick);
+                Invoke(del, new object[] { sender, e });
+            }
+            else
+            {
+                var upload = node_.Pipe.UploadRate.Rate / 2000.0;
+                var download = node_.Pipe.DownloadRate.Rate / 2000.0;
+                labRate.Text = $"UP {upload:F1} .DOWN {download:F1}";
+            }
         }
 
         private void btnInfo_Click(Object sender, EventArgs e)
