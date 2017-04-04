@@ -76,7 +76,7 @@ namespace SpyTrekHost
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.TrekList, listHandler));
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.SoleTrek, saveHandler));
             tempList.Add(new RigHandler(fr => fr.RigId == OpID.Firmware, firmHandler));
-
+            tempList.Add(new RigHandler(fr => fr.RigId == OpID.Echo, echoHandler));
             rigRouter = new RigRouter(piper.SendData, tempList);
             rigRouter.ProcUpdateListener += ProcFullStateNotify;
         }
