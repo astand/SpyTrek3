@@ -27,8 +27,21 @@ namespace MessageHandler.DataFormats
                 buff[offset + 3],
                 buff[offset + 4],
                 buff[offset + 5]);
-
             return ret;
+        }
+
+
+        public static byte[] MakeArray(this DateTime dt)
+        {
+            var arr = new byte[6];
+            var year = (dt.Year > 2000) ? dt.Year - 2000 : dt.Year;
+            arr[0] = ((Byte)year);
+            arr[1] = (Byte)dt.Month;
+            arr[2] = (Byte)dt.Day;
+            arr[3] = (Byte)dt.Hour;
+            arr[4] = (Byte)dt.Minute;
+            arr[5] = (Byte)dt.Second;
+            return arr;
         }
 
         public static string ToDirectory(this DateTime dt) => $"{dt.Year:D4}/{dt.Month:D2}/{dt.Day:D2}";
@@ -46,5 +59,5 @@ namespace MessageHandler.DataFormats
         }
     }
 
-    
+
 }

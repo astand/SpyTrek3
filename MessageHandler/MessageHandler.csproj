@@ -65,11 +65,12 @@
     <Compile Include="Rig\Processors\EchoHandler.cs" />
     <Compile Include="Rig\Processors\FirmHandler.cs" />
     <Compile Include="Rig\Processors\InfoHandler.cs" />
+    <Compile Include="Rig\Processors\RawDataLogger.cs" />
     <Compile Include="Rig\Processors\SoleTrekHandler.cs" />
-    <Compile Include="TrekWriter\TrekListHandler.cs" />
     <Compile Include="TrekWriter\FileTrekWriter.cs" />
     <Compile Include="TrekWriter\ITrekWriter.cs" />
     <Compile Include="TrekWriter\TrekFileFolder.cs" />
+    <Compile Include="TrekWriter\TrekListHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamHandler\StreamHandler.csproj">

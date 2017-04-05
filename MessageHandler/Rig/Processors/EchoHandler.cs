@@ -11,7 +11,7 @@ namespace MessageHandler.Rig.Processors
 {
     public class EchoHandler : IReaderProcessor
     {
-        public NaviNote Pos { get; protected set; }
+        public NaviNote Pos { get; protected set; } = new NaviNote();
 
         public EchoHandler()
         {
