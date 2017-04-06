@@ -65,7 +65,12 @@ namespace SpyTrekHost
 
         private void EchoTime2_Elapsed(Object sender, ElapsedEventArgs e)
         {
-            TimerCallback(null);
+            Debug.WriteLine($"{InstanceName()}:{DateTime.Now.ToString("HH: mm: ss.fff")}. Timer scheduler elapsed");
+
+            if (spyTrekInfo == null)
+                Pipe.SendData(new RigRrqFrame(OpID.Info));
+            else
+                Pipe.SendData(new RigRrqFrame(OpID.Echo));
         }
 
         private void CreateChainOfResponsibility()
@@ -84,11 +89,7 @@ namespace SpyTrekHost
         {
             SelfDeleter(this, null);
         }
-        private void TimerCallback(Object obj)
-        {
-            Debug.WriteLine($"{InstanceName()}:{DateTime.Now.ToString("HH: mm: ss.fff")}. Timer scheduler elapsed");
-            Pipe.SendData(new RigRrqFrame(OpID.Echo));
-        }
+
         private void Piper_OnData(Object sender, PiperEventArgs e)
         {
             lock (rigRouter)
