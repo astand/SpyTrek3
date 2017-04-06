@@ -22,7 +22,7 @@ namespace MessageHandler.Rig.Processors
 
         protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
         {
-            bid.Size = BitConverter.ToUInt32(packet.Data, 0);
+            bid.Size = BitConverter.ToInt32(packet.Data, 0);
 
             if (Info == null)
             {

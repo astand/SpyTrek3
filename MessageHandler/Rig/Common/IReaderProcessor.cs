@@ -54,7 +54,7 @@ namespace MessageHandler.Rig
                     {
                         Opc = OpCode.ACK,
                         RigId = packet.RigId,
-                        BlockNum = (UInt16)bid.BidAck,
+                        BlockNum = packet.BlockNum,
                         Data = new byte[0]
                     };
                 }

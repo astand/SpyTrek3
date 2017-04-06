@@ -8,7 +8,7 @@ namespace MessageHandler.Rig
 {
     public class RigBid
     {
-        public UInt32 Size { get; set; }
+        public int Size { get; set; }
 
         public int Passed { get; set; }
 

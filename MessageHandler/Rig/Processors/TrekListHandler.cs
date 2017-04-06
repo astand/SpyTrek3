@@ -11,7 +11,7 @@ namespace MessageHandler.Rig.Processors
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
         RigFrame rigFrame = new RigFrame();
-        
+
         List<TrekDescriptor> list = new List<TrekDescriptor>();
 
         public TrekDescriptor Trek(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
@@ -21,16 +21,14 @@ namespace MessageHandler.Rig.Processors
             SetName("TrekList");
         }
 
-        ///
         protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
         {
-            bid.Size = BitConverter.ToUInt32(packet.Data, 0);
+            bid.Size = BitConverter.ToInt32(packet.Data, 0);
             return true;
         }
 
         protected override void ProcessData(RigFrame packet, ref IStreamData answer)
         {
-            bid.Passed += packet.Data.Length;
             ProcessTrekDescriptors(packet.Data, packet.BlockNum);
         }
 
