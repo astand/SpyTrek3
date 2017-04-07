@@ -18,6 +18,7 @@ namespace MessageHandler.Rig
             Name = name;
             RigId = selfRig;
             prFrame.RigId = RigId;
+            PState.State = ProcState.Finished;
         }
 
         protected virtual void SetName(string name)

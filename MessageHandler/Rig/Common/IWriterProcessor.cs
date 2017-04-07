@@ -131,6 +131,7 @@ namespace MessageHandler.Rig.Common
         public void Dispose()
         {
             sendTimer.Dispose();
+            resendTimer.Dispose();
         }
 
         public sealed override Boolean FrameAccepted(RigFrame o)
