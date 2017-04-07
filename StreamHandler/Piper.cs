@@ -49,7 +49,7 @@ namespace StreamHandler
 
         public Int32 SendData(IStreamData streamdata)
         {
-            var array_to_send = packman.PackPacket(streamdata.SerializeToByteArray());
+            var array_to_send = packman.PackPacket(streamdata.ConvertToBytes());
             UploadRate.PassData(array_to_send.Length);
 
             try

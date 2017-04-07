@@ -46,6 +46,8 @@ namespace SpyTrekHost
 
         public SpyTrekInfo Info => spyTrekInfo;
 
+        RigFrame rigFrame = new RigFrame();
+
         public HandleInstance(NetworkStream stream, EventHandler deleter = null)
         {
             timeConnected = DateTime.Now;
@@ -94,7 +96,7 @@ namespace SpyTrekHost
         {
             lock (rigRouter)
             {
-                var rigFrame = new RigFrame(e.Data);
+                rigFrame.ConvertFromBytes(e.Data);
                 rigRouter.HandleFrame(rigFrame);
             }
         }

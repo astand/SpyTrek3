@@ -8,7 +8,7 @@ namespace StreamHandler.Abstract
 {
     public interface IStreamData
     {
-        Byte[] SerializeToByteArray();
-        bool SerializeToByteArray(Byte[] destination);
+        Byte[] ConvertToBytes();
+        int ConvertToBytes(Byte[] destination);
     }
 }

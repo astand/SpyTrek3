@@ -28,7 +28,7 @@ namespace SpyTrekHost.UserUI
             node_.SetInfoUpdater(AddInfoToView);
             node_.SetTrekUpdater(Label2Updater);
             InitializeComponent();
-            rateTime.Interval = 2000;
+            rateTime.Interval = 500;
             rateTime.Start();
             rateTime.Tick += RateTime_Tick;
             labRate.Text = String.Empty;
@@ -43,8 +43,8 @@ namespace SpyTrekHost.UserUI
             }
             else
             {
-                var upload = node_.Pipe.UploadRate.Rate / 2000.0;
-                var download = node_.Pipe.DownloadRate.Rate / 2000.0;
+                var upload = node_.Pipe.UploadRate.Rate / 500.0;
+                var download = node_.Pipe.DownloadRate.Rate / 500.0;
                 labRate.Text = $"UP {upload:F1} .DOWN {download:F1}";
             }
         }

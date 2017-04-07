@@ -36,31 +36,24 @@ namespace MessageHandler.Rig.Processors
         }
         protected override void ProcessData(RigFrame packet)
         {
-            noteCount = SaveTrek(packet.Data, packet.BlockNum);
+            noteCount = SaveTrek(packet.Data, packet.DataSize, packet.BlockNum);
         }
 
-        private Int32 SaveTrek(byte[] data, UInt16 block_num)
+        private Int32 SaveTrek(byte[] data, int size, UInt16 block_num)
         {
-            var is_start_block = (block_num == 1);
-            Int32 current_offset = 0;
-            bool parseOk;
+            int current_offset = 0;
             var notes = new List<NaviNote>();
 
-            do
+            while (current_offset + NaviNote.Lenght <= size)
             {
                 var trekNote = new NaviNote();
-                parseOk = trekNote.TryParse(data, current_offset);
-
-                if (parseOk)
-                {
-                    current_offset += NaviNote.Lenght;
-                    notes.Add(trekNote);
-                }
+                trekNote.TryParse(data, current_offset);
+                current_offset += NaviNote.Lenght;
+                notes.Add(trekNote);
             }
-            while (parseOk);
 
             /// try write all available notes
-            return trekWr.WriteNotes(notes, is_start_block);
+            return trekWr.WriteNotes(notes, block_num == 1);
         }
     }
 }

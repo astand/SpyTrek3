@@ -30,55 +30,60 @@ namespace MessageHandler.Rig
 
         public Byte[] Data
         {
+            get
+            {
+                return data_;
+            }
+            set
+            {
+                ExtractDataFromArray(value);
+            }
+        }
+
+        public int DataSize
+        {
             get;
             set;
+        } = 0;
+
+        Byte[] data_ = new byte[0];
+
+        public RigFrame(OpCode code = 0, OpID rigid = 0)
+        {
+            Opc = code;
+            RigId = rigid;
         }
 
-        public RigFrame() { }
-
-        public RigFrame(byte[] arr)
+        public Byte[] ConvertToBytes()
         {
-            Opc = (OpCode)BitConverter.ToUInt16(arr, 0);
-            RigId = (OpID)BitConverter.ToUInt16(arr, 2);
-            BlockNum = BitConverter.ToUInt16(arr, 4);
-            Data = new byte[arr.Length - 6];
-            Array.Copy(arr, 6, Data, 0, Data.Length);
-        }
-
-
-        public Byte[] SerializeToByteArray()
-        {
-            var retarray = new Byte[6 + Data.Length];
+            var retarray = new Byte[6 + DataSize];
             MakeArray(retarray);
             return retarray;
         }
 
-        public Boolean SerializeToByteArray(Byte[] destination)
+        public Int32 ConvertToBytes(Byte[] destination)
         {
-            try
-            {
-                MakeArray(destination);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"RigFrame creation error : ${ex.Message}");
+            if (destination.Length < DataSize + 6)
+                return -1;
+
+            MakeArray(destination);
+            return DataSize + 6;
+        }
+
+        public bool ConvertFromBytes(byte[] arr, int offset = 0)
+        {
+            if (arr.Length - offset < 6)
+                /// Array too small
                 return false;
-            }
 
+            Opc = (OpCode)BitConverter.ToUInt16(arr, 0);
+            RigId = (OpID)BitConverter.ToUInt16(arr, 2);
+            BlockNum = BitConverter.ToUInt16(arr, 4);
+            ExtractDataFromArray(arr, 6);
             return true;
         }
 
-        public bool DeserializeFromArray(byte[] srcArray)
-        {
-            Opc = (OpCode)BitConverter.ToUInt16(srcArray, 0);
-            RigId = (OpID)BitConverter.ToUInt16(srcArray, 2);
-            BlockNum = BitConverter.ToUInt16(srcArray, 4);
-            Data = new byte[srcArray.Length - 6];
-            Array.Copy(Data, 0, srcArray, 6, Data.Length);
-            return true;
-        }
-
-        private void MakeArray(byte[] arr)
+        void MakeArray(byte[] arr)
         {
             var cell = BitConverter.GetBytes((UInt16)Opc);
             Array.Copy(cell, 0, arr, 0, 2);
@@ -86,14 +91,29 @@ namespace MessageHandler.Rig
             Array.Copy(cell, 0, arr, 2, 2);
             cell = BitConverter.GetBytes(BlockNum);
             Array.Copy(cell, 0, arr, 4, 2);
-            Array.Copy(Data, 0, arr, 6, Data.Length);
+            Array.Copy(Data, 0, arr, 6, DataSize);
         }
+
+        void ExtractDataFromArray(byte[] source, int offset = 0, int len = -1)
+        {
+            var actual_copy_len = (len < 0) ? (source.Length - offset) : len;
+
+            if (actual_copy_len > data_.Length)
+            {
+                /// expand array
+                data_ = new byte[actual_copy_len];
+            }
+
+            Array.Copy(source, offset, data_, 0, actual_copy_len);
+            DataSize = actual_copy_len;
+        }
+
 
         public override String ToString()
         {
             return $"{Opc.ToString().PadRight(6, ' ')}" +
                    $" {RigId.ToString().PadRight(10, ' ')}" +
-                   $"{BlockNum.ToString().PadRight(5, ' ')}" + $"{Data.Length.ToString().PadRight(5, ' ')}";
+                   $"{BlockNum.ToString().PadRight(5, ' ')}" + $"{DataSize.ToString().PadRight(5, ' ')}";
         }
     }
 }

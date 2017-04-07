@@ -10,8 +10,6 @@ namespace MessageHandler.Rig.Processors
     {
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        RigFrame rigFrame = new RigFrame();
-
         List<TrekDescriptor> list = new List<TrekDescriptor>();
 
         public TrekDescriptor Trek(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
@@ -28,29 +26,24 @@ namespace MessageHandler.Rig.Processors
 
         protected override void ProcessData(RigFrame packet)
         {
-            ProcessTrekDescriptors(packet.Data, packet.BlockNum);
+            ProcessTrekDescriptors(packet.Data, packet.DataSize, packet.BlockNum);
         }
 
-        private void ProcessTrekDescriptors(Byte[] data, UInt16 block_num)
+        private void ProcessTrekDescriptors(Byte[] data, int size, UInt16 block_num)
         {
             if (block_num == 1)
                 list.Clear();
 
-            bool parseOk;
             Int32 current_offset = 0;
 
-            do
+            while (current_offset + TrekDescriptor.Length <= size)
             {
                 // must be declared new instance on each iteration for list fullfilling
                 var oneTrek = new TrekDescriptor();
-                parseOk = oneTrek.TryParse(data, current_offset);
-
-                if (parseOk == true)
-                {
-                    list.Add(oneTrek);
-                    current_offset += TrekDescriptor.Length;
-                }
-            } while (parseOk);
+                oneTrek.TryParse(data, current_offset);
+                list.Add(oneTrek);
+                current_offset += TrekDescriptor.Length;
+            }
 
             OnUpdated?.Invoke(list, block_num == 1);
         }

@@ -11,10 +11,13 @@ namespace MessageHandler.Rig
 
         OpID RigId;
 
+        protected RigFrame prFrame = new RigFrame();
+
         protected IReaderProcessor(string name, OpID selfRig)
         {
             Name = name;
             RigId = selfRig;
+            prFrame.RigId = RigId;
         }
 
         protected virtual void SetName(string name)
@@ -39,11 +42,11 @@ namespace MessageHandler.Rig
             {
                 if ((bid.BidAck + 1) == packet.BlockNum && PState.State == ProcState.Data)
                 {
-                    bid.Passed += packet.Data.Length;
+                    bid.Passed += packet.DataSize;
                     bid.BidAck += 1;
                     PState.Message = Name + $": DATA passed {bid.Passed} of {bid.Size}";
 
-                    if (packet.Data.Length == 0)
+                    if (packet.DataSize == 0)
                     {
                         PState.State = ProcState.Finished;
                         PState.Message += ". Finished.";
@@ -56,13 +59,9 @@ namespace MessageHandler.Rig
                     Debug.WriteLine(Name + " : Warning: Non expecting block");
                 }
 
-                SendAnswer(new RigFrame()
-                {
-                    Opc = OpCode.ACK,
-                    RigId = packet.RigId,
-                    BlockNum = packet.BlockNum,
-                    Data = new byte[0]
-                });
+                prFrame.Opc = OpCode.ACK;
+                prFrame.BlockNum = packet.BlockNum;
+                SendAnswer(prFrame);
             }
         }
 

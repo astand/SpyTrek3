@@ -21,7 +21,6 @@ namespace MessageHandler.Rig
 
         public void HandleFrame(RigFrame frame)
         {
-            //rigAnswer = null;
             Debug.WriteLine(frame);
 
             foreach (var hand in handlerList)
