@@ -13,6 +13,10 @@ namespace MessageHandler.Rig
 
         public ProcFullState PState { get; protected set; } = new ProcFullState();
 
-        public abstract void Process(T packet, ref IStreamData answer);
+        public abstract void Process(T packet);
+
+        public Action<T> SendAnswer;
+
+        public abstract bool FrameAccepted(T o);
     }
 }

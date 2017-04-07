@@ -12,8 +12,6 @@ namespace MessageHandler.Rig.Common
 {
     public abstract class IWriterProcessor : IFrameProccesor<RigFrame>, IDisposable
     {
-        protected Piper piper;
-
         protected RigBid bid = new RigBid();
 
         protected RigFrame rigFrame = new RigFrame();
@@ -28,13 +26,14 @@ namespace MessageHandler.Rig.Common
 
         Int32 resendCnt = 0;
 
-        private Timer sendTimer = new Timer();
+        Timer sendTimer = new Timer();
+        Timer resendTimer = new Timer();
+        OpID RigId;
 
-        private Timer resendTimer = new Timer();
-
-        protected virtual void SetName(string name)
+        protected IWriterProcessor(string name, OpID selfId)
         {
             Name = name;
+            RigId = selfId;
             resendTimer.Interval = 6000;
             sendTimer.Elapsed += SendTimer_Elapsed;
             resendTimer.Elapsed += ResendTimer_Elapsed;
@@ -79,9 +78,9 @@ namespace MessageHandler.Rig.Common
 
                 Debug.WriteLine(Name + $": DATA SEND {rigFrame.BlockNum}. Length {rigFrame.Data.Length}");
 
-                lock (piper)
+                lock (SendAnswer)
                 {
-                    piper.SendData(rigFrame);
+                    SendAnswer(rigFrame);
                 }
             }
         }
@@ -91,10 +90,10 @@ namespace MessageHandler.Rig.Common
             PState.State = ProcState.CmdAck;
 
             if (OnWriteRequest() > 0)
-                piper.SendData(rigFrame);
+                SendAnswer(rigFrame);
         }
 
-        public override void Process(RigFrame packet, ref IStreamData answer)
+        public override void Process(RigFrame packet)
         {
             if (packet.Opc == OpCode.WRQ && PState.State == ProcState.CmdAck)
             {
@@ -134,8 +133,9 @@ namespace MessageHandler.Rig.Common
             sendTimer.Dispose();
         }
 
-        private void ScheduleSendingData(Object sender, ElapsedEventArgs e)
+        public sealed override Boolean FrameAccepted(RigFrame o)
         {
+            return o.RigId == RigId;
         }
 
         protected virtual Int32 OnWriteRequest()

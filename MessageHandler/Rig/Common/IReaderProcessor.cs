@@ -9,16 +9,24 @@ namespace MessageHandler.Rig
     {
         protected RigBid bid = new RigBid();
 
+        OpID RigId;
+
+        protected IReaderProcessor(string name, OpID selfRig)
+        {
+            Name = name;
+            RigId = selfRig;
+        }
+
         protected virtual void SetName(string name)
         {
             Name = name;
         }
 
-        public override void Process(RigFrame packet, ref IStreamData answer)
+        public override void Process(RigFrame packet)
         {
             if (packet.Opc == OpCode.RRQ)
             {
-                if (ProcessHead(packet, ref answer))
+                if (ProcessHead(packet))
                 {
                     PState.State = ProcState.Data;
                     bid.BidAck = 0;
@@ -41,28 +49,30 @@ namespace MessageHandler.Rig
                         PState.Message += ". Finished.";
                     }
 
-                    ProcessData(packet, ref answer);
+                    ProcessData(packet);
                 }
                 else
                 {
                     Debug.WriteLine(Name + " : Warning: Non expecting block");
                 }
 
-                if (answer == null)
+                SendAnswer(new RigFrame()
                 {
-                    answer = new RigFrame()
-                    {
-                        Opc = OpCode.ACK,
-                        RigId = packet.RigId,
-                        BlockNum = packet.BlockNum,
-                        Data = new byte[0]
-                    };
-                }
+                    Opc = OpCode.ACK,
+                    RigId = packet.RigId,
+                    BlockNum = packet.BlockNum,
+                    Data = new byte[0]
+                });
             }
         }
 
-        protected abstract bool ProcessHead(RigFrame packet, ref IStreamData answer);
+        public override sealed bool FrameAccepted(RigFrame fr)
+        {
+            return fr.RigId == RigId;
+        }
 
-        protected abstract void ProcessData(RigFrame packet, ref IStreamData answer);
+        protected abstract bool ProcessHead(RigFrame packet);
+
+        protected abstract void ProcessData(RigFrame packet);
     }
 }

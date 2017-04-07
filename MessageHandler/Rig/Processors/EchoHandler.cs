@@ -13,19 +13,18 @@ namespace MessageHandler.Rig.Processors
     {
         public NaviNote Pos { get; protected set; } = new NaviNote();
 
-        public EchoHandler()
+        public EchoHandler() : base("Echo", Common.OpID.Echo)
         {
-            SetName("Echo");
         }
 
-        protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
+        protected override Boolean ProcessHead(RigFrame packet)
         {
             Pos.TryParse(packet.Data, 4);
             Debug.WriteLine(Pos.GetStringNotify());
             return true;
         }
 
-        protected override void ProcessData(RigFrame packet, ref IStreamData answer)
+        protected override void ProcessData(RigFrame packet)
         {
         }
     }

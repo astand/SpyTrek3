@@ -19,12 +19,10 @@ namespace MessageHandler.Rig.Processors
         private IDataUploader dataUploader;
         byte[] rawBuff;
 
-        public FirmHandler(Piper pipe)
+        public FirmHandler() : base("FIRMWARE", OpID.Firmware)
         {
             dataUploader = new DiskFileUploader("st8.bin");
-            piper = pipe;
             rawBuff = new byte[blockSize];
-            SetName("Firmware");
         }
 
         protected override Int32 OnWriteRequest()

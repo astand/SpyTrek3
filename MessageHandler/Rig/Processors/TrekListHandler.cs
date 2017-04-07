@@ -16,18 +16,17 @@ namespace MessageHandler.Rig.Processors
 
         public TrekDescriptor Trek(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
 
-        public TrekListHandler()
+        public TrekListHandler() : base("TrekList", Common.OpID.TrekList)
         {
-            SetName("TrekList");
         }
 
-        protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
+        protected override Boolean ProcessHead(RigFrame packet)
         {
             bid.Size = BitConverter.ToInt32(packet.Data, 0);
             return true;
         }
 
-        protected override void ProcessData(RigFrame packet, ref IStreamData answer)
+        protected override void ProcessData(RigFrame packet)
         {
             ProcessTrekDescriptors(packet.Data, packet.BlockNum);
         }

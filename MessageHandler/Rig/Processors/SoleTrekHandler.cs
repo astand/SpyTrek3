@@ -23,12 +23,18 @@ namespace MessageHandler.Rig.Processors
 
         public bool IsTrekNeed(TrekDescriptor desc) => trekWr.TrekCanBeWrite(ImeiPath, desc);
 
-        protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
+
+        public SoleTrekHandler() : base("SoleTrek", Common.OpID.SoleTrek)
+        {
+        }
+
+
+        protected override Boolean ProcessHead(RigFrame packet)
         {
             bid.Size = BitConverter.ToInt32(packet.Data, 0);
             return true;
         }
-        protected override void ProcessData(RigFrame packet, ref IStreamData answer)
+        protected override void ProcessData(RigFrame packet)
         {
             noteCount = SaveTrek(packet.Data, packet.BlockNum);
         }

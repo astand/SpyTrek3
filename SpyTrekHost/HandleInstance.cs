@@ -38,7 +38,7 @@ namespace SpyTrekHost
         SoleTrekHandler saveHandler = new SoleTrekHandler();
         TrekListHandler listHandler = new TrekListHandler();
         EchoHandler echoHandler = new EchoHandler();
-        FirmHandler firmHandler;
+        FirmHandler firmHandler = new FirmHandler();
         RigRouter rigRouter;
         // end of rig
 
@@ -54,7 +54,6 @@ namespace SpyTrekHost
             piper = new Piper(networkPipe, networkPipe);
             piper.OnFail += Piper_OnFail;
             piper.OnData += Piper_OnData;
-            firmHandler = new FirmHandler(piper);
             infoHandler.OnUpdated += WhenInfoUpdated;
             CreateChainOfResponsibility();
             echoTimer = new System.Timers.Timer(kEchoTimeout);
@@ -77,12 +76,13 @@ namespace SpyTrekHost
         {
             //firmProc = new FirmwareProcessor(piper, "st8.bin");
             var tempList = new List<RigHandler>();
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.Info, infoHandler));
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.TrekList, listHandler));
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.SoleTrek, saveHandler));
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.Firmware, firmHandler));
-            tempList.Add(new RigHandler(fr => fr.RigId == OpID.Echo, echoHandler));
-            rigRouter = new RigRouter(piper.SendData, tempList);
+            RigHandler.RigSender = piper.SendData;
+            tempList.Add(new RigHandler(infoHandler));
+            tempList.Add(new RigHandler(listHandler));
+            tempList.Add(new RigHandler(saveHandler));
+            tempList.Add(new RigHandler(firmHandler));
+            tempList.Add(new RigHandler(echoHandler));
+            rigRouter = new RigRouter(tempList);
             rigRouter.ProcUpdateListener += ProcFullStateNotify;
         }
         private void Piper_OnFail(Object sender, PiperEventArgs e)
@@ -115,7 +115,6 @@ namespace SpyTrekHost
 
         private void ProcFullStateNotify(ProcFullState proc)
         {
-            //Debug.WriteLine($"State: {proc.State.ToString().PadRight(10, ' ')}| {proc.Message}");
             notifyUI?.Invoke(proc.Message);
         }
 

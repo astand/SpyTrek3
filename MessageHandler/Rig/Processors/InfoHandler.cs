@@ -15,12 +15,11 @@ namespace MessageHandler.Rig.Processors
             private set;
         }
 
-        public InfoHandler()
+        public InfoHandler() : base ("INFO", Common.OpID.Info)
         {
-            SetName("INFO");
         }
 
-        protected override Boolean ProcessHead(RigFrame packet, ref IStreamData answer)
+        protected override Boolean ProcessHead(RigFrame packet)
         {
             bid.Size = BitConverter.ToInt32(packet.Data, 0);
 
@@ -32,7 +31,7 @@ namespace MessageHandler.Rig.Processors
             return true;
         }
 
-        protected override void ProcessData(RigFrame packet, ref IStreamData answer)
+        protected override void ProcessData(RigFrame packet)
         {
             if (packet.BlockNum == 1)
             {

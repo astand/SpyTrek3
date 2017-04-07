@@ -12,6 +12,6 @@ namespace MessageHandler.Rig
 
     public abstract class IRigHandler
     {
-        public abstract HandleResult HandleFrame(RigFrame frame, ref IStreamData answer);
+        public abstract HandleResult HandleFrame(RigFrame frame);
     }
 }

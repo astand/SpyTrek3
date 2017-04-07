@@ -4,32 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StreamHandler.Abstract;
+using StreamHandler;
 
 namespace MessageHandler.Rig
 {
     public class RigHandler : IRigHandler
     {
-        public IFrameProccesor<RigFrame> ProcHandler
-        {
+        public static Func<RigFrame, Int32> RigSender;
+
+        public IFrameProccesor<RigFrame> ProcHandler {
             get;
         }
 
-        Func<RigFrame, bool> selector;
-
-        public RigHandler(Func<RigFrame, bool> selector, IFrameProccesor<RigFrame> processor)
+        public RigHandler(IFrameProccesor<RigFrame> processor)
         {
             ProcHandler = processor;
-            this.selector = selector;
+            ProcHandler.SendAnswer = new Action<RigFrame>(target => {
+                RigSender?.Invoke(target);
+            });
         }
 
-        public override HandleResult HandleFrame(RigFrame frame, ref IStreamData answer)
+        public override HandleResult HandleFrame(RigFrame frame)
         {
-            if (!selector(frame))
+            if (!ProcHandler.FrameAccepted(frame))
             {
                 return HandleResult.Ignored;
             }
 
-            ProcHandler.Process(frame, ref answer);
+            ProcHandler.Process(frame);
             return HandleResult.Handled;
         }
     }
