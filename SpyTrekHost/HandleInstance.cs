@@ -13,7 +13,7 @@ using System.Timers;
 
 namespace SpyTrekHost
 {
-    public class HandleInstance : IDisposable
+    public partial class HandleInstance : IDisposable
     {
         private NetworkPipe networkPipe;
 
@@ -29,7 +29,10 @@ namespace SpyTrekHost
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
 
-        System.Timers.Timer echoTimer;
+        Timer echoTimer;
+        Timer roundTimer;
+        Int32 roundPrescaler = 59;
+
         readonly double kEchoTimeout = 15000.0;
 
         SpyTrekInfo spyTrekInfo;
@@ -58,7 +61,10 @@ namespace SpyTrekHost
             piper.OnData += Piper_OnData;
             infoHandler.OnUpdated += WhenInfoUpdated;
             CreateChainOfResponsibility();
-            echoTimer = new System.Timers.Timer(kEchoTimeout);
+            roundTimer = new Timer();
+            roundTimer.Interval = 500;
+            roundTimer.Elapsed += RoundTimer_Elapsed;
+            echoTimer = new Timer(kEchoTimeout);
             echoTimer.Start();
             echoTimer.Elapsed += EchoTime2_Elapsed;
             EchoTime2_Elapsed(echoTimer, null);
@@ -72,6 +78,12 @@ namespace SpyTrekHost
                 Pipe.SendData(new RigRrqFrame(OpID.Info));
             else
                 Pipe.SendData(new RigRrqFrame(OpID.Echo));
+
+            if (roundPrescaler++ == 4 * 15)
+            {
+                roundPrescaler = 0;
+                roundTimer.Start();
+            }
         }
 
         private void CreateChainOfResponsibility()

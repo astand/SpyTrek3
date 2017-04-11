@@ -10,9 +10,11 @@ namespace MessageHandler.Rig.Processors
     {
         public Action<List<TrekDescriptor>, bool> OnUpdated;
 
-        List<TrekDescriptor> list = new List<TrekDescriptor>();
-
         public TrekDescriptor Trek(Int32 trek_id) => list.Where(o => o.Id == trek_id).FirstOrDefault();
+
+        public List<TrekDescriptor> TrekList => list;
+
+        List<TrekDescriptor> list = new List<TrekDescriptor>();
 
         public TrekListHandler() : base("TrekList", Common.OpID.TrekList)
         {
