@@ -27,7 +27,6 @@ namespace MessageHandler.TrekWriter
             var fileContents = File.ReadAllText(mainDestinationPath);
             fileContents = fileContents.Replace("];/*replace*/", item.GetStringNotify() + "\n];/*replace*/");
             File.WriteAllText(mainDestinationPath, fileContents);
-
             return 0;
         }
 
@@ -40,6 +39,7 @@ namespace MessageHandler.TrekWriter
                     sw.WriteLine(item.GetStringNotify());
                 }
             }
+
             return 0;
         }
         /// <summary>
@@ -52,14 +52,15 @@ namespace MessageHandler.TrekWriter
         {
             /// create file full file location with name
             mainDestinationPath = BuildFullFileNameChain(desc, imei);
+            var note_cnt_from_file = GetCountOfNotesFromFile();
 
-            if (GetCountOfNotesFromFile() == desc.NotesCount)
+            if (note_cnt_from_file == desc.NotesCount)
             {
                 return false;
             }
+
             /* no file or file not full */
             File.Delete(mainDestinationPath);
-
             return true;
         }
 
@@ -72,12 +73,9 @@ namespace MessageHandler.TrekWriter
         {
             /// prepare directory
             string desc_dir = motherDir.UpdateAndCreateDir(im, desc.Start.ToString(@"yyyy\\MM\\dd\\"));
-
-            /// prepare file name 
+            /// prepare file name
             string desc_fname = GetTrekFileName(desc);
-
             CleanAllPreviousCopies(desc_dir, GetTrekFileName(desc));
-
             return desc_dir + desc_fname;
         }
 
@@ -90,9 +88,7 @@ namespace MessageHandler.TrekWriter
         private void CleanAllPreviousCopies(string directoryPath, string fname)
         {
             //Int32 findex = 1;
-
             var alldirtreks = new DirectoryInfo(directoryPath);
-
             string mask_for_clean = fname.Substring(0, 12) + "*";
 
             foreach (var delfil in alldirtreks.EnumerateFiles(mask_for_clean))
@@ -107,7 +103,6 @@ namespace MessageHandler.TrekWriter
         private string GetTrekFileName(TrekDescriptor desc)
         {
             StringBuilder ret = new StringBuilder(100);
-
             ret.Append(desc.Start.ToString("yyyyMMddHHmm"));
             ret.Append("_");
             ret.Append(desc.Stop.ToString("yyyyMMddHHmm"));
@@ -116,7 +111,6 @@ namespace MessageHandler.TrekWriter
             var tmp1 = (UInt16)(desc.Odometr);
             ret.Append($"{tmp:D5}_{tmp1:D5}");
             ret.Append(".json");
-
             return ret.ToString();
         }
 
@@ -128,6 +122,7 @@ namespace MessageHandler.TrekWriter
             {
                 return 0;
             }
+
             try
             {
                 using (var reader = File.OpenText(mainDestinationPath))
@@ -144,6 +139,7 @@ namespace MessageHandler.TrekWriter
                 File.Delete(mainDestinationPath);
                 return 0;
             }
+
             return lineCount;
         }
     };
@@ -174,6 +170,7 @@ namespace MessageHandler.TrekWriter
                 ret = defaultPath + imei + dir;
                 SecureDirectoryCreator(ret);
             }
+
             ret = InsertEndSlesh(ret);
             return ret;
         }
@@ -183,13 +180,14 @@ namespace MessageHandler.TrekWriter
         {
             if (s.EndsWith(@"\") || s.EndsWith(@"/"))
                 return s;
-            return s + @"\";
 
+            return s + @"\";
         }
 
         bool SecureDirectoryCreator(string s)
         {
             if (Directory.Exists(s)) return true;
+
             try
             {
                 Directory.CreateDirectory(s);
@@ -198,6 +196,7 @@ namespace MessageHandler.TrekWriter
             {
                 return false;
             }
+
             return true;
         }
 
