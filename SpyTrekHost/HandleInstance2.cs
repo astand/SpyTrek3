@@ -28,14 +28,15 @@ namespace SpyTrekHost
                     if (IsRequested == false)
                     {
                         Pipe.SendData(new RigRrqFrame(OpID.TrekList));
+                        listHandler.PState.State = ProcState.CmdAck;
                         IsRequested = true;
                     }
                     else if (IsRequested)
                     {
                         if (listHandler.PState.State == ProcState.Finished)
                         {
-                            rState = RoundState.UpdateTreks;
                             IsRequested = false;
+                            rState = RoundState.UpdateTreks;
                         }
                     }
 
@@ -44,9 +45,22 @@ namespace SpyTrekHost
                 case RoundState.UpdateTreks:
                     if (IsRequested == false)
                     {
-                        var reqTrekId = listHandler.TrekList[currentTrekPosition].Id;
-                        Debug.WriteLine($"List[{currentTrekPosition}] with ID: {reqTrekId}");
-                        ReadTrekCmd(reqTrekId);
+                        int reqTrekId;
+
+                        do
+                        {
+                            if (currentTrekPosition >= listHandler.TrekList.Count)
+                            {
+                                rState = RoundState.Sleep;
+                                break;
+                            }
+
+                            reqTrekId = listHandler.TrekList[currentTrekPosition].Id;
+                            Debug.WriteLine($"List[{currentTrekPosition}] with ID: {reqTrekId}");
+                            currentTrekPosition++;
+                        } while (ReadTrekCmd(reqTrekId) < 0);
+
+                        saveHandler.PState.State = ProcState.CmdAck;
                         IsRequested = true;
                     }
                     else if (IsRequested)
@@ -54,11 +68,6 @@ namespace SpyTrekHost
                         if (saveHandler.PState.State == ProcState.Finished)
                         {
                             IsRequested = false;
-
-                            if (++currentTrekPosition >= listHandler.TrekList.Capacity)
-                            {
-                                rState = RoundState.Sleep;
-                            }
                         }
                     }
 

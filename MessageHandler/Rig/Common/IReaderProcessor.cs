@@ -57,7 +57,7 @@ namespace MessageHandler.Rig
                 }
                 else
                 {
-                    Debug.WriteLine(Name + " : Warning: Non expecting block");
+                    Debug.WriteLine(Name + $" Warning: Non expecting block. Expc #{bid.BidAck + 1}. Actual #{packet.BlockNum}");
                 }
 
                 prFrame.Opc = OpCode.ACK;
