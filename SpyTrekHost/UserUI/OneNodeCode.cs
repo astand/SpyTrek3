@@ -88,5 +88,13 @@ namespace SpyTrekHost.UserUI
         {
             node_.StartFirmwareUpdating();
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            rateTime.Tick -= RateTime_Tick;
+            rateTime.Stop();
+            rateTime.Dispose();
+            base.OnClosed(e);
+        }
     }
 }

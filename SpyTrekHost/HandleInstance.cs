@@ -79,7 +79,7 @@ namespace SpyTrekHost
             else
                 Pipe.SendData(new RigRrqFrame(OpID.Echo));
 
-            if (roundPrescaler++ == 4 * 15)
+            if (roundPrescaler++ > 4 * 15)
             {
                 roundPrescaler = 0;
                 roundTimer.Start();
@@ -88,14 +88,12 @@ namespace SpyTrekHost
 
         private void CreateChainOfResponsibility()
         {
-            //firmProc = new FirmwareProcessor(piper, "st8.bin");
             var tempList = new List<RigHandler>();
-            RigHandler.RigSender = piper.SendData;
-            tempList.Add(new RigHandler(infoHandler));
-            tempList.Add(new RigHandler(listHandler));
-            tempList.Add(new RigHandler(saveHandler));
-            tempList.Add(new RigHandler(firmHandler));
-            tempList.Add(new RigHandler(echoHandler));
+            tempList.Add(new RigHandler(infoHandler, piper.SendData));
+            tempList.Add(new RigHandler(listHandler, piper.SendData));
+            tempList.Add(new RigHandler(saveHandler, piper.SendData));
+            tempList.Add(new RigHandler(firmHandler, piper.SendData));
+            tempList.Add(new RigHandler(echoHandler, piper.SendData));
             rigRouter = new RigRouter(tempList);
             rigRouter.ProcUpdateListener += ProcFullStateNotify;
         }
@@ -201,6 +199,8 @@ namespace SpyTrekHost
         {
             if (disposing)
             {
+                roundTimer?.Dispose();
+                roundTimer = null;
                 echoTimer?.Dispose();
                 echoTimer = null;
                 piper?.Dispose();
