@@ -27,8 +27,7 @@ namespace SpyTrekHost
                 case RoundState.UpdateList:
                     if (IsRequested == false)
                     {
-                        Pipe.SendData(new RigRrqFrame(OpID.TrekList));
-                        listHandler.PState.State = ProcState.CmdAck;
+                        listHandler.SendReadRequest(new RigRrqFrame(OpID.TrekList));
                         IsRequested = true;
                     }
                     else if (IsRequested)
@@ -60,7 +59,6 @@ namespace SpyTrekHost
                             currentTrekPosition++;
                         } while (ReadTrekCmd(reqTrekId) < 0);
 
-                        saveHandler.PState.State = ProcState.CmdAck;
                         IsRequested = true;
                     }
                     else if (IsRequested)

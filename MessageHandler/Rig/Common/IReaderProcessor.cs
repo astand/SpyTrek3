@@ -66,9 +66,12 @@ namespace MessageHandler.Rig
             }
         }
 
-        public override sealed bool FrameAccepted(RigFrame fr)
+        public override sealed bool FrameAccepted(RigFrame fr) => fr.RigId == RigId;
+
+        public virtual void SendReadRequest(RigFrame fr)
         {
-            return fr.RigId == RigId;
+            PState.State = ProcState.CmdAck;
+            SendAnswer(fr);
         }
 
         protected abstract bool ProcessHead(RigFrame packet);

@@ -62,6 +62,7 @@
     <Compile Include="Rig\Common\RigHandler.cs" />
     <Compile Include="Rig\Common\RigRouter.cs" />
     <Compile Include="Rig\Common\RigRrqFrame.cs" />
+    <Compile Include="Rig\Common\RigRrqTrekFrame.cs" />
     <Compile Include="Rig\Processors\EchoHandler.cs" />
     <Compile Include="Rig\Processors\FirmHandler.cs" />
     <Compile Include="Rig\Processors\InfoHandler.cs" />
