@@ -10,17 +10,18 @@ namespace MessageHandler.Rig
 {
     public class RigHandler : IRigHandler
     {
-        public static Func<RigFrame, Int32> RigSender;
+        Func<RigFrame, Int32> rigSender;
 
         public IFrameProccesor<RigFrame> ProcHandler {
             get;
         }
 
-        public RigHandler(IFrameProccesor<RigFrame> processor)
+        public RigHandler(IFrameProccesor<RigFrame> processor, Func<RigFrame, Int32> func)
         {
+            rigSender = func;
             ProcHandler = processor;
             ProcHandler.SendAnswer = new Action<RigFrame>(target => {
-                RigSender?.Invoke(target);
+                rigSender?.Invoke(target);
             });
         }
 
