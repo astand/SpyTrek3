@@ -19,7 +19,7 @@ namespace SpyTrekHost.UserUI
 
         HandleInstance node_;
 
-        Timer rateTime = new Timer();
+        Timer rateTime;
 
         public OneNodeForm(HandleInstance handleInstance)
         {
@@ -28,9 +28,10 @@ namespace SpyTrekHost.UserUI
             node_.SetInfoUpdater(AddInfoToView);
             node_.SetTrekUpdater(Label2Updater);
             InitializeComponent();
-            rateTime.Interval = 500;
-            rateTime.Start();
-            rateTime.Tick += RateTime_Tick;
+            //rateTime = new Timer();
+            //rateTime.Interval = 500;
+            //rateTime.Start();
+            //rateTime.Tick += RateTime_Tick;
             labRate.Text = String.Empty;
         }
 

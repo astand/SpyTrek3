@@ -60,9 +60,12 @@ namespace MessageHandler.Rig
                     Debug.WriteLine(Name + $" Warning: Non expecting block. Expc #{bid.BidAck + 1}. Actual #{packet.BlockNum}");
                 }
 
-                prFrame.Opc = OpCode.ACK;
-                prFrame.BlockNum = packet.BlockNum;
-                SendAnswer(prFrame);
+                if (bid.BidAck >= packet.BlockNum)
+                {
+                    prFrame.Opc = OpCode.ACK;
+                    prFrame.BlockNum = packet.BlockNum;
+                    SendAnswer(prFrame);
+                }
             }
         }
 

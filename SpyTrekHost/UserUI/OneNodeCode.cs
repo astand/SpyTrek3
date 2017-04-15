@@ -91,9 +91,13 @@ namespace SpyTrekHost.UserUI
 
         protected override void OnClosed(EventArgs e)
         {
-            rateTime.Tick -= RateTime_Tick;
-            rateTime.Stop();
-            rateTime.Dispose();
+            if (rateTime != null)
+            {
+                rateTime.Tick -= RateTime_Tick;
+                rateTime.Stop();
+                rateTime.Dispose();
+            }
+
             base.OnClosed(e);
         }
     }

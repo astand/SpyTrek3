@@ -158,15 +158,7 @@ namespace SpyTrekHost
             if (ret.IsBadTrek())
                 return -3;
 
-            var paydata = BitConverter.GetBytes(ret.Id);
-            piper.SendData(new RigFrame()
-            {
-                Opc = OpCode.RRQ,
-                RigId = OpID.SoleTrek,
-                BlockNum = 0,
-                Data = paydata
-            });
-            //piper.SendData(new FramePacket(opc: OpCodes.RRQ, id: FiledID.Track, data: paydata, length: 2));
+            listHandler.SendReadRequest(new RigRrqTrekFrame(ret.Id));
             return ret.Id;
         }
         public void StartFirmwareUpdating()
