@@ -56,11 +56,11 @@ namespace TrekTreeService
             if (nav_note != null)
             {
                 ret.Date = nav_note.timePoint.ToString("yyyy-MM-ddTHH:mm:ss");
-                ret.Lon = nav_note.lofull;
-                ret.Lat = nav_note.lafull;
-                ret.Dist = (int)nav_note.accum_dist;
+                ret.Lon = nav_note.lofull / 1000000.0;
+                ret.Lat = nav_note.lafull / 1000000.0;
+                ret.Dist = nav_note.accum_dist / 1000.0;
                 ret.Kurs = 0;
-                ret.Spd = nav_note.spd;
+                ret.Spd = nav_note.spd / 100.0;
             }
 
             return ret;

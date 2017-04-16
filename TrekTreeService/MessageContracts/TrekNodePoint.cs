@@ -8,36 +8,22 @@ namespace TrekTreeService.MessageContracts
     public class TrekNodePoint
     {
         [MessageBodyMember]
-        public double Lon {
-            get;
-            set;
-        }
-        [MessageBodyMember]
-        public double Lat {
-            get;
-            set;
-        }
-        [MessageBodyMember]
-        public string Date {
-            get;
-            set;
-        }
-        [MessageBodyMember]
-        public double Spd {
-            get;
-            set;
-        }
+        public string Date { get; set; }
 
         [MessageBodyMember]
-        public int Dist {
-            get;
-            set;
-        }
+        public double Lon { get; set; }
 
         [MessageBodyMember]
-        public int Kurs {
-            get;
-            set;
-        }
+        public double Lat { get; set; }
+
+
+        [MessageBodyMember]
+        public double Spd { get; set; }
+
+        [MessageBodyMember]
+        public double Dist { get; set; }
+
+        [MessageBodyMember]
+        public double Kurs { get; set; }
     }
 }
