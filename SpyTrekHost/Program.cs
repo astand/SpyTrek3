@@ -9,7 +9,7 @@ using SpyTrekHost.UserUI;
 
 namespace SpyTrekHost
 {
-    class Program
+    partial class Program
     {
         public static string AppVersion;
 
@@ -32,6 +32,8 @@ namespace SpyTrekHost
             HICollection.AddListUpdater(listNodes.UpdateListNodes);
             Thread ui = new Thread(UIThread);
             ui.Start();
+            Thread host = new Thread(TrekServiceHosting);
+            host.Start();
 
             while (true)
             {

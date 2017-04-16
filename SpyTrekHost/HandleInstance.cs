@@ -28,6 +28,9 @@ namespace SpyTrekHost
         public Piper Pipe => piper;
 
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
+        public SpyTrekInfo Info => spyTrekInfo;
+
+        public NaviNote GeoPoint => echoHandler.Pos;
 
         Timer echoTimer;
         Timer roundTimer;
@@ -36,6 +39,7 @@ namespace SpyTrekHost
         readonly double kEchoTimeout = 15000.0;
 
         SpyTrekInfo spyTrekInfo;
+
         // New Rig prototol instances
         InfoHandler infoHandler = new InfoHandler();
         SoleTrekHandler saveHandler = new SoleTrekHandler();
@@ -47,7 +51,7 @@ namespace SpyTrekHost
 
         Action<String> notifyUI = null;
 
-        public SpyTrekInfo Info => spyTrekInfo;
+        
 
         RigFrame rigFrame = new RigFrame();
 

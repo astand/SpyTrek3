@@ -51,6 +51,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,6 +64,7 @@
     <Compile Include="HandleInstance.cs" />
     <Compile Include="HandleInstance2.cs" />
     <Compile Include="HICollection.cs" />
+    <Compile Include="ProgramServ.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserUI\ListNodes.cs">
@@ -95,6 +97,10 @@
     <ProjectReference Include="..\StreamHandler\StreamHandler.csproj">
       <Project>{9fd96b42-85b9-4521-bcb5-ed21280658b7}</Project>
       <Name>StreamHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TrekTreeService\TrekTreeService.csproj">
+      <Project>{264C046B-DC6C-4109-9E97-0DAD425DC0CC}</Project>
+      <Name>TrekTreeService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

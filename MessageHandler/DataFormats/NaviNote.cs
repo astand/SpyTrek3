@@ -9,15 +9,15 @@ namespace MessageHandler.DataFormats
     public class NaviNote
     {
         const double KoorPrescaler = 1000000.0;
-        DateTime timePoint;
-        Int16 altitude;
-        Int32 lafull;
-        Int32 lofull;
-        UInt16 spd;
-        UInt32 accum_dist;
-        UInt16 spare;
-        UInt16 adcsrc;
-        UInt16 adc1;
+        public DateTime timePoint;
+        public Int16 altitude;
+        public Int32 lafull;
+        public Int32 lofull;
+        public UInt16 spd;
+        public UInt32 accum_dist;
+        public UInt16 spare;
+        public UInt16 adcsrc;
+        public UInt16 adc1;
 
         StringBuilder str = new StringBuilder(128);
 
@@ -55,7 +55,6 @@ namespace MessageHandler.DataFormats
         public string GetStringNotify()
         {
             var ret = new StringBuilder(128);
-
             ret.Append($"{{ lat:{(lafull / KoorPrescaler):F6},");
             ret.Append($"lon:{(lofull / KoorPrescaler):F6},");
             ret.Append($"titl:\"{timePoint.ToString("yyyy-MM-ddTHH:mm:ss")}\",");
