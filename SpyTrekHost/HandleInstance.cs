@@ -151,7 +151,7 @@ namespace SpyTrekHost
             if (ret.IsBadTrek())
                 return -3;
 
-            listHandler.SendReadRequest(new RigRrqTrekFrame(ret.Id));
+            saveHandler.SendReadRequest(new RigRrqTrekFrame(ret.Id));
             return ret.Id;
         }
         public void StartFirmwareUpdating()
