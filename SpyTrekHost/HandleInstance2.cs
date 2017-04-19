@@ -27,6 +27,7 @@ namespace SpyTrekHost
                 case RoundState.UpdateList:
                     if (IsRequested == false)
                     {
+                        roundTimer.Interval = 500;
                         listHandler.SendReadRequest(new RigRrqFrame(OpID.TrekList));
                         IsRequested = true;
                     }
@@ -76,6 +77,7 @@ namespace SpyTrekHost
                     rState = RoundState.UpdateList;
                     currentTrekPosition = 0;
                     roundTimer.Stop();
+                    roundTimer.Interval = 15 * 60 * 1000;
                     break;
             }
         }

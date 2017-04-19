@@ -34,9 +34,8 @@ namespace SpyTrekHost
 
         Timer echoTimer;
         Timer roundTimer;
-        Int32 roundPrescaler = 59;
 
-        readonly double kEchoTimeout = 15000.0;
+        readonly double kEchoTimeout = 10 * 1000;
 
         SpyTrekInfo spyTrekInfo;
 
@@ -51,7 +50,7 @@ namespace SpyTrekHost
 
         Action<String> notifyUI = null;
 
-        
+
 
         RigFrame rigFrame = new RigFrame();
 
@@ -65,14 +64,10 @@ namespace SpyTrekHost
             piper.OnData += Piper_OnData;
             infoHandler.OnUpdated += WhenInfoUpdated;
             CreateChainOfResponsibility();
-            roundTimer = new Timer();
-            roundTimer.Interval = 500;
-            roundTimer.Elapsed += RoundTimer_Elapsed;
-            echoTimer = new Timer(kEchoTimeout);
-            echoTimer.Start();
-            echoTimer.Elapsed += EchoTime2_Elapsed;
-            EchoTime2_Elapsed(echoTimer, null);
+            InitEchoTimer();
+            InitRoundTimer();
         }
+
 
         private void EchoTime2_Elapsed(Object sender, ElapsedEventArgs e)
         {
@@ -82,12 +77,6 @@ namespace SpyTrekHost
                 Pipe.SendData(new RigRrqFrame(OpID.Info));
             else
                 Pipe.SendData(new RigRrqFrame(OpID.Echo));
-
-            if (roundPrescaler++ > 4 * 15)
-            {
-                roundPrescaler = 0;
-                roundTimer.Start();
-            }
         }
 
         private void CreateChainOfResponsibility()
@@ -206,5 +195,20 @@ namespace SpyTrekHost
             }
         }
         private string InstanceName() => $"NODE[{timeConnected.ToString("mmssfff")}]";
+
+        void InitRoundTimer()
+        {
+            roundTimer = new Timer();
+            roundTimer.Interval = 5000;
+            roundTimer.Elapsed += RoundTimer_Elapsed;
+            roundTimer.Start();
+        }
+        private void InitEchoTimer()
+        {
+            echoTimer = new Timer(kEchoTimeout);
+            echoTimer.Start();
+            echoTimer.Elapsed += EchoTime2_Elapsed;
+            EchoTime2_Elapsed(echoTimer, null);
+        }
     }
 }

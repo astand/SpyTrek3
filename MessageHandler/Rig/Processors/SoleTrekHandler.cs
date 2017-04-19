@@ -44,8 +44,6 @@ namespace MessageHandler.Rig.Processors
             int current_offset = 0;
             var notes = new List<NaviNote>();
 
-            RawDataLogger.SaveArray(data, size);
-
             while (current_offset + NaviNote.Lenght <= size)
             {
                 var trekNote = new NaviNote();

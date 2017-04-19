@@ -55,11 +55,11 @@ namespace MessageHandler.DataFormats
         public string GetStringNotify()
         {
             var ret = new StringBuilder(128);
-            ret.Append($"{{ lat:{(lafull / KoorPrescaler):F6},");
-            ret.Append($"lon:{(lofull / KoorPrescaler):F6},");
-            ret.Append($"titl:\"{timePoint.ToString("yyyy-MM-ddTHH:mm:ss")}\",");
-            ret.Append($"spd:{spd / 100},".PadRight(8, ' '));
-            ret.Append($"dist:{accum_dist / 1000.0:F3} }},");
+            ret.Append($"{{ Lat:{(lafull / KoorPrescaler):F6},");
+            ret.Append($"Lon:{(lofull / KoorPrescaler):F6},");
+            ret.Append($"Date:\"{timePoint.ToString("yyyy-MM-ddTHH:mm:ss")}\",");
+            ret.Append($"Spd:{spd / 100},".PadRight(8, ' '));
+            ret.Append($"Dist:{accum_dist / 1000.0:F3} }},");
             return ret.ToString();
         }
     };
