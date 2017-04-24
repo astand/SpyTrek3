@@ -129,7 +129,7 @@ namespace MessageHandler.TrekWriter
                 {
                     do
                     {
-                        if (reader.ReadLine().Contains(",titl:"))
+                        if (reader.ReadLine().Contains("Date:"))
                             lineCount++;
                     } while (!reader.EndOfStream);
                 }
