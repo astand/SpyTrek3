@@ -46,6 +46,7 @@ namespace SpyTrekHost
                     if (IsRequested == false)
                     {
                         int reqTrekId;
+                        int read_ret = -1;
 
                         do
                         {
@@ -56,9 +57,19 @@ namespace SpyTrekHost
                             }
 
                             reqTrekId = listHandler.TrekList[currentTrekPosition].Id;
-                            Debug.WriteLine($"List[{currentTrekPosition}] with ID: {reqTrekId}");
+                            read_ret = ReadTrekCmd(reqTrekId);
+
+                            if (read_ret < 0)
+                            {
+                                Debug.WriteLine($"List[{currentTrekPosition}] with ID: {reqTrekId} don't load " + read_ret);
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"List[{currentTrekPosition}] with ID: {reqTrekId} Perform downloading");
+                            }
+
                             currentTrekPosition++;
-                        } while (ReadTrekCmd(reqTrekId) < 0);
+                        } while (read_ret < 0);
 
                         IsRequested = true;
                     }
@@ -76,7 +87,6 @@ namespace SpyTrekHost
                     IsRequested = false;
                     rState = RoundState.UpdateList;
                     currentTrekPosition = 0;
-                    roundTimer.Stop();
                     roundTimer.Interval = 15 * 60 * 1000;
                     break;
             }
