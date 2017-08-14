@@ -132,8 +132,8 @@ namespace TrekTreeService.Concrete
                 NameLink = info.NodeName,
                 Count = info.Count,
                 Duration = info.Duration,
-                LocalMile = info.LocalDistance,
-                FullMile = info.FullDistance,
+                LocalMile = info.LocalDistance / 10.0,
+                FullMile = info.FullDistance / 10.0,
                 AverageSpeed = info.Speed(),
             };
             return ret;

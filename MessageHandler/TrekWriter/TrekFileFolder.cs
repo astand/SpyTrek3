@@ -107,9 +107,9 @@ namespace MessageHandler.TrekWriter
             ret.Append("_");
             ret.Append(desc.Stop.ToString("yyyyMMddHHmm"));
             ret.Append("_");
-            var tmp = (UInt16)(desc.Dist);
-            var tmp1 = (UInt16)(desc.Odometr);
-            ret.Append($"{tmp:D5}_{tmp1:D5}");
+            var tmp = (UInt64)(desc.Dist * 10);
+            var tmp1 = (UInt64)(desc.Odometr * 10);
+            ret.Append($"{tmp:D7}_{tmp1:D7}");
             ret.Append(".json");
             return ret.ToString();
         }
