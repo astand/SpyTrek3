@@ -52,6 +52,8 @@ namespace MessageHandler.Rig.Processors
                 notes.Add(trekNote);
             }
 
+            /// This static class uses for save binary trek for using it in simulation
+            //RawDataLogger.SaveArray(data, size);
             /// try write all available notes
             return trekWr.WriteNotes(notes, block_num == 1);
         }
