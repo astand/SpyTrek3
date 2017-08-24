@@ -30,7 +30,7 @@ namespace SpyTrekHost
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
         public SpyTrekInfo Info => spyTrekInfo;
 
-        public NaviNote GeoPoint => echoHandler.Pos;
+        public List<NaviNote> GeoPoints => echoHandler.PosList;
 
         Timer echoTimer;
         Timer roundTimer;
@@ -203,6 +203,7 @@ namespace SpyTrekHost
             roundTimer.Elapsed += RoundTimer_Elapsed;
             roundTimer.Start();
         }
+
         private void InitEchoTimer()
         {
             echoTimer = new Timer(kEchoTimeout);

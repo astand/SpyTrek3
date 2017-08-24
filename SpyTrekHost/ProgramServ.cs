@@ -10,6 +10,7 @@ using TrekTreeService;
 using System.ServiceModel;
 using MessageHandler.DataFormats;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace SpyTrekHost
 {
@@ -17,7 +18,7 @@ namespace SpyTrekHost
     {
         static void TrekServiceHosting()
         {
-            TrekTreeService.TrekTreeService.NoteReader = ScanNoteForNode;
+            TrekTreeService.TrekTreeService.NodePointsReader = ScanNoteForNode;
 
             using (ServiceHost host = new ServiceHost(typeof(TrekTreeService.TrekTreeService)))
             {
@@ -27,10 +28,10 @@ namespace SpyTrekHost
             }
         }
 
-        static NaviNote ScanNoteForNode(string Imei)
+        static List<NaviNote> ScanNoteForNode(string Imei)
         {
             var item = HICollection.List.Find(o => o.Info.Imei == Imei);
-            return item?.GeoPoint;
+            return item?.GeoPoints;
         }
     }
 }
