@@ -21,5 +21,8 @@ namespace TrekTreeService
         [OperationContract]
         TrekNodePoint GetTrekNodePoint(TrekTreeRequest request);
 
+        [OperationContract]
+        TrekNodePoints GetTrekTreeNodePoints(TrekTreeRequest request);
+
     }
 }

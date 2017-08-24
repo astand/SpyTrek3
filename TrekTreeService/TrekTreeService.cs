@@ -15,7 +15,7 @@ namespace TrekTreeService
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class TrekTreeService : ITrekTreeService
     {
-        public static Func<string, NaviNote> NoteReader;
+        public static Func<string, List<NaviNote>> NodePointsReader;
 
         ITrekInfoProvider trekinfo = new TrekFileProvider();
 
@@ -47,24 +47,51 @@ namespace TrekTreeService
             if (request.Imei == null)
                 return null;
 
-            var nav_note = NoteReader(request.Imei);
+            var nodePoint = NodePointsReader(request.Imei)[0];
             var ret = new TrekNodePoint()
             {
                 Date = "Invalid"
             };
 
-            if (nav_note != null)
+            if (nodePoint != null)
             {
-                ret.Date = nav_note.timePoint.ToString("yyyy-MM-ddTHH:mm:ss");
-                ret.Lon = nav_note.lofull / 1000000.0;
-                ret.Lat = nav_note.lafull / 1000000.0;
-                ret.Dist = nav_note.accum_dist / 1000.0;
+                ret.Date = nodePoint.timePoint.ToString("yyyy-MM-ddTHH:mm:ss");
+                ret.Lon = nodePoint.lofull / 1000000.0;
+                ret.Lat = nodePoint.lafull / 1000000.0;
+                ret.Dist = nodePoint.accum_dist / 1000.0;
                 ret.Kurs = 0;
-                ret.Spd = nav_note.spd / 100.0;
+                ret.Spd = nodePoint.spd / 100.0;
             }
 
             return ret;
         }
 
+        public TrekNodePoints GetTrekTreeNodePoints(TrekTreeRequest request)
+        {
+            if (request.Imei == null)
+                return null;
+
+            var nodePoints = NodePointsReader(request.Imei);
+            var response = new TrekNodePoints();
+
+            if (nodePoints != null)
+            {
+                foreach (var onepoint in nodePoints)
+                {
+                    var ret = new TrekNodePoint
+                    {
+                        Date = onepoint.timePoint.ToString("yyyy-MM-ddTHH:mm:ss"),
+                        Lon = onepoint.lofull / 1000000.0,
+                        Lat = onepoint.lafull / 1000000.0,
+                        Dist = onepoint.accum_dist / 1000.0,
+                        Kurs = 0,
+                        Spd = onepoint.spd / 100.0
+                    };
+                    response.PointsList.Add(ret);
+                }
+            }
+
+            return response;
+        }
     }
 }

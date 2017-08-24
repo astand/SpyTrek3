@@ -16,7 +16,6 @@ namespace TrekTreeService.MessageContracts
         [MessageBodyMember]
         public double Lat { get; set; }
 
-
         [MessageBodyMember]
         public double Spd { get; set; }
 

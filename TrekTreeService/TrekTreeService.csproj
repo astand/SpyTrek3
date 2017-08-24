@@ -53,6 +53,7 @@
     <Compile Include="Infrastructure\Extensions\InnerExtensions.cs" />
     <Compile Include="MessageContracts\RouteTree.cs" />
     <Compile Include="MessageContracts\TrekFile.cs" />
+    <Compile Include="MessageContracts\TrekNodePoints.cs" />
     <Compile Include="MessageContracts\TrekTreeCollection.cs" />
     <Compile Include="MessageContracts\TrekTreeInstance.cs" />
     <Compile Include="MessageContracts\TrekTreeRequest.cs" />
