@@ -16,12 +16,8 @@ namespace MessageHandler.DataUploading
 
         public DiskFileUploader(string rootpath)
         {
-            m_fsize = 0;
-            if (File.Exists(rootpath))
-            {
-                m_fpath = rootpath;
-                m_fsize = new FileInfo(m_fpath).Length;
-            }
+            m_fpath = rootpath;
+            RefreshData();
         }
 
 
@@ -51,6 +47,12 @@ namespace MessageHandler.DataUploading
         public Boolean RefreshData()
         {
             /// may be here must be action as in constructor
+            m_fsize = 0;
+
+            if (File.Exists(m_fpath))
+            {
+                m_fsize = new FileInfo(m_fpath).Length;
+            }
 
             return true;
         }

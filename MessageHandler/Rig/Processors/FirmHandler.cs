@@ -27,6 +27,7 @@ namespace MessageHandler.Rig.Processors
 
         protected override Int32 OnWriteRequest()
         {
+            dataUploader.RefreshData();
             fileSize = dataUploader.Length;
             rigFrame.Opc = OpCode.WRQ;
             rigFrame.RigId = OpID.Firmware;
