@@ -30,7 +30,6 @@ namespace SpyTrekHost
         public ISpyTrekInfoNotifier spyTrekNotifier = null;
         public SpyTrekInfo Info => spyTrekInfo;
 
-        public List<NaviNote> GeoPoints => echoHandler.PosList;
 
         Timer echoTimer;
         Timer roundTimer;
@@ -49,8 +48,6 @@ namespace SpyTrekHost
         // end of rig
 
         Action<String> notifyUI = null;
-
-
 
         RigFrame rigFrame = new RigFrame();
 

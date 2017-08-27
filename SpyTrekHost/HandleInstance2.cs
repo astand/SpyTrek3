@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Diagnostics;
+using MessageHandler.DataFormats;
 
 namespace SpyTrekHost
 {
@@ -90,6 +91,11 @@ namespace SpyTrekHost
                     roundTimer.Interval = 15 * 60 * 1000;
                     break;
             }
+        }
+
+        public List<NaviNote> ReadCachedPoints()
+        {
+            return echoHandler.GetCachedList();
         }
     }
 }

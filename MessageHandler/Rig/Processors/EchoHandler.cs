@@ -11,37 +11,56 @@ namespace MessageHandler.Rig.Processors
 {
     public class EchoHandler : IReaderProcessor
     {
+        static readonly int CACH_CAPACITY = 10;
 
-        public List<NaviNote> PosList = new List<NaviNote>();
+        NaviNote[] statNotes = new NaviNote[CACH_CAPACITY];
 
-        public NaviNote Pos { get => PosList[0]; }
+        List<NaviNote> poslist_ = new List<NaviNote>(CACH_CAPACITY);
+
+        int loadedCnt = 0;
 
         public EchoHandler() : base("Echo", Common.OpID.Echo)
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < CACH_CAPACITY; i++)
             {
-                PosList.Add(new NaviNote());
+                statNotes[i] = new NaviNote();
             }
         }
 
         protected override Boolean ProcessHead(RigFrame packet)
         {
-            var listIndex = 0;
+            loadedCnt = 0;
             var offset = 4;
-            var parsingFinished = false;
+            poslist_.Clear();
 
-            while (parsingFinished = PosList[listIndex].TryParse(packet.Data, offset) == true)
+            // do parsing by received datasize
+            while ((loadedCnt < CACH_CAPACITY) && (offset + NaviNote.Lenght) <= packet.DataSize)
             {
-                listIndex++;
+                if (!statNotes[loadedCnt].TryParse(packet.Data, offset))
+                    break;
+
+                poslist_.Add(statNotes[loadedCnt]);
+                loadedCnt++;
                 offset += NaviNote.Lenght;
             }
 
-            Debug.WriteLine($"{listIndex} points were gotten. 1st : " + Pos.GetStringNotify());
+            Debug.WriteLine($"DataSize= {packet.DataSize}. {loadedCnt} points were gotten. 1st : " + statNotes[0].GetStringNotify());
             return true;
         }
 
         protected override void ProcessData(RigFrame packet)
         {
+        }
+
+        public List<NaviNote> GetCachedList()
+        {
+            if (loadedCnt == 0)
+            {
+                poslist_.Clear();
+            }
+
+            loadedCnt = 0;
+            return poslist_;
         }
     }
 }

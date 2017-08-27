@@ -12,5 +12,8 @@ namespace TrekTreeService.MessageContracts
     {
         [MessageBodyMember]
         public List<TrekNodePoint> PointsList = new List<TrekNodePoint>();
+
+        [MessageBodyMember]
+        public string Status;
     }
 }

@@ -30,8 +30,8 @@ namespace SpyTrekHost
 
         static List<NaviNote> ScanNoteForNode(string Imei)
         {
-            var item = HICollection.List.Find(o => o.Info.Imei == Imei);
-            return item?.GeoPoints;
+            var item = HICollection.List.Find(o => o.Info?.Imei == Imei);
+            return item?.ReadCachedPoints();
         }
     }
 }

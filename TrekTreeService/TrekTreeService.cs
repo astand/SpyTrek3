@@ -68,13 +68,21 @@ namespace TrekTreeService
 
         public TrekNodePoints GetTrekTreeNodePoints(TrekTreeRequest request)
         {
+            var response = new TrekNodePoints() { Status = "Connected" };
+
             if (request.Imei == null)
-                return null;
+            {
+                response.Status = "BadRequest";
+                return response;
+            }
 
             var nodePoints = NodePointsReader(request.Imei);
-            var response = new TrekNodePoints();
 
-            if (nodePoints != null)
+            if (nodePoints == null)
+            {
+                response.Status = "NotConnected";
+            }
+            else
             {
                 foreach (var onepoint in nodePoints)
                 {
