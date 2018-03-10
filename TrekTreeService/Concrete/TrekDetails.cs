@@ -16,7 +16,7 @@ namespace TrekTreeService.Concrete
         public string NodeId { get; set; }
 
 
-        public DateTime Begin { get; set; }
+        public DateTime? Begin { get; set; }
         public DateTime End { get; set; }
         public TimeSpan Duration { get; set; }
 
@@ -68,9 +68,9 @@ namespace TrekTreeService.Concrete
 
         public void SetDuration()
         {
-            if (Begin == null || End == null || Begin.CompareTo(End) >= 0)
+            if (Begin == null || End == null || Begin?.CompareTo(End) >= 0)
                 throw new ArgumentOutOfRangeException(null, $"Cannot set duration: begin {Begin}, end {End}");
-            Duration = End.Subtract(Begin);
+            Duration = Begin != null ? End.Subtract((DateTime)Begin) : TimeSpan.MinValue;
         }
 
         public double Speed()
@@ -129,12 +129,12 @@ namespace TrekTreeService.Concrete
         {
             var ret = new TrekTreeInstance()
             {
-                NameLink = info.NodeName,
+                Start = info.Begin,
                 Count = info.Count,
                 Duration = info.Duration,
                 LocalMile = info.LocalDistance / 10.0,
                 FullMile = info.FullDistance / 10.0,
-                AverageSpeed = info.Speed(),
+                AverageSpeed = info.Speed() / 10.0,
             };
             return ret;
         }

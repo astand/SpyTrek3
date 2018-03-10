@@ -27,33 +27,30 @@ namespace TrekTreeService.Concrete
         public Byte[] GetContent(String imei, Int32? year, Int32? month, Int32? day, String name)
         {
             BuildFullPath(imei, year, month, day);
-
             return ReadTrekContent(name);
         }
 
         public IList<TrekDetails> GetInfo(String imei, Int32? year, Int32? month, Int32? day)
         {
             var retlist = new List<TrekDetails>();
-
             /* need get all sub folders first order */
             BuildFullPath(imei, year, month, day);
-
             if (day != null)
             {
+                // this branch gets lowest files tree
                 retlist = GetSubFiles();
                 return retlist;
             }
-
-
+            // Get all folders on 1st low level
             var subdirs = SubLevelDirectories();
-                        
+            // for each folder get file list in each
             foreach (var alonedir in subdirs)
             {
-                /* get treks collection for every sub folder */
                 var subsummary = SubLevelFiles(alonedir.Path);
                 subsummary.NodeName = alonedir.Name;
                 subsummary.NodeId = alonedir.Name;
-                retlist.Add(subsummary);
+                if (subsummary.LocalDistance > 0)
+                    retlist.Add(subsummary);
             }
             return retlist;
         }
@@ -65,14 +62,12 @@ namespace TrekTreeService.Concrete
             //var allsubdir_treks = Directory.EnumerateFiles(alonedir, "*.htm*", SearchOption.AllDirectories);
             var search_pattern = "*." + TrekExtension;
             var allsubdir_treks = Directory.EnumerateFiles(alonedir, search_pattern, SearchOption.AllDirectories);
-
             return TrekDetails.AverageDetailsForFiles(allsubdir_treks);
         }
 
         private string BuildFullPath(string imei, int? year, int? month, int? day)
         {
             string retval = "";
-
             retval = imei + @"/";
             if (year != null)
             {
@@ -104,22 +99,18 @@ namespace TrekTreeService.Concrete
                 Debug.WriteLine($"Sub directory scanning fails. Empty DirDescriptor returns. Message: {ex.Message}");
                 return retdescription;
             }
-
             foreach (var onedir in dirlist)
             {
                 retdescription.Add(new DirDescription(onedir));
             }
-
             return retdescription;
         }
 
         private List<TrekDetails> GetSubFiles()
         {
             var retfiles = new List<TrekDetails>();
-
             IEnumerable<string> files = null;
             var retdescription = new List<TrekDetails>();
-
             try
             {
                 files = Directory.EnumerateFiles(full_search_path, "*." + TrekExtension, SearchOption.AllDirectories);
@@ -135,7 +126,7 @@ namespace TrekTreeService.Concrete
                 try
                 {
                     var onetrek = TrekDetails.ConcreteDetailForFile(item);
-                    onetrek.NodeName = onetrek.Begin.ToShortTimeString();
+                    onetrek.NodeName = onetrek.Begin?.ToShortTimeString();
                     onetrek.NodeId = item.RemoveExtension().DirectoryName();
                     retfiles.Add(onetrek);
                 }
@@ -145,14 +136,24 @@ namespace TrekTreeService.Concrete
                 }
             }
             return retfiles;
-
         }
 
         private byte[] ReadTrekContent(string filename)
         {
+            var file_id = 0;
+            // 1st try reading by @fileId
+            if (int.TryParse(filename, out file_id) && filename.Length < 6)
+            {
+                var files = Directory.EnumerateFiles(full_search_path);
+                if (files.Count() >= file_id)
+                {
+                    return File.ReadAllBytes(files.ElementAt(file_id));
+                }
+                return new byte[0];
+            }
+            // 2nd trye reading by @filename
             string file_global_path = full_search_path + filename + "." + TrekExtension;
             Debug.WriteLine($"Target content file : {file_global_path}");
-
             try
             {
                 return File.ReadAllBytes(file_global_path);
@@ -162,7 +163,6 @@ namespace TrekTreeService.Concrete
                 Debug.WriteLine($"Cannot read Trek contetn. Ex message: {ex.Message}");
                 return null;
             }
-
         }
 
     }

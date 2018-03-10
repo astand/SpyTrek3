@@ -22,8 +22,9 @@ namespace TrekTreeService
         public TrekFile GetTrekFile(TrekTreeRequest request)
         {
             var ret = new TrekFile();
-            ret.Name = "new file";
             ret.Content = trekinfo.GetContent(request.Imei, request.Year, request.Month, request.Day, request.FName);
+
+            ret.Name = ret.Content.Length > 0 ? request.FName : "Nofile";
             return ret;
         }
 

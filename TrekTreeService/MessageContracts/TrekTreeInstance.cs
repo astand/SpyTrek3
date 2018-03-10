@@ -7,13 +7,13 @@ using System.ServiceModel;
 using System.Runtime.Serialization;
 
 namespace TrekTreeService.MessageContracts
-{   
+{
     [KnownType(typeof(RouteTree))]
     [MessageContract(IsWrapped = true, WrapperName = "TrekTreeInstanseObject", WrapperNamespace = "http://localhost/TrekTree")]
     public class TrekTreeInstance
     {
         [MessageBodyMember(Order = 1)]
-        public string NameLink { get; set; }
+        public DateTime? Start { get; set; }
 
         [MessageBodyMember(Order = 2)]
         public int Count { get; set; }
